@@ -70,23 +70,28 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseDragged(MouseEvent e) {
         if (dragging) {
-            seleccionado.setBounds(new Rectangle((int) (e.getX() - grabPoint.getWidth()), (int) (e.getY() - grabPoint.getHeight()), (int) seleccionado.getTamano().getWidth(), (int) seleccionado.getTamano().getHeight()));
-            componentes.put(seleccionado, seleccionado.getBounds().getLocation());
+            Rectangle nuevoContorno = new Rectangle((int) (e.getX() - grabPoint.getWidth()), (int) (e.getY() - grabPoint.getHeight()), (int) seleccionado.getTamano().getWidth(), (int) seleccionado.getTamano().getHeight());
+            if (dentroDelPanel(nuevoContorno)) {
+                seleccionado.setBounds(nuevoContorno);
+                componentes.put(seleccionado, nuevoContorno.getLocation());
+            }
             repaint();
         }
+    }
+
+    private boolean dentroDelPanel(Rectangle boundsComponente) {
+        Rectangle tamanoPanel = this.getBounds();
+        tamanoPanel.setLocation(0, 0);//Si no, se tiene un offset igual al tamaño de los componentes a la izquierda en X y arriba en Y
+
+        return tamanoPanel.contains(boundsComponente.getLocation()) && tamanoPanel.contains(new Point((int) boundsComponente.getMaxX(), (int) boundsComponente.getMaxY()));
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         for (Map.Entry<ImagePanel, Point> entry : componentes.entrySet()) {
-            entry.getKey().getImagen().paintIcon((Component) this, g, (int) entry.getValue().getX(), (int) entry.getValue().getY());
-            if (true) {//TODO boolean dibujarContornos
-                Rectangle b = entry.getKey().getBounds();
-                g.drawRect((int) b.getX(), (int) b.getY(), (int) b.getWidth(), (int) b.getHeight());
-            }
+            entry.getKey().dibujar(g, entry.getValue(), true);
         }
-        /**/
     }
 
     //region métodos overriden que no queremos para nada
