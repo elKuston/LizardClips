@@ -18,7 +18,7 @@ public class ImagePanel extends JComponent {
 
     public void dibujar(Graphics g, Point posicion, boolean dibujarContorno) {
         getImagen().paintIcon(this, g, (int) posicion.getX(), (int) posicion.getY());
-        if (dibujarContorno) {//TODO boolean dibujarContornos
+        if (dibujarContorno) {
             Rectangle b = getBounds();
             g.drawRect((int) b.getX(), (int) b.getY(), (int) b.getWidth(), (int) b.getHeight());
         }

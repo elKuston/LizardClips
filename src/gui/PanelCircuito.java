@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener {
     private Map<ImagePanel, Point> componentes;
-    private boolean dragging;
+    private boolean dragging = false, deleteMode = false;
     private Dimension grabPoint;
     private ImagePanel seleccionado;
 
@@ -35,6 +35,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         raton.translate((int) -getLocationOnScreen().getX(), (int) -getLocationOnScreen().getY());
         addImagePanel(new Point((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())), imagePanel);
         startDragging(imagePanel, new Dimension(imagePanel.getWidth() / 2, imagePanel.getHeight() / 2));
+    }
+
+    public void toggleDeleteMode() {
+        deleteMode = !deleteMode;
+        System.out.println(deleteMode);
     }
 
     private void startDragging(ImagePanel imagePanel, Dimension grabPoint) {
@@ -69,9 +74,19 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             System.out.println("clicking null");
         } else {
             System.out.println("clicking on object");
-            Dimension grabPoint = new Dimension(e.getX() - seleccionado.getX(), e.getY() - seleccionado.getY());
-            startDragging(seleccionado, grabPoint);
+            if (deleteMode) {
+                borrarComponente(seleccionado);
+            } else {
+                Dimension grabPoint = new Dimension(e.getX() - seleccionado.getX(), e.getY() - seleccionado.getY());
+                startDragging(seleccionado, grabPoint);
+            }
         }
+    }
+
+    private void borrarComponente(ImagePanel componente) {
+        System.out.println("Borrando");
+        componentes.remove(componente);
+        repaint();
     }
 
     @Override
@@ -83,7 +98,6 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseDragged(MouseEvent e) {
         if (dragging) {
-            System.out.println("Dragging");
             Rectangle nuevoContorno = new Rectangle((int) (e.getX() - grabPoint.getWidth()), (int) (e.getY() - grabPoint.getHeight()), (int) seleccionado.getTamano().getWidth(), (int) seleccionado.getTamano().getHeight());
             if (dentroDelPanel(nuevoContorno)) {
                 seleccionado.setBounds(nuevoContorno);
