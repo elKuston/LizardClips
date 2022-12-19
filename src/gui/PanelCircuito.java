@@ -27,6 +27,20 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         imagePanel.setBounds(new Rectangle((int) posicion.getX(), (int) posicion.getY(), tamano.width, tamano.height));
         Rectangle b = imagePanel.getBounds();
         componentes.put(imagePanel, posicion);
+        repaint();
+    }
+
+    public void addImagePanelByDragging(ImagePanel imagePanel) {
+        Point raton = MouseInfo.getPointerInfo().getLocation();
+        raton.translate((int) -getLocationOnScreen().getX(), (int) -getLocationOnScreen().getY());
+        addImagePanel(new Point((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())), imagePanel);
+        startDragging(imagePanel, new Dimension(imagePanel.getWidth() / 2, imagePanel.getHeight() / 2));
+    }
+
+    private void startDragging(ImagePanel imagePanel, Dimension grabPoint) {
+        dragging = true;
+        seleccionado = imagePanel;
+        this.grabPoint = grabPoint;
     }
 
     private ImagePanel getComponenteSeleccionado(Point raton) {
@@ -50,14 +64,13 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mousePressed(MouseEvent e) {
         System.out.print("Pressed");
-        seleccionado = getComponenteSeleccionado(e.getPoint());
+        ImagePanel seleccionado = getComponenteSeleccionado(e.getPoint());
         if (seleccionado == null) {
             System.out.println("clicking null");
         } else {
             System.out.println("clicking on object");
-            dragging = true;
-            grabPoint = new Dimension(e.getX() - seleccionado.getX(), e.getY() - seleccionado.getY());
-            System.out.print(grabPoint);
+            Dimension grabPoint = new Dimension(e.getX() - seleccionado.getX(), e.getY() - seleccionado.getY());
+            startDragging(seleccionado, grabPoint);
         }
     }
 
@@ -70,6 +83,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseDragged(MouseEvent e) {
         if (dragging) {
+            System.out.println("Dragging");
             Rectangle nuevoContorno = new Rectangle((int) (e.getX() - grabPoint.getWidth()), (int) (e.getY() - grabPoint.getHeight()), (int) seleccionado.getTamano().getWidth(), (int) seleccionado.getTamano().getHeight());
             if (dentroDelPanel(nuevoContorno)) {
                 seleccionado.setBounds(nuevoContorno);
@@ -77,6 +91,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             }
             repaint();
         }
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) {
+        mouseDragged(e);
     }
 
     private boolean dentroDelPanel(Rectangle boundsComponente) {
@@ -95,10 +114,6 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     }
 
     //region métodos overriden que no queremos para nada
-    @Override
-    public void mouseMoved(MouseEvent e) {
-    }
-
     @Override
     public void mouseEntered(MouseEvent e) {
     }

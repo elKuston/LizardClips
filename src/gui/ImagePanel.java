@@ -1,6 +1,7 @@
 package gui;
 
 import lombok.EqualsAndHashCode;
+import utils.ImageUtils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,18 +11,10 @@ public class ImagePanel extends JComponent {
     private final ImageIcon imagen;
 
 
-    public ImagePanel(String pathImagen, Point posicion, int ancho, int alto) {
-        imagen = escalarImagen(pathImagen, ancho, alto);
+    public ImagePanel(String pathImagen, int ancho, int alto) {
+        imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
     }
 
-
-    private ImageIcon escalarImagen(String pathImagen, int ancho, int alto) {
-        return new ImageIcon(
-                new ImageIcon(pathImagen)
-                        .getImage()
-                        .getScaledInstance(ancho, alto, Image.SCALE_FAST)
-        );
-    }
 
     public void dibujar(Graphics g, Point posicion, boolean dibujarContorno) {
         getImagen().paintIcon(this, g, (int) posicion.getX(), (int) posicion.getY());
