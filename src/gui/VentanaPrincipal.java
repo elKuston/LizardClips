@@ -35,7 +35,7 @@ public class VentanaPrincipal {
         and.addActionListener(e -> panel.addImagePanelByDragging(new ImagePanel("media/and.png", 200, 100)));
         lateral.add(and);
 
-        JButton borrar = new JButton("Borrar");
+        JToggleButton borrar = new JToggleButton("Borrar");
         borrar.addActionListener(e -> panel.toggleDeleteMode());
         lateral.add(borrar);
 
