@@ -1,9 +1,17 @@
 package gui;
 
+import componentes.Conector;
+import constant.TipoConector;
 import utils.ImageUtils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JToggleButton;
+import javax.swing.WindowConstants;
+import java.awt.BorderLayout;
+import java.util.List;
 
 public class VentanaPrincipal {
     private JFrame frame;
@@ -28,11 +36,18 @@ public class VentanaPrincipal {
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
 
         JButton b = new JButton("", ImageUtils.cargarImagenEscalada("media/res.png", 100, 50));
-        b.addActionListener(e -> panel.addImagePanelByDragging(new PanelPieza("media/res.png", 200, 100)));
+        b.addActionListener(
+                e -> panel.addImagePanelByDragging(new PanelPieza("media/res.png", 200, 100,
+                        List.of(new Conector(0, 0.5, TipoConector.ENTRADA),
+                                new Conector(1, 0.5, TipoConector.SALIDA)))));
         lateral.add(b);
 
         JButton and = new JButton("", ImageUtils.cargarImagenEscalada("media/and.png", 100, 50));
-        and.addActionListener(e -> panel.addImagePanelByDragging(new PanelPieza("media/and.png", 200, 100)));
+        and.addActionListener(
+                e -> panel.addImagePanelByDragging(new PanelPieza("media/and.png", 200, 100,
+                        List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
+                                new Conector(0, 0.75, TipoConector.ENTRADA),
+                                new Conector(1, 0.5, TipoConector.SALIDA)))));
         lateral.add(and);
 
         JToggleButton borrar = new JToggleButton("Borrar");

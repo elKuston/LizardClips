@@ -1,7 +1,7 @@
 package utils;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ImageIcon;
+import java.awt.Image;
 
 public class ImageUtils {
     public static ImageIcon cargarImagenEscalada(String pathImagen, int ancho, int alto, int modo) {
