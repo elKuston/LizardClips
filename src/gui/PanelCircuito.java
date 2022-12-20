@@ -9,10 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener {
-    private Map<ImagePanel, Point> componentes;
+    private Map<PanelPieza, Point> componentes;
     private boolean dragging = false, deleteMode = false;
     private Dimension grabPoint;
-    private ImagePanel seleccionado;
+    private PanelPieza seleccionado;
 
     public PanelCircuito() {
         componentes = new HashMap<>();
@@ -21,20 +21,20 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         //setBackground(Color.red);
     }
 
-    public void addImagePanel(Point posicion, ImagePanel imagePanel) {
+    public void addImagePanel(Point posicion, PanelPieza panelPieza) {
         //this.add(imagePanel);
-        Dimension tamano = imagePanel.getTamano();
-        imagePanel.setBounds(new Rectangle((int) posicion.getX(), (int) posicion.getY(), tamano.width, tamano.height));
-        Rectangle b = imagePanel.getBounds();
-        componentes.put(imagePanel, posicion);
+        Dimension tamano = panelPieza.getTamano();
+        panelPieza.setBounds(new Rectangle((int) posicion.getX(), (int) posicion.getY(), tamano.width, tamano.height));
+        Rectangle b = panelPieza.getBounds();
+        componentes.put(panelPieza, posicion);
         repaint();
     }
 
-    public void addImagePanelByDragging(ImagePanel imagePanel) {
+    public void addImagePanelByDragging(PanelPieza panelPieza) {
         Point raton = MouseInfo.getPointerInfo().getLocation();
         raton.translate((int) -getLocationOnScreen().getX(), (int) -getLocationOnScreen().getY());
-        addImagePanel(new Point((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())), imagePanel);
-        startDragging(imagePanel, new Dimension(imagePanel.getWidth() / 2, imagePanel.getHeight() / 2));
+        addImagePanel(new Point((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())), panelPieza);
+        startDragging(panelPieza, new Dimension(panelPieza.getWidth() / 2, panelPieza.getHeight() / 2));
     }
 
     public void toggleDeleteMode() {
@@ -42,17 +42,17 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         System.out.println(deleteMode);
     }
 
-    private void startDragging(ImagePanel imagePanel, Dimension grabPoint) {
+    private void startDragging(PanelPieza panelPieza, Dimension grabPoint) {
         dragging = true;
-        seleccionado = imagePanel;
+        seleccionado = panelPieza;
         this.grabPoint = grabPoint;
     }
 
-    private ImagePanel getComponenteSeleccionado(Point raton) {
+    private PanelPieza getComponenteSeleccionado(Point raton) {
         return componentes.entrySet().stream().filter((par -> puntoDentroDeCaja(raton, par))).map(Map.Entry::getKey).findFirst().orElse(null);
     }
 
-    private Rectangle calcularBoundingBox(Map.Entry<ImagePanel, Point> par) {
+    private Rectangle calcularBoundingBox(Map.Entry<PanelPieza, Point> par) {
         Point posicion = par.getValue();
         Dimension dimensiones = par.getKey().getTamano();
         Rectangle caja = new Rectangle(dimensiones);
@@ -60,7 +60,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         return caja;
     }
 
-    private boolean puntoDentroDeCaja(Point punto, Map.Entry<ImagePanel, Point> par) {
+    private boolean puntoDentroDeCaja(Point punto, Map.Entry<PanelPieza, Point> par) {
         Rectangle bounds = par.getKey().getBounds();
         return bounds
                 .contains(punto);
@@ -69,7 +69,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mousePressed(MouseEvent e) {
         System.out.print("Pressed");
-        ImagePanel seleccionado = getComponenteSeleccionado(e.getPoint());
+        PanelPieza seleccionado = getComponenteSeleccionado(e.getPoint());
         if (seleccionado == null) {
             System.out.println("clicking null");
         } else {
@@ -83,7 +83,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
-    private void borrarComponente(ImagePanel componente) {
+    private void borrarComponente(PanelPieza componente) {
         System.out.println("Borrando");
         componentes.remove(componente);
         repaint();
@@ -122,7 +122,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        for (Map.Entry<ImagePanel, Point> entry : componentes.entrySet()) {
+        for (Map.Entry<PanelPieza, Point> entry : componentes.entrySet()) {
             entry.getKey().dibujar(g, entry.getValue(), true);
         }
     }

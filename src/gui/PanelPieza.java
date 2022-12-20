@@ -7,11 +7,11 @@ import javax.swing.*;
 import java.awt.*;
 
 @EqualsAndHashCode(callSuper = true)
-public class ImagePanel extends JComponent {
+public class PanelPieza extends JComponent {
     private final ImageIcon imagen;
 
 
-    public ImagePanel(String pathImagen, int ancho, int alto) {
+    public PanelPieza(String pathImagen, int ancho, int alto) {
         imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
     }
 

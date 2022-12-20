@@ -28,11 +28,11 @@ public class VentanaPrincipal {
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
 
         JButton b = new JButton("", ImageUtils.cargarImagenEscalada("media/res.png", 100, 50));
-        b.addActionListener(e -> panel.addImagePanelByDragging(new ImagePanel("media/res.png", 200, 100)));
+        b.addActionListener(e -> panel.addImagePanelByDragging(new PanelPieza("media/res.png", 200, 100)));
         lateral.add(b);
 
         JButton and = new JButton("", ImageUtils.cargarImagenEscalada("media/and.png", 100, 50));
-        and.addActionListener(e -> panel.addImagePanelByDragging(new ImagePanel("media/and.png", 200, 100)));
+        and.addActionListener(e -> panel.addImagePanelByDragging(new PanelPieza("media/and.png", 200, 100)));
         lateral.add(and);
 
         JToggleButton borrar = new JToggleButton("Borrar");
