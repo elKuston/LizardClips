@@ -10,7 +10,9 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
+import javax.swing.border.MatteBorder;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.util.List;
 
 public class VentanaPrincipal {
@@ -34,6 +36,7 @@ public class VentanaPrincipal {
         //Sidebar
         JPanel lateral = new JPanel();
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
+        lateral.setBorder(new MatteBorder(0, 0, 0, 2, Color.GRAY));
 
         JButton b = new JButton("", ImageUtils.cargarImagenEscalada("media/res.png", 100, 50));
         b.addActionListener(
