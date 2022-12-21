@@ -1,6 +1,7 @@
-package componentes;
+package modelo;
 
 import constant.TipoConector;
+import gui.ModeloPieza;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +12,7 @@ public class Conector extends Componente {
 
     private final double posicionRelativaX, posicionRelativaY;
     private final TipoConector tipoConector;
+    private ModeloPieza pieza;
 
     public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector) {
         this.posicionRelativaX = posicionRelativaX;

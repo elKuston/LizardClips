@@ -1,9 +1,8 @@
 package gui;
 
-import componentes.Conector;
 import constant.TipoConector;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+import modelo.Conector;
 import utils.ImageUtils;
 
 import javax.swing.ImageIcon;
@@ -16,16 +15,16 @@ import java.awt.Rectangle;
 import java.util.List;
 import java.util.Map;
 
-@EqualsAndHashCode(callSuper = true)
 @Data
-public class PanelPieza extends JComponent {
+public class ModeloPieza extends JComponent {
     private final ImageIcon imagen;
     private List<Conector> conectores;
 
 
-    public PanelPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
+    public ModeloPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
         imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
         this.conectores = conectores;
+        conectores.forEach(con -> con.setPieza(this));
     }
 
     public Point calcularPosicionAbsolutaConector(Conector conector, Point posicionPanelPieza) {
@@ -59,8 +58,7 @@ public class PanelPieza extends JComponent {
         for (Conector c : conectores) {
             g.setColor(coloresConectores.get(c.getTipoConector()));
             Point pos = calcularPosicionAbsolutaConector(c, posicion);
-            g.fillOval((int) (pos.getX() - Conector.RADIO),
-                    (int) (pos.getY() - Conector.RADIO),
+            g.fillOval((int) (pos.getX() - Conector.RADIO), (int) (pos.getY() - Conector.RADIO),
                     2 * Conector.RADIO, 2 * Conector.RADIO);
             g.setColor(Color.BLACK);
         }
@@ -77,5 +75,22 @@ public class PanelPieza extends JComponent {
 
     public Dimension getTamano() {
         return new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        ModeloPieza that = (ModeloPieza) o;
+
+        return imagen != null ? imagen.equals(that.imagen) : that.imagen == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return imagen != null ? imagen.hashCode() : 0;
     }
 }

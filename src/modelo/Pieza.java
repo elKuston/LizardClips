@@ -1,4 +1,4 @@
-package componentes;
+package modelo;
 
 public class Pieza extends Componente {
 
