@@ -151,7 +151,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         }
         if (controladorCircuito != null) {
             for (Map.Entry<ModeloPieza, Point> entry : controladorCircuito.getPiezasPosicionEntrySet()) {
-                entry.getKey().dibujar(g, entry.getValue(), true, coloresConectores);
+                entry.getKey().dibujar(this, g, entry.getValue(), true, coloresConectores);
             }
         }
     }

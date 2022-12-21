@@ -26,9 +26,6 @@ public class ControladorCircuito {
     }
 
     public void colocarPieza(ModeloPieza pieza, Point posicion) {
-        Rectangle controrno = new Rectangle((int) (posicion.getX()), (int) (posicion.getY()),
-                (int) pieza.getTamano().getWidth(), (int) pieza.getTamano().getHeight());
-        pieza.setBounds(controrno);
         circuito.moverPieza(pieza, posicion);
     }
 
@@ -88,7 +85,7 @@ public class ControladorCircuito {
     }
 
     public Point getPosicionPieza(ModeloPieza pieza) {
-        return circuito.getComponentes().get(pieza);
+        return circuito.getPosicionPieza(pieza);
     }
 
     private boolean puntoDentroDeBounds(Point punto, Map.Entry<ModeloPieza, Point> par) {
@@ -101,7 +98,8 @@ public class ControladorCircuito {
     }
 
     public void generarModeloPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
-        panelCircuito.addImagePanelByDragging(new ModeloPieza(pathImagen, ancho, alto, conectores));
+        panelCircuito.addImagePanelByDragging(
+                new ModeloPieza(circuito, pathImagen, ancho, alto, conectores));
     }
 
     public void generarResistor() {

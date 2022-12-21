@@ -30,4 +30,7 @@ public class Circuito {
     }
 
 
+    public Point getPosicionPieza(ModeloPieza pieza) {
+        return getComponentes().get(pieza);
+    }
 }

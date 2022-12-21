@@ -2,11 +2,11 @@ package gui;
 
 import constant.TipoConector;
 import lombok.Data;
+import modelo.Circuito;
 import modelo.Conector;
 import utils.ImageUtils;
 
 import javax.swing.ImageIcon;
-import javax.swing.JComponent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -16,15 +16,20 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class ModeloPieza extends JComponent {
+public class ModeloPieza {
     private final ImageIcon imagen;
     private List<Conector> conectores;
+    private Dimension tamano;
+    private Circuito circuito;
 
 
-    public ModeloPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
-        imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
-        this.conectores = conectores;
+    public ModeloPieza(Circuito circuito, String pathImagen, int ancho, int alto, List<Conector> conectores) {
         conectores.forEach(con -> con.setPieza(this));
+
+        this.circuito = circuito;
+        this.conectores = conectores;
+        imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
+        tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
     }
 
     public Point calcularPosicionAbsolutaConector(Conector conector, Point posicionPanelPieza) {
@@ -49,11 +54,10 @@ public class ModeloPieza extends JComponent {
     }
 
 
-    public void dibujar(Graphics g, Point posicion, boolean dibujarContorno, Map<TipoConector, Color> coloresConectores) {
-        getImagen().paintIcon(this, g, (int) posicion.getX(), (int) posicion.getY());
+    public void dibujar(PanelCircuito panelCircuito, Graphics g, Point posicion, boolean dibujarContorno, Map<TipoConector, Color> coloresConectores) {
+        getImagen().paintIcon(panelCircuito, g, (int) posicion.getX(), (int) posicion.getY());
         if (dibujarContorno) {
-            Rectangle b = getBounds();
-            g.drawRect((int) b.getX(), (int) b.getY(), (int) b.getWidth(), (int) b.getHeight());
+            g.drawRect((int) posicion.getX(), (int) posicion.getY(), getWidth(), getHeight());
         }
         for (Conector c : conectores) {
             g.setColor(coloresConectores.get(c.getTipoConector()));
@@ -64,18 +68,18 @@ public class ModeloPieza extends JComponent {
         }
     }
 
-    public void paintComponent(Graphics graphics) {
-        super.paintComponent(graphics);
-        System.out.println("pintando");
-        imagen.paintIcon(this, graphics, 0, 0);
-        Rectangle limites = getBounds();
-        graphics.drawRect((int) limites.getX(), (int) limites.getY(), (int) limites.getWidth(),
-                (int) limites.getHeight());
+    public int getWidth() {
+        return (int) tamano.getWidth();
     }
 
-    public Dimension getTamano() {
-        return new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
+    public int getHeight() {
+        return (int) tamano.getHeight();
     }
+
+    public Rectangle getBounds() {
+        return new Rectangle(circuito.getPosicionPieza(this), getTamano());
+    }
+
 
     @Override
     public boolean equals(Object o) {
@@ -86,11 +90,18 @@ public class ModeloPieza extends JComponent {
 
         ModeloPieza that = (ModeloPieza) o;
 
-        return imagen != null ? imagen.equals(that.imagen) : that.imagen == null;
+        if (!imagen.equals(that.imagen))
+            return false;
+        if (!tamano.equals(that.tamano))
+            return false;
+        return circuito.equals(that.circuito);
     }
 
     @Override
     public int hashCode() {
-        return imagen != null ? imagen.hashCode() : 0;
+        int result = imagen.hashCode();
+        result = 31 * result + tamano.hashCode();
+        result = 31 * result + circuito.hashCode();
+        return result;
     }
 }
