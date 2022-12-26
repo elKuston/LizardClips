@@ -48,6 +48,6 @@ public class Conexion {
     }
 
     public String toString() {
-        return puntosIntermedios.toString();
+        return getPuntos().toString();
     }
 }
