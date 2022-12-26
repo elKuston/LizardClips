@@ -111,8 +111,10 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     private void conectorSeleccionado(Conector conector) {
         if (isModo(ModoPanel.MODO_CONEXION)) {
-            controladorCircuito.finalizarConexion(conector);
-            setModo(ModoPanel.MODO_NORMAL);
+            if (controladorCircuito.getConectoresValidos(conectorSeleccionado).contains(conector)) {
+                controladorCircuito.finalizarConexion(conector);
+                setModo(ModoPanel.MODO_NORMAL);
+            }
         } else {
             this.conectorSeleccionado = conector;
             controladorCircuito.iniciarConexion(conector);
