@@ -1,9 +1,10 @@
 package modelo;
 
 import constant.TipoConector;
-import gui.ModeloPieza;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+
+import java.awt.Point;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -12,11 +13,15 @@ public class Conector extends Componente {
 
     private final double posicionRelativaX, posicionRelativaY;
     private final TipoConector tipoConector;
-    private ModeloPieza pieza;
+    private Pieza pieza;
 
     public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector) {
         this.posicionRelativaX = posicionRelativaX;
         this.posicionRelativaY = posicionRelativaY;
         this.tipoConector = tipoConector;
+    }
+
+    public Point getPosicionEnPanel() {
+        return pieza.getPosicionConectorEnPanel(this);
     }
 }
