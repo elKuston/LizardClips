@@ -16,6 +16,7 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -73,38 +74,17 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         this.piezaSeleccionada = pieza;
     }
 
-    private PanelPieza getPiezaSeleccionada(Point raton) {
-        return componentes.entrySet().stream().filter((par -> puntoDentroDeCaja(raton, par)))
-                          .map(Map.Entry::getKey).findFirst().orElse(null);
-    }
-
-    private Rectangle calcularBoundingBox(Map.Entry<PanelPieza, Point> par) {
-        Point posicion = par.getValue();
-        Dimension dimensiones = par.getKey().getTamano();
-        Rectangle caja = new Rectangle(dimensiones);
-        caja.translate((int) posicion.getX(), (int) posicion.getY());
-        return caja;
-    }
-
-    private boolean puntoDentroDeCaja(Point punto, Map.Entry<PanelPieza, Point> par) {
-        Rectangle bounds = par.getKey().getBounds();
-        return bounds.contains(punto);
-    }
-
     @Override
     public void mousePressed(MouseEvent e) {
-        System.out.println("Pressed");
         Pieza piezaSeleccionado = controladorCircuito.getPiezaByPosicion(e.getPoint());
         if (piezaSeleccionado == null) {
-            System.out.println("clicking null");
             if (isModo(ModoPanel.MODO_BORRADO)) {
                 Conexion clicada = detectarClickLineas(e.getPoint());
                 if (clicada != null) {
                     controladorCircuito.borrarConexion(clicada);
                     repaint();
                 }
-            }
-            if (isModo(ModoPanel.MODO_CONEXION)) {
+            } else if (isModo(ModoPanel.MODO_CONEXION)) {
                 controladorCircuito.addPointConexion(e.getPoint());
                 repaint();
             }

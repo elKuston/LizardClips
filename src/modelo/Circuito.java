@@ -22,18 +22,14 @@ public class Circuito {
         componentes.put(pieza, posicion);
     }
 
-    public void anyadirPieza(Pieza pieza, Point posicion) {
-        componentes.put(pieza, posicion);
-    }
-
     public void borrarPieza(Pieza pieza) {
         borrarConexionesPieza(pieza);
         componentes.remove(pieza);
     }
 
     public void borrarConexionesPieza(Pieza pieza) {
-        getConexiones().stream().filter(con -> con.getDestino().getPieza().equals(pieza) ||
-                con.getOrigen().getPieza().equals(pieza)).forEach(this::borrarConexion);
+        conexiones.removeIf(con -> (con.getDestino().getPieza().equals(pieza) ||
+                con.getOrigen().getPieza().equals(pieza)));
     }
 
 
