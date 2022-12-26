@@ -1,4 +1,7 @@
+import controlador.ControladorCircuito;
+import gui.PanelCircuito;
 import gui.VentanaPrincipal;
+import modelo.Circuito;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -12,7 +15,12 @@ public class Main {
     public static void main(String[] args) {
         setLAF();
 
-        VentanaPrincipal ventanaPrincipal = new VentanaPrincipal(2000, 2000);
+        Circuito circuito = new Circuito();
+        PanelCircuito panelCircuito = new PanelCircuito();
+        ControladorCircuito controlador = new ControladorCircuito(circuito, panelCircuito);
+
+        VentanaPrincipal ventanaPrincipal =
+                new VentanaPrincipal(2000, 2000, controlador, panelCircuito);
         ventanaPrincipal.mostrar();
     }
 
