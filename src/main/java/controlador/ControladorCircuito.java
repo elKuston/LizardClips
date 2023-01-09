@@ -135,7 +135,7 @@ public class ControladorCircuito {
 
     private Conexion getConexionEnCurso() {
         Optional<Conexion> enCurso = getConexionEnCursoOptional();
-        if (enCurso.isEmpty()) {
+        if (!enCurso.isPresent()) {
             throw new RuntimeException("No hay ninguna conexion en curso");
         }
         return enCurso.get();
