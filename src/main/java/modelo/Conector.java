@@ -6,9 +6,9 @@ import lombok.EqualsAndHashCode;
 
 import java.awt.Point;
 
-@EqualsAndHashCode(callSuper = true)
+@EqualsAndHashCode
 @Data
-public class Conector extends Componente {
+public class Conector {
     public static final int RADIO = 5;
 
     private final double posicionRelativaX, posicionRelativaY;
