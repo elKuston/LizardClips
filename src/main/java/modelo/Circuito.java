@@ -1,25 +1,68 @@
 package modelo;
 
+import controlador.ControladorCircuito;
+import jakarta.persistence.Basic;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Transient;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.hibernate.Hibernate;
+import utils.ImageUtils;
+import utils.Punto;
 
-import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
 
 @Getter
-public class Circuito {
-    private Map<Pieza, Point> componentes;
+@Setter
+@ToString
+@Entity
+public class Circuito implements Serializable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer idCircuito;
+
+    /*@Transient
+    private Map<Pieza, Punto> componentes;*/
+
+    @Transient
+    private ControladorCircuito controlador;
+
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Conexion> conexiones;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "circuito")
+    private List<Pieza> componentes;
+
+    @Lob
+    @Basic(fetch = FetchType.EAGER)
+    @ToString.Exclude
+    private byte[] thumbnail;
+
+    private String nombre = "";
+
     public Circuito() {
-        componentes = new HashMap<>();
+        componentes = new ArrayList<>();
         conexiones = new ArrayList<>();
     }
 
-    public void moverPieza(Pieza pieza, Point posicion) {
-        componentes.put(pieza, posicion);
+    public byte[] getThumbnail() {
+        return ImageUtils.bytesFromBufferedImage(controlador.generarThumbnail());
+    }
+
+    public void moverPieza(Pieza pieza, Punto posicion) {
+        pieza.setPosicion(posicion);
     }
 
     public void borrarPieza(Pieza pieza) {
@@ -32,11 +75,6 @@ public class Circuito {
                 con.getOrigen().getPieza().equals(pieza)));
     }
 
-
-    public Point getPosicionPieza(Pieza pieza) {
-        return getComponentes().get(pieza);
-    }
-
     public void addConexion(Conexion c) {
         this.conexiones.add(c);
     }
@@ -45,4 +83,23 @@ public class Circuito {
         this.conexiones.remove(c);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
+            return false;
+        Circuito circuito = (Circuito) o;
+        return idCircuito != null && Objects.equals(idCircuito, circuito.idCircuito);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
+
+    public void colocarPieza(Pieza pieza, Punto posicion) {
+        componentes.add(pieza);
+        pieza.setPosicion(posicion);
+    }
 }

@@ -13,6 +13,8 @@ public class Main {
             "com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel";
 
     public static void main(String[] args) {
+
+
         setLAF();
 
         Circuito circuito = new Circuito();
@@ -20,15 +22,16 @@ public class Main {
         ControladorCircuito controlador = new ControladorCircuito(circuito, panelCircuito);
 
         VentanaPrincipal ventanaPrincipal =
-                new VentanaPrincipal(2000, 2000, controlador, panelCircuito);
+                new VentanaPrincipal(1000, 800, controlador, panelCircuito);
         ventanaPrincipal.mostrar();
+
     }
 
     private static void setLAF() {
         try {
-            if (Arrays.stream(UIManager.getInstalledLookAndFeels()).map(
-                    UIManager.LookAndFeelInfo::getClassName).anyMatch(
-                    s -> s.equals(LOOK_AND_FEEL_PREFERIDO))) {
+            if (Arrays.stream(UIManager.getInstalledLookAndFeels())
+                      .map(UIManager.LookAndFeelInfo::getClassName)
+                      .anyMatch(s -> s.equals(LOOK_AND_FEEL_PREFERIDO))) {
                 UIManager.setLookAndFeel(LOOK_AND_FEEL_PREFERIDO);
             } else {
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

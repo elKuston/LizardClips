@@ -1,16 +1,43 @@
 package modelo;
 
-import lombok.Getter;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PostLoad;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Transient;
+import lombok.Data;
+import lombok.ToString;
 import utils.LineUtils;
+import utils.Punto;
 
-import java.awt.Point;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-public class Conexion {
-    private Conector origen, destino;
-    private List<Point> puntosIntermedios;
+@Data
+@Entity
+public class Conexion implements Serializable {
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Conector origen;
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Conector destino;
+    @Transient
+    @ToString.Exclude
+    private List<Punto> puntosIntermedios;
+
+    @ToString.Exclude
+    private List<Integer> puntosIntermediosX;
+    @ToString.Exclude
+    private List<Integer> puntosIntermediosY;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int idConexion;
 
 
     public Conexion(Conector origen) {
@@ -18,7 +45,29 @@ public class Conexion {
         this.puntosIntermedios = new ArrayList<>();
     }
 
-    public void addPoint(Point punto) {
+    public Conexion() {
+        this.puntosIntermedios = new ArrayList<>();
+    }
+
+    @PostLoad
+    protected void postLoad() {
+        //Cargar los puntos intermedios
+        if (puntosIntermediosX != null && puntosIntermediosY != null) {
+            for (int i = 0; i < puntosIntermediosX.size(); i++) {
+                puntosIntermedios.add(
+                        new Punto(puntosIntermediosX.get(i), puntosIntermediosY.get(i)));
+            }
+        }
+    }
+
+    @PreUpdate
+    @PrePersist
+    protected void preUpdatePersist() {
+        this.puntosIntermediosX = puntosIntermedios.stream().map(Punto::getX).toList();
+        this.puntosIntermediosY = puntosIntermedios.stream().map(Punto::getY).toList();
+    }
+
+    public void addPoint(Punto punto) {
         puntosIntermedios.add(punto);
     }
 
@@ -26,8 +75,8 @@ public class Conexion {
         this.destino = destino;
     }
 
-    public List<Point> getPuntos() {
-        List<Point> puntos = new ArrayList<>(List.of(origen.getPosicionEnPanel()));
+    public List<Punto> getPuntos() {
+        List<Punto> puntos = new ArrayList<>(List.of(origen.getPosicionEnPanel()));
         puntos.addAll(puntosIntermedios);
         if (isComplete()) {
             puntos.add(destino.getPosicionEnPanel());
@@ -35,7 +84,7 @@ public class Conexion {
         return puntos;
     }
 
-    public List<Point> getPuntosManhattan() {
+    public List<Punto> getPuntosManhattan() {
         return LineUtils.getPuntosManhattan(getPuntos());
     }
 
