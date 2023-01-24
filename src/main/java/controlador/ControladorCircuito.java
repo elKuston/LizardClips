@@ -1,6 +1,6 @@
 package controlador;
 
-import constant.TipoConector;
+import constant.TipoPieza;
 import db.CircuitoRepository;
 import gui.PanelCircuito;
 import gui.VentanaPrincipal;
@@ -136,23 +136,25 @@ public class ControladorCircuito {
         return bounds.contains(punto.getPoint());
     }
 
-    public void generarPieza(String pathImagen, String claseModelica, int ancho, int alto, List<Conector> conectores) {
+    /*public void generarPieza(String pathImagen, String claseModelica, int ancho, int alto, List<Conector> conectores) {
         panelCircuito.addPiezaByDragging(
                 new Pieza(circuito, claseModelica, pathImagen, ancho, alto, conectores));
+    }*/
+
+    public void generarPieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
+        panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza, nConectoresEntrada));
     }
 
     public void generarOr() {
-        generarPieza("media/or.png", ModelicaGenerator.IMPORT_BASIC + ".Or", 200, 200,
-                List.of(new Conector(0, 0.33, TipoConector.ENTRADA),
-                        new Conector(0, 0.67, TipoConector.ENTRADA),
-                        new Conector(1, 0.5, TipoConector.SALIDA)));
+        generarPieza(circuito, TipoPieza.OR, 2);
     }
 
     public void generarAnd() {
-        generarPieza("media/and.png", ModelicaGenerator.IMPORT_BASIC + ".And", 200, 100,
-                List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
-                        new Conector(0, 0.75, TipoConector.ENTRADA),
-                        new Conector(1, 0.5, TipoConector.SALIDA)));
+        generarPieza(circuito, TipoPieza.AND, 2);
+    }
+
+    public void generarSet() {
+        generarPieza(circuito, TipoPieza.SET, 0);
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
@@ -244,8 +246,5 @@ public class ControladorCircuito {
         System.out.println(ModelicaGenerator.generarCodigoModelica(circuito));
     }
 
-    public void generarSet() {
-        generarPieza("media/set.png", ModelicaGenerator.IMPORT_SOURCES + ".Set", 100, 100,
-                List.of(new Conector(1, 0.5, TipoConector.SALIDA)));
-    }
+
 }
