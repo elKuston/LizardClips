@@ -7,6 +7,9 @@ import utils.ImageUtils;
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
@@ -38,8 +41,27 @@ public class VentanaPrincipal {
         frame.setTitle("LizardClips - Circuito sin nombre");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
+
+        //Menu superior
+        JMenuBar barraSuperior = new JMenuBar();
+        //   Menu circuito
+        JMenu menuCircuito = new JMenu("Circuito");
+
+        JMenuItem menuItemCircuitoCargar = new JMenuItem("Cargar circuito");
+        menuItemCircuitoCargar.addActionListener(e -> controladorCircuito.cargar());
+        menuCircuito.add(menuItemCircuitoCargar);
+
+        JMenuItem menuItemCircuitoGuardar = new JMenuItem("Guardar circuito");
+        menuItemCircuitoGuardar.addActionListener(e -> controladorCircuito.guardar());
+        menuCircuito.add(menuItemCircuitoGuardar);
+
+        barraSuperior.add(menuCircuito);
+        frame.setJMenuBar(barraSuperior);
+
+
         //Panel
         frame.add(panelCircuito, BorderLayout.CENTER);
+
 
         //Sidebar
         JPanel lateral = new JPanel();
@@ -57,14 +79,6 @@ public class VentanaPrincipal {
         JToggleButton borrar = new JToggleButton("Borrar");
         borrar.addActionListener(e -> panelCircuito.toggleDeleteMode());
         lateral.add(borrar);
-
-        JButton guardar = new JButton("Guardar");
-        guardar.addActionListener(e -> controladorCircuito.guardar());
-        lateral.add(guardar);
-
-        JButton cargar = new JButton("Cargar");
-        cargar.addActionListener(e -> controladorCircuito.cargar());
-        lateral.add(cargar);
 
 
         frame.add(lateral, BorderLayout.WEST);
