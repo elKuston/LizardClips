@@ -56,6 +56,13 @@ public class VentanaPrincipal {
         menuCircuito.add(menuItemCircuitoGuardar);
 
         barraSuperior.add(menuCircuito);
+        //   Menu modelica
+        JMenu menuModelica = new JMenu("Modelica");
+        JMenuItem menuItemModelicaExportar = new JMenuItem("Exportar código Modelica");
+        menuItemModelicaExportar.addActionListener(e -> controladorCircuito.exportarCodigo());
+        menuModelica.add(menuItemModelicaExportar);
+
+        barraSuperior.add(menuModelica);
         frame.setJMenuBar(barraSuperior);
 
 

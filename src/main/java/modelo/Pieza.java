@@ -52,13 +52,16 @@ public class Pieza implements Serializable {
     @ToString.Exclude
     private Circuito circuito;
 
+    private String claseModelica;
 
-    public Pieza(Circuito circuito, String pathImagen, int ancho, int alto, List<Conector> conectores) {
+
+    public Pieza(Circuito circuito, String claseModelica, String pathImagen, int ancho, int alto, List<Conector> conectores) {
         conectores.forEach(con -> con.setPieza(this));
 
         this.pathImagen = pathImagen;
         this.circuito = circuito;
         this.conectores = conectores;
+        this.claseModelica = claseModelica;
         imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
         tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
     }

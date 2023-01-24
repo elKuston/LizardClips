@@ -5,6 +5,7 @@ import db.CircuitoRepository;
 import gui.PanelCircuito;
 import gui.VentanaPrincipal;
 import lombok.Setter;
+import modelica.ModelicaGenerator;
 import modelo.Circuito;
 import modelo.Conector;
 import modelo.Conexion;
@@ -135,20 +136,23 @@ public class ControladorCircuito {
         return bounds.contains(punto.getPoint());
     }
 
-    public void generarPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
-        panelCircuito.addPiezaByDragging(new Pieza(circuito, pathImagen, ancho, alto, conectores));
+    public void generarPieza(String pathImagen, String claseModelica, int ancho, int alto, List<Conector> conectores) {
+        panelCircuito.addPiezaByDragging(
+                new Pieza(circuito, claseModelica, pathImagen, ancho, alto, conectores));
     }
 
     public void generarOr() {
-        generarPieza("media/or.png", 200, 200, List.of(new Conector(0, 0.33, TipoConector.ENTRADA),
-                new Conector(0, 0.67, TipoConector.ENTRADA),
-                new Conector(1, 0.5, TipoConector.SALIDA)));
+        generarPieza("media/or.png", "Or", 200, 200,
+                List.of(new Conector(0, 0.33, TipoConector.ENTRADA),
+                        new Conector(0, 0.67, TipoConector.ENTRADA),
+                        new Conector(1, 0.5, TipoConector.SALIDA)));
     }
 
     public void generarAnd() {
-        generarPieza("media/and.png", 200, 100, List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
-                new Conector(0, 0.75, TipoConector.ENTRADA),
-                new Conector(1, 0.5, TipoConector.SALIDA)));
+        generarPieza("media/and.png", "And", 200, 100,
+                List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
+                        new Conector(0, 0.75, TipoConector.ENTRADA),
+                        new Conector(1, 0.5, TipoConector.SALIDA)));
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
@@ -234,5 +238,9 @@ public class ControladorCircuito {
             ex.printStackTrace();
         }
         return image;
+    }
+
+    public void exportarCodigo() {
+        System.out.println(ModelicaGenerator.generarCodigoModelica(circuito));
     }
 }
