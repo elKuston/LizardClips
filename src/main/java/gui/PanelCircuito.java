@@ -7,6 +7,7 @@ import modelo.Conector;
 import modelo.Conexion;
 import modelo.Pieza;
 import utils.LineUtils;
+import utils.Punto;
 
 import javax.swing.JPanel;
 import java.awt.BasicStroke;
@@ -40,12 +41,20 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         setModo(ModoPanel.MODO_NORMAL);
     }
 
+    public void cambiarCircuito() {
+        modo = ModoPanel.MODO_NORMAL;
+        grabPoint = null;
+        piezaSeleccionada = null;
+        conectorSeleccionado = null;
+        repaint();
+    }
+
     public void setControladorCircuito(ControladorCircuito controladorCircuito) {
         this.controladorCircuito = controladorCircuito;
         repaint();
     }
 
-    public void addPieza(Point posicion, Pieza pieza) {
+    public void addPieza(Punto posicion, Pieza pieza) {
         controladorCircuito.colocarPieza(pieza, posicion);
         repaint();
     }
@@ -53,7 +62,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     public void addPiezaByDragging(Pieza pieza) {
         Point raton = MouseInfo.getPointerInfo().getLocation();
         raton.translate((int) -getLocationOnScreen().getX(), (int) -getLocationOnScreen().getY());
-        addPieza(new Point((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())),
+        addPieza(new Punto((int) Math.max(0, raton.getX()), (int) Math.max(0, raton.getY())),
                 pieza);
         startDragging(pieza, new Dimension(pieza.getWidth() / 2, pieza.getHeight() / 2));
     }
@@ -76,7 +85,13 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Pieza piezaSeleccionado = controladorCircuito.getPiezaByPosicion(e.getPoint());
+        /*System.out.println("Cicked on: " + e.getPoint() + "; piezas at: " +
+                controladorCircuito.getPiezasPosicionEntrySet().stream()
+                                   .map(entry -> entry.getValue() + "(" +
+                                           entry.getKey().getBounds() + "); " +
+                                           controladorCircuito.getPosicionPieza(entry.getKey()))
+                                   .toList());*/
+        Pieza piezaSeleccionado = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
         if (piezaSeleccionado == null) {
             if (isModo(ModoPanel.MODO_BORRADO)) {
                 Conexion clicada = detectarClickLineas(e.getPoint());
@@ -85,12 +100,12 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                     repaint();
                 }
             } else if (isModo(ModoPanel.MODO_CONEXION)) {
-                controladorCircuito.addPointConexion(e.getPoint());
+                controladorCircuito.addPointConexion(new Punto(e.getPoint()));
                 repaint();
             }
         } else {
-            Conector conector =
-                    controladorCircuito.getConectorByPosicion(piezaSeleccionado, e.getPoint());
+            Conector conector = controladorCircuito.getConectorByPosicion(piezaSeleccionado,
+                    new Punto(e.getPoint()));
             if (conector == null) {
                 piezaSeleccionada(piezaSeleccionado, e);
             } else {
@@ -103,10 +118,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         return controladorCircuito.getConexiones().stream()
                                   .filter(con -> LineUtils.getParejas(con.getPuntosManhattan())
                                                           .stream().anyMatch(
-                                                  pareja -> new Line2D.Double(pareja[0],
-                                                          pareja[1]).intersects(new Rectangle(point,
-                                                          new Dimension(10, 10))))).findFirst()
-                                  .orElse(null);
+                                                  pareja -> new Line2D.Double(pareja[0].getPoint(),
+                                                          pareja[1].getPoint()).intersects(
+                                                          new Rectangle(point,
+                                                                  new Dimension(10, 10)))))
+                                  .findFirst().orElse(null);
     }
 
     private void conectorSeleccionado(Conector conector) {
@@ -125,14 +141,12 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     }
 
     private void piezaSeleccionada(Pieza piezaSeleccionado, MouseEvent e) {
-        System.out.println("clicking on object");
         if (isModo(ModoPanel.MODO_BORRADO)) {
             borrarComponente(piezaSeleccionado);
         } else {
-            Dimension grabPoint = new Dimension((int) (e.getX() -
-                    controladorCircuito.getPosicionPieza(piezaSeleccionado).getX()),
-                    (int) (e.getY() -
-                            controladorCircuito.getPosicionPieza(piezaSeleccionado).getY()));
+            Dimension grabPoint =
+                    new Dimension((int) (e.getX() - piezaSeleccionado.getPosicion().getX()),
+                            (int) (e.getY() - piezaSeleccionado.getPosicion().getY()));
             startDragging(piezaSeleccionado, grabPoint);
         }
 
@@ -156,7 +170,8 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     @Override
     public void mouseDragged(MouseEvent e) {
         if (isModo(ModoPanel.MODO_ARRASTRANDO)) {
-            controladorCircuito.arrastrarPieza(piezaSeleccionada, e.getPoint(), grabPoint);
+            controladorCircuito.arrastrarPieza(piezaSeleccionada, new Punto(e.getPoint()),
+                    grabPoint);
             repaint();
         }
     }
@@ -182,19 +197,20 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                             con -> controladorCircuito.getConectoresValidos(conectorSeleccionado)
                                                       .contains(con) ? Color.BLUE : Color.GRAY));
         }
-        for (Map.Entry<Pieza, Point> entry : controladorCircuito.getPiezasPosicionEntrySet()) {
-            entry.getKey().dibujar(this, g, entry.getValue(), true, coloresConectores);
+        //for (Map.Entry<Pieza, Punto> entry : controladorCircuito.getPiezasPosicionEntrySet()) {
+        for (Pieza p : controladorCircuito.getPiezas()) {
+            p.dibujar(this, g, p.getPosicion(), true, coloresConectores);
         }
 
         //Dibujar conexiones
         g.setColor(Color.BLACK);
         Graphics2D g2 = (Graphics2D) g;
         for (Conexion c : controladorCircuito.getConexiones()) {
-            List<Point> puntos = new ArrayList<>(c.getPuntos());
+            List<Punto> puntos = new ArrayList<>(c.getPuntos());
             if (isModo(ModoPanel.MODO_CONEXION) && c.enCurso()) {
-                puntos.add(getMousePosition());
+                puntos.add(new Punto(getMousePosition()));
             }
-            List<Point> puntosManhattan = LineUtils.getPuntosManhattan(puntos);
+            List<Punto> puntosManhattan = LineUtils.getPuntosManhattan(puntos);
             int[] x = puntosManhattan.stream().mapToInt(pt -> (int) pt.getX()).toArray();
             int[] y = puntosManhattan.stream().mapToInt(pt -> (int) pt.getY()).toArray();
             g2.setStroke(new BasicStroke(2));
