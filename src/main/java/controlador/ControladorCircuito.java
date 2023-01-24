@@ -139,8 +139,9 @@ public class ControladorCircuito {
         panelCircuito.addPiezaByDragging(new Pieza(circuito, pathImagen, ancho, alto, conectores));
     }
 
-    public void generarResistor() {
-        generarPieza("media/res.png", 200, 100, List.of(new Conector(0, 0.5, TipoConector.ENTRADA),
+    public void generarOr() {
+        generarPieza("media/or.png", 200, 200, List.of(new Conector(0, 0.33, TipoConector.ENTRADA),
+                new Conector(0, 0.67, TipoConector.ENTRADA),
                 new Conector(1, 0.5, TipoConector.SALIDA)));
     }
 

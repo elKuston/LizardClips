@@ -68,8 +68,8 @@ public class VentanaPrincipal {
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
         lateral.setBorder(new MatteBorder(0, 0, 0, 2, Color.GRAY));
 
-        JButton b = new JButton("", ImageUtils.cargarImagenEscalada("media/res.png", 100, 50));
-        b.addActionListener(e -> controladorCircuito.generarResistor());
+        JButton b = new JButton("", ImageUtils.cargarImagenEscalada("media/or.png", 100, 50));
+        b.addActionListener(e -> controladorCircuito.generarOr());
         lateral.add(b);
 
         JButton and = new JButton("", ImageUtils.cargarImagenEscalada("media/and.png", 100, 50));
