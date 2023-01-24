@@ -142,14 +142,14 @@ public class ControladorCircuito {
     }
 
     public void generarOr() {
-        generarPieza("media/or.png", "Or", 200, 200,
+        generarPieza("media/or.png", ModelicaGenerator.IMPORT_BASIC + ".Or", 200, 200,
                 List.of(new Conector(0, 0.33, TipoConector.ENTRADA),
                         new Conector(0, 0.67, TipoConector.ENTRADA),
                         new Conector(1, 0.5, TipoConector.SALIDA)));
     }
 
     public void generarAnd() {
-        generarPieza("media/and.png", "And", 200, 100,
+        generarPieza("media/and.png", ModelicaGenerator.IMPORT_BASIC + ".And", 200, 100,
                 List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
                         new Conector(0, 0.75, TipoConector.ENTRADA),
                         new Conector(1, 0.5, TipoConector.SALIDA)));
@@ -242,5 +242,10 @@ public class ControladorCircuito {
 
     public void exportarCodigo() {
         System.out.println(ModelicaGenerator.generarCodigoModelica(circuito));
+    }
+
+    public void generarSet() {
+        generarPieza("media/set.png", ModelicaGenerator.IMPORT_SOURCES + ".Set", 100, 100,
+                List.of(new Conector(1, 0.5, TipoConector.SALIDA)));
     }
 }

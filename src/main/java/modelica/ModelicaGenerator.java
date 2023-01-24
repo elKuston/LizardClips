@@ -9,6 +9,15 @@ import modelo.Pieza;
 import java.util.StringJoiner;
 
 public class ModelicaGenerator {
+    public static final String IMPORT_BASIC = "B";
+    public static final String IMPORT_LOGIC = "L";
+    public static final String IMPORT_DIGITAL = "D";
+    public static final String IMPORT_SOURCES = "S";
+    private static final String DIGITAL = "Modelica.Electrical.Digital";
+    private static final String BASIC = "Modelica.Electrical.Digital.Basic";
+    private static final String LOGIC = "Modelica.Electrical.Digital.Interfaces.Logic";
+    private static final String SOURCES = "Modelica.Electrical.Digital.Sources";
+
     public static String generarCodigoModelica(Circuito circuito) {
         StringBuilder codigoModelica = new StringBuilder();
         codigoModelica.append("model ").append(modelName(circuito)).append("\n\t");
@@ -21,16 +30,28 @@ public class ModelicaGenerator {
 
     private static String declaraciones(Circuito circuito) {
         StringJoiner sj = new StringJoiner(";\n\t");
-        String importsName = "B";
-        sj.add("import " + importsName + " = Modelica.Electrical.Digital.Basic");
 
+        sj.add("import " + IMPORT_DIGITAL + " = " + DIGITAL);
+        sj.add("import " + IMPORT_BASIC + " = " + BASIC);
+        sj.add("import " + IMPORT_LOGIC + " = " + LOGIC);
+        sj.add("import " + IMPORT_SOURCES + " = " + SOURCES);
         for (Pieza p : circuito.getComponentes()) {
-            sj.add(importsName + "." + p.getClaseModelica() + " " + nombrePieza(p) + "( n=" +
-                    nConectoresEntrada(p) + ")");
+            if (p.getClaseModelica().startsWith(IMPORT_SOURCES + ".")) {
+                sj.add("parameter " + IMPORT_LOGIC + " " + nombreFuente(p) + " = " + IMPORT_LOGIC +
+                        ".'0'");
+                sj.add(p.getClaseModelica() + " " + nombrePieza(p) + "(x=" + nombreFuente(p) + ")");
+            } else {
+                sj.add(p.getClaseModelica() + " " + nombrePieza(p) + "( n=" +
+                        nConectoresEntrada(p) + ")");
+            }
         }
 
         sj.add("\n");
         return sj.toString();
+    }
+
+    private static String nombreFuente(Pieza p) {
+        return "src_" + nombrePieza(p);
     }
 
     private static long nConectoresEntrada(Pieza p) {
@@ -40,10 +61,11 @@ public class ModelicaGenerator {
 
     private static String nombrePieza(Pieza p) {
         String nombre;
+        String clase = p.getClaseModelica().split("\\.")[1];
         if (p.getIdPieza() == null) {
-            nombre = "p_" + p.getClaseModelica() + "_" + p.hashCode();
+            nombre = "p_" + clase + "_" + p.hashCode();
         } else {
-            nombre = "p_" + p.getClaseModelica() + "_" + p.getIdPieza();
+            nombre = "p_" + clase + "_" + p.getIdPieza();
         }
         return nombre;
     }
