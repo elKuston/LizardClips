@@ -47,6 +47,10 @@ public class VentanaPrincipal {
         //   Menu circuito
         JMenu menuCircuito = new JMenu("Circuito");
 
+        JMenuItem menuItemCircuitoNuevo = new JMenuItem("Nuevo circuito");
+        menuItemCircuitoNuevo.addActionListener(e -> controladorCircuito.nuevoCircuito());
+        menuCircuito.add(menuItemCircuitoNuevo);
+
         JMenuItem menuItemCircuitoCargar = new JMenuItem("Cargar circuito");
         menuItemCircuitoCargar.addActionListener(e -> controladorCircuito.cargar());
         menuCircuito.add(menuItemCircuitoCargar);

@@ -233,6 +233,12 @@ public class ControladorCircuito {
         System.out.println("cargado circuito" + circuito);
     }
 
+    public void nuevoCircuito() {
+        setCircuito(new Circuito());
+        panelCircuito.cambiarCircuito();
+        ventanaPrincipal.setNombreCircuito("Circuito sin nombre");
+    }
+
     public BufferedImage generarThumbnail() {
         BufferedImage image = new BufferedImage(panelCircuito.getWidth(), panelCircuito.getHeight(),
                 BufferedImage.TYPE_INT_RGB);
@@ -288,6 +294,4 @@ public class ControladorCircuito {
             }
         }
     }
-
-
 }
