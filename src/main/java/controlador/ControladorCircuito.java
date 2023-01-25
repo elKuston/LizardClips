@@ -300,4 +300,14 @@ public class ControladorCircuito {
             }
         }
     }
+
+    public void addConectorToPieza(Pieza p) {
+        p.addConectorEntrada();
+        panelCircuito.repaint();
+    }
+
+    public void removeConectorFromPieza(Pieza p) {
+        p.removeConectorEntrada();
+        panelCircuito.repaint();
+    }
 }

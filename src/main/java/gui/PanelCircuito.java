@@ -9,7 +9,10 @@ import modelo.Pieza;
 import utils.LineUtils;
 import utils.Punto;
 
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -85,17 +88,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        /*System.out.println("Cicked on: " + e.getPoint() + "; piezas at: " +
-                controladorCircuito.getPiezasPosicionEntrySet().stream()
-                                   .map(entry -> entry.getValue() + "(" +
-                                           entry.getKey().getBounds() + "); " +
-                                           controladorCircuito.getPosicionPieza(entry.getKey()))
-                                   .toList());*/
         Pieza piezaSeleccionado = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
-        if (piezaSeleccionado == null) {
+        if (piezaSeleccionado == null) {//No ha hecho click sobre una pieza ni conector
             if (isModo(ModoPanel.MODO_BORRADO)) {
                 Conexion clicada = detectarClickLineas(e.getPoint());
-                if (clicada != null) {
+                if (clicada != null) { //Ha pulsado una conexion
                     controladorCircuito.borrarConexion(clicada);
                     repaint();
                 }
@@ -103,12 +100,25 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                 controladorCircuito.addPointConexion(new Punto(e.getPoint()));
                 repaint();
             }
-        } else {
+        } else { //Ha pulsado una pieza o un conector
             Conector conector = controladorCircuito.getConectorByPosicion(piezaSeleccionado,
                     new Punto(e.getPoint()));
-            if (conector == null) {
-                piezaSeleccionada(piezaSeleccionado, e);
-            } else {
+            if (conector == null) { //Ha pulsado una pieza
+                if (SwingUtilities.isRightMouseButton(e)) {//Click derecho sobre la pieza
+                    JMenuItem anydir = new JMenuItem("+");
+                    anydir.addActionListener(
+                            click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
+                    JMenuItem eliminar = new JMenuItem("-");
+                    eliminar.addActionListener(click -> controladorCircuito.removeConectorFromPieza(
+                            piezaSeleccionado));
+                    JPopupMenu menuPieza = new JPopupMenu("Modificar conectores");
+                    menuPieza.add(anydir);
+                    menuPieza.add(eliminar);
+                    menuPieza.show(this, e.getX(), e.getY());
+                } else {//Click normal sobre la pieza
+                    piezaSeleccionada(piezaSeleccionado, e);
+                }
+            } else {//Ha pulsado un conector
                 conectorSeleccionado(conector);
             }
         }

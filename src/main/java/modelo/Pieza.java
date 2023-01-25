@@ -136,6 +136,36 @@ public class Pieza implements Serializable {
         g.drawString("ID: " + getIdPieza(), posicion.getX(), posicion.getY());
     }
 
+    public void addConectorEntrada() {
+        if (conectores.size() > tipoPieza.getConectoresEntradaMax()) {
+            throw new RuntimeException("El número máximo de entradas para este tipo de pieza es " +
+                    tipoPieza.getConectoresEntradaMax());
+        }
+        Conector c = new Conector(0, 1, TipoConector.ENTRADA);
+        c.setPieza(this);
+        //Size-2 porque siempre queremos que el conector de salida sea el último
+        conectores.add(conectores.size() - 1, c);
+        reposicionarConectores();
+    }
+
+    public void removeConectorEntrada() {
+        if (conectores.size() - 2 < tipoPieza.getConectoresEntradaMin()) {
+            throw new RuntimeException("El número mínimo de entradas para este tipo de pieza es " +
+                    tipoPieza.getConectoresEntradaMin());
+        }
+        Conector c = conectores.get(conectores.size() - 2);
+        circuito.borrarConexionesConector(c);
+        conectores.remove(c);
+        reposicionarConectores();
+    }
+
+    public void reposicionarConectores() {
+        for (int i = 0; i < conectores.size() - 1; i++) {
+            float pos_y = (i + 1) / (conectores.size() * 1f);
+            conectores.get(i).setPosicionRelativaY(pos_y);
+        }
+    }
+
     public int getWidth() {
         return (int) tamano.getWidth();
     }
@@ -164,4 +194,6 @@ public class Pieza implements Serializable {
             return false;
         return circuito.equals(that.circuito);
     }
+
+
 }

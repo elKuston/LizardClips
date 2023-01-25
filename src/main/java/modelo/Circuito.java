@@ -102,4 +102,8 @@ public class Circuito implements Serializable {
         componentes.add(pieza);
         pieza.setPosicion(posicion);
     }
+
+    public void borrarConexionesConector(Conector c) {
+        conexiones.removeIf(con -> con.getOrigen().equals(c) || con.getDestino().equals(c));
+    }
 }

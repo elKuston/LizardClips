@@ -6,8 +6,10 @@ import utils.ImageUtils;
 
 @Getter
 public enum TipoPieza {
-    AND("AND", ImageUtils.MEDIA_BASE_FOLDER + "/and.png", 2, -1, ModelicaGenerator.BASIC + ".And"),
-    OR("OR", ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 2, -1, ModelicaGenerator.BASIC + ".Or"),
+    AND("AND", ImageUtils.MEDIA_BASE_FOLDER + "/and.png", 2, Integer.MAX_VALUE,
+            ModelicaGenerator.BASIC + ".And"),
+    OR("OR", ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 2, Integer.MAX_VALUE,
+            ModelicaGenerator.BASIC + ".Or"),
     SET("SET", ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set");
     final String nombre;
     final String pathImagen;
