@@ -147,25 +147,8 @@ public class ControladorCircuito {
         return bounds.contains(punto.getPoint());
     }
 
-    /*public void generarPieza(String pathImagen, String claseModelica, int ancho, int alto, List<Conector> conectores) {
-        panelCircuito.addPiezaByDragging(
-                new Pieza(circuito, claseModelica, pathImagen, ancho, alto, conectores));
-    }*/
-
     public void generarPieza(TipoPieza tipoPieza, int nConectoresEntrada) {
         panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza, nConectoresEntrada));
-    }
-
-    public void generarOr() {
-        generarPieza(TipoPieza.OR, 2);
-    }
-
-    public void generarAnd() {
-        generarPieza(TipoPieza.AND, 2);
-    }
-
-    public void generarSet() {
-        generarPieza(TipoPieza.SET, 0);
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
