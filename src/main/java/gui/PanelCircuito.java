@@ -9,9 +9,12 @@ import modelo.Pieza;
 import utils.LineUtils;
 import utils.Punto;
 
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -21,6 +24,8 @@ import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -42,10 +47,25 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         addMouseListener(this);
         addMouseMotionListener(this);
         setModo(ModoPanel.MODO_NORMAL);
+        setupEscKey();
+    }
+
+    private void setupEscKey() {
+        getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(
+                KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "LizardClips:canelConexion");
+        getActionMap().put("LizardClips:canelConexion", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (isModo(ModoPanel.MODO_CONEXION)) {
+                    controladorCircuito.cancelarConexion();
+                    setModo(ModoPanel.MODO_NORMAL);
+                }
+            }
+        });
     }
 
     public void cambiarCircuito() {
-        modo = ModoPanel.MODO_NORMAL;
+        setModo(ModoPanel.MODO_NORMAL);
         grabPoint = null;
         piezaSeleccionada = null;
         conectorSeleccionado = null;
@@ -85,6 +105,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         }
         this.piezaSeleccionada = pieza;
     }
+
 
     @Override
     public void mousePressed(MouseEvent e) {

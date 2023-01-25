@@ -22,6 +22,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Getter
 @Setter
@@ -105,5 +106,10 @@ public class Circuito implements Serializable {
 
     public void borrarConexionesConector(Conector c) {
         conexiones.removeIf(con -> con.getOrigen().equals(c) || con.getDestino().equals(c));
+    }
+
+    public void cancelarConexion() {
+        Optional<Conexion> enCurso = conexiones.stream().filter(Conexion::enCurso).findFirst();
+        enCurso.ifPresent(this::borrarConexion);
     }
 }

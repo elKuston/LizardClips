@@ -299,4 +299,8 @@ public class ControladorCircuito {
         p.removeConectorEntrada();
         panelCircuito.repaint();
     }
+
+    public void cancelarConexion() {
+        circuito.cancelarConexion();
+    }
 }
