@@ -1,10 +1,11 @@
 package controlador;
 
-import constant.TipoConector;
+import constant.TipoPieza;
 import db.CircuitoRepository;
 import gui.PanelCircuito;
 import gui.VentanaPrincipal;
 import lombok.Setter;
+import modelica.ModelicaGenerator;
 import modelo.Circuito;
 import modelo.Conector;
 import modelo.Conexion;
@@ -12,15 +13,20 @@ import modelo.Pieza;
 import utils.Punto;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileFilter;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -135,19 +141,25 @@ public class ControladorCircuito {
         return bounds.contains(punto.getPoint());
     }
 
-    public void generarPieza(String pathImagen, int ancho, int alto, List<Conector> conectores) {
-        panelCircuito.addPiezaByDragging(new Pieza(circuito, pathImagen, ancho, alto, conectores));
+    /*public void generarPieza(String pathImagen, String claseModelica, int ancho, int alto, List<Conector> conectores) {
+        panelCircuito.addPiezaByDragging(
+                new Pieza(circuito, claseModelica, pathImagen, ancho, alto, conectores));
+    }*/
+
+    public void generarPieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
+        panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza, nConectoresEntrada));
     }
 
-    public void generarResistor() {
-        generarPieza("media/res.png", 200, 100, List.of(new Conector(0, 0.5, TipoConector.ENTRADA),
-                new Conector(1, 0.5, TipoConector.SALIDA)));
+    public void generarOr() {
+        generarPieza(circuito, TipoPieza.OR, 2);
     }
 
     public void generarAnd() {
-        generarPieza("media/and.png", 200, 100, List.of(new Conector(0, 0.25, TipoConector.ENTRADA),
-                new Conector(0, 0.75, TipoConector.ENTRADA),
-                new Conector(1, 0.5, TipoConector.SALIDA)));
+        generarPieza(circuito, TipoPieza.AND, 2);
+    }
+
+    public void generarSet() {
+        generarPieza(circuito, TipoPieza.SET, 0);
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
@@ -234,4 +246,48 @@ public class ControladorCircuito {
         }
         return image;
     }
+
+    public void exportarCodigo() {
+        String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
+        System.out.println(codigoModelica);
+
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Exportar código Modelica como");
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                return f.getName().endsWith(".mo");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Modelica files";
+            }
+        });
+
+        int userSelection = fileChooser.showSaveDialog(ventanaPrincipal.getFrame());
+
+        if (userSelection == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase(Locale.ROOT).endsWith(".mo")) {
+                fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".mo");
+            }
+            try {
+                FileWriter fw = new FileWriter(fileToSave);
+                fw.write(codigoModelica);
+                fw.close();
+                int result = JOptionPane.showConfirmDialog(ventanaPrincipal.getFrame(),
+                        "¿Quieres abrir ahora el fichero generado?", "Abrir fichero",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if (result == JOptionPane.YES_OPTION) {
+                    Desktop.getDesktop().open(fileToSave);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
 }

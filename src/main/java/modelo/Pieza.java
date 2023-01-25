@@ -1,9 +1,12 @@
 package modelo;
 
 import constant.TipoConector;
+import constant.TipoPieza;
 import gui.PanelCircuito;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -24,6 +27,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +45,6 @@ public class Pieza implements Serializable {
     @ToString.Exclude
     private ImageIcon imagen;
 
-    private String pathImagen;
-
     @OneToMany(mappedBy = "pieza", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Conector> conectores;
 
@@ -52,20 +54,37 @@ public class Pieza implements Serializable {
     @ToString.Exclude
     private Circuito circuito;
 
+    @Enumerated(EnumType.ORDINAL)
+    private TipoPieza tipoPieza;
 
-    public Pieza(Circuito circuito, String pathImagen, int ancho, int alto, List<Conector> conectores) {
-        conectores.forEach(con -> con.setPieza(this));
-
-        this.pathImagen = pathImagen;
+    public Pieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
         this.circuito = circuito;
-        this.conectores = conectores;
-        imagen = ImageUtils.cargarImagenEscalada(pathImagen, ancho, alto);
+        this.tipoPieza = tipoPieza;
+        this.conectores = generarConectores(tipoPieza, nConectoresEntrada);
+        this.conectores.forEach(con -> con.setPieza(this));
+        imagen = ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), 100, 100);
         tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
+    }
+
+    private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
+        if (nConectoresEntrada < tipoPieza.getConectoresEntradaMin() ||
+                (tipoPieza.getConectoresEntradaMax() > 0 &&
+                        nConectoresEntrada > tipoPieza.getConectoresEntradaMax())) {
+            throw new RuntimeException("No se puede crear una pieza de este tipo");
+        }
+        List<Conector> lista = new ArrayList<>();
+        for (int i = 0; i < nConectoresEntrada; i++) {
+            float pos_y = (i + 1) / (nConectoresEntrada * 1f + 1);
+            lista.add(new Conector(0, pos_y, TipoConector.ENTRADA));
+        }
+        lista.add(new Conector(1, 0.5, TipoConector.SALIDA));
+        return lista;
     }
 
     @PostLoad
     protected void cargarImagen() {
-        imagen = ImageUtils.cargarImagenEscalada(pathImagen, tamano.width, tamano.height);
+        imagen = ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), tamano.width,
+                tamano.height);
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector, Punto posicionPieza) {
