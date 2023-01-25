@@ -1,5 +1,6 @@
 package gui;
 
+import constant.TipoPieza;
 import controlador.ControladorCircuito;
 import lombok.Getter;
 import utils.ImageUtils;
@@ -79,23 +80,14 @@ public class VentanaPrincipal {
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
         lateral.setBorder(new MatteBorder(0, 0, 0, 2, Color.GRAY));
 
-        JButton b = new JButton("",
-                ImageUtils.cargarImagenEscalada(ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 100,
-                        100));
-        b.addActionListener(e -> controladorCircuito.generarOr());
-        lateral.add(b);
-
-        JButton and = new JButton("",
-                ImageUtils.cargarImagenEscalada(ImageUtils.MEDIA_BASE_FOLDER + "/and.png", 100,
-                        50));
-        and.addActionListener(e -> controladorCircuito.generarAnd());
-        lateral.add(and);
-
-        JButton set = new JButton("",
-                ImageUtils.cargarImagenEscalada(ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 100,
-                        50));
-        set.addActionListener(e -> controladorCircuito.generarSet());
-        lateral.add(set);
+        for (TipoPieza tp : TipoPieza.values()) {
+            JButton b =
+                    new JButton("", ImageUtils.cargarImagenEscalada(tp.getPathImagen(), 100, 100));
+            b.setToolTipText(tp.getNombre());
+            b.addActionListener(
+                    e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
+            lateral.add(b);
+        }
 
         JToggleButton borrar = new JToggleButton("Borrar");
         borrar.addActionListener(e -> panelCircuito.toggleDeleteMode());

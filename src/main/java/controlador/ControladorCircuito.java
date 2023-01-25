@@ -152,20 +152,20 @@ public class ControladorCircuito {
                 new Pieza(circuito, claseModelica, pathImagen, ancho, alto, conectores));
     }*/
 
-    public void generarPieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
+    public void generarPieza(TipoPieza tipoPieza, int nConectoresEntrada) {
         panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza, nConectoresEntrada));
     }
 
     public void generarOr() {
-        generarPieza(circuito, TipoPieza.OR, 2);
+        generarPieza(TipoPieza.OR, 2);
     }
 
     public void generarAnd() {
-        generarPieza(circuito, TipoPieza.AND, 2);
+        generarPieza(TipoPieza.AND, 2);
     }
 
     public void generarSet() {
-        generarPieza(circuito, TipoPieza.SET, 0);
+        generarPieza(TipoPieza.SET, 0);
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
