@@ -1,5 +1,6 @@
 package controlador;
 
+import constant.TipoConector;
 import constant.TipoPieza;
 import db.CircuitoRepository;
 import gui.PanelCircuito;
@@ -126,9 +127,14 @@ public class ControladorCircuito {
     }
 
     public List<Conector> getConectoresValidos(Conector conectorSeleccionado) {
+        List<Conector> conectoresEntradaOcupados =
+                circuito.getConexiones().stream().filter(Conexion::isComplete)
+                        .flatMap(conexion -> Stream.of(conexion.getOrigen(), conexion.getDestino()))
+                        .filter(conector -> conector.getTipoConector().equals(TipoConector.ENTRADA))
+                        .toList(); //Solo puede haber una conexion por conector de entrada
         return getAllConectoresStream().filter(
-                                               con -> !con.getTipoConector().equals(conectorSeleccionado.getTipoConector()))
-                                       .collect(Collectors.toList());
+                con -> !con.getTipoConector().equals(conectorSeleccionado.getTipoConector()) &&
+                        !conectoresEntradaOcupados.contains(con)).collect(Collectors.toList());
     }
 
     public Conector getConectorByPosicion(Pieza pieza, Punto posicion) {
