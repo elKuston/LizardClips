@@ -8,6 +8,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 public class ImageUtils {
+    public static final String MEDIA_BASE_FOLDER = "src/main/resources/media";
+
     public static ImageIcon cargarImagenEscalada(String pathImagen, int ancho, int alto, int modo) {
         return new ImageIcon(
                 new ImageIcon(pathImagen).getImage().getScaledInstance(ancho, alto, modo));

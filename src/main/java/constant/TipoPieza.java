@@ -2,12 +2,13 @@ package constant;
 
 import lombok.Getter;
 import modelica.ModelicaGenerator;
+import utils.ImageUtils;
 
 @Getter
 public enum TipoPieza {
-    AND("AND", "media/and.png", 2, -1, ModelicaGenerator.BASIC + ".And"),
-    OR("OR", "media/or.png", 2, -1, ModelicaGenerator.BASIC + ".Or"),
-    SET("SET", "media/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set");
+    AND("AND", ImageUtils.MEDIA_BASE_FOLDER + "/and.png", 2, -1, ModelicaGenerator.BASIC + ".And"),
+    OR("OR", ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 2, -1, ModelicaGenerator.BASIC + ".Or"),
+    SET("SET", ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set");
     final String nombre;
     final String pathImagen;
     final String claseModelica;
