@@ -25,6 +25,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -127,13 +128,18 @@ public class ControladorCircuito {
     }
 
     public List<Conector> getConectoresValidos(Conector conectorSeleccionado) {
+        //Solo puede haber una conexion por conector de entrada
         List<Conector> conectoresEntradaOcupados =
                 circuito.getConexiones().stream().filter(Conexion::isComplete)
                         .flatMap(conexion -> Stream.of(conexion.getOrigen(), conexion.getDestino()))
                         .filter(conector -> conector.getTipoConector().equals(TipoConector.ENTRADA))
-                        .toList(); //Solo puede haber una conexion por conector de entrada
+                        .toList();
+        if (conectoresEntradaOcupados.contains(conectorSeleccionado)) {
+            return new ArrayList<>();// Si se selecciona un conector de entrada que y está ocupado no se puede conectar a ningún sitio
+        }
         return getAllConectoresStream().filter(
-                con -> !con.getTipoConector().equals(conectorSeleccionado.getTipoConector()) &&
+                con -> !con.getPieza().equals(conectorSeleccionado.getPieza()) &&
+                        !con.getTipoConector().equals(conectorSeleccionado.getTipoConector()) &&
                         !conectoresEntradaOcupados.contains(con)).collect(Collectors.toList());
     }
 
