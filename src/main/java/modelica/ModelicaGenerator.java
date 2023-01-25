@@ -8,6 +8,7 @@ import modelo.Pieza;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringJoiner;
 
 public class ModelicaGenerator {
@@ -59,16 +60,17 @@ public class ModelicaGenerator {
         switch (p.getTipoPieza()) {
 
             case AND, OR -> declaracion.add(
-                    p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p) + "( n=" +
-                            nConectoresEntrada(p) + ")");
+                    String.format("%s %s (n=%d)", p.getTipoPieza().getClaseModelica(),
+                            nombrePieza(p), nConectoresEntrada(p)));
             case SET -> {
                 declaracion.add(
-                        "parameter " + LOGIC + " " + nombreFuente(p) + " = " + LOGIC + ".'0'");
-                declaracion.add(p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p) + "(x=" +
-                        nombreFuente(p) + ")");
+                        String.format("parameter %s %s = %s.'0'", LOGIC, nombreFuente(p), LOGIC));
+                declaracion.add(String.format("%s %s (x=%s)", p.getTipoPieza().getClaseModelica(),
+                        nombrePieza(p), nombreFuente(p)));
             }
             case NOT -> {
-                declaracion.add(p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p));
+                declaracion.add(String.format("%s %s", p.getTipoPieza().getClaseModelica(),
+                        nombrePieza(p)));
             }
         }
         return declaracion;
@@ -86,7 +88,7 @@ public class ModelicaGenerator {
     private static String nombrePieza(Pieza p) {
         String clase = p.getTipoPieza().getClaseModelica().split("\\.")[1];
         int posicion = p.getCircuito().getComponentes().indexOf(p) + 1;
-        return "p_" + clase + "_" + posicion;
+        return clase.toLowerCase(Locale.ROOT) + "_" + posicion;
     }
 
     private static String connect(Circuito circuito) {
@@ -98,7 +100,7 @@ public class ModelicaGenerator {
             Conector entrada =
                     c.getOrigen().getTipoConector().equals(TipoConector.ENTRADA) ? c.getOrigen() :
                             c.getDestino();
-            
+
             if (entrada.getPieza().getTipoPieza().getConectoresEntradaMin() == 1 &&
                     entrada.getPieza().getTipoPieza().getConectoresEntradaMax() == 1) {
                 sj.add(String.format("connect(%s,%s)", nombreConector(salida),
