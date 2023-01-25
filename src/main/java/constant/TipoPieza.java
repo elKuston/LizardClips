@@ -6,6 +6,7 @@ import utils.ImageUtils;
 
 @Getter
 public enum TipoPieza {
+    NOT("NOT", ImageUtils.MEDIA_BASE_FOLDER + "/not.png", 1, 1, ModelicaGenerator.BASIC + ".Not"),
     AND("AND", ImageUtils.MEDIA_BASE_FOLDER + "/and.png", 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".And"),
     OR("OR", ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 2, Integer.MAX_VALUE,

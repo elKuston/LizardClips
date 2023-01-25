@@ -58,16 +58,17 @@ public class ModelicaGenerator {
         List<String> declaracion = new ArrayList<>();
         switch (p.getTipoPieza()) {
 
-            case AND, OR -> {
-                declaracion.add(
-                        p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p) + "( n=" +
-                                nConectoresEntrada(p) + ")");
-            }
+            case AND, OR -> declaracion.add(
+                    p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p) + "( n=" +
+                            nConectoresEntrada(p) + ")");
             case SET -> {
                 declaracion.add(
                         "parameter " + LOGIC + " " + nombreFuente(p) + " = " + LOGIC + ".'0'");
                 declaracion.add(p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p) + "(x=" +
                         nombreFuente(p) + ")");
+            }
+            case NOT -> {
+                declaracion.add(p.getTipoPieza().getClaseModelica() + " " + nombrePieza(p));
             }
         }
         return declaracion;
@@ -97,13 +98,20 @@ public class ModelicaGenerator {
             Conector entrada =
                     c.getOrigen().getTipoConector().equals(TipoConector.ENTRADA) ? c.getOrigen() :
                             c.getDestino();
-            //Posicion del conector de entrada dentro de la pieza
-            int indiceEntrada = entrada.getPieza().getConectores().stream()
-                                       .filter(con -> con.getTipoConector()
-                                                         .equals(TipoConector.ENTRADA)).toList()
-                                       .indexOf(entrada) + 1;
-            sj.add(String.format("connect(%s,%s[%d])", nombreConector(salida),
-                    nombreConector(entrada), indiceEntrada));
+            
+            if (entrada.getPieza().getTipoPieza().getConectoresEntradaMin() == 1 &&
+                    entrada.getPieza().getTipoPieza().getConectoresEntradaMax() == 1) {
+                sj.add(String.format("connect(%s,%s)", nombreConector(salida),
+                        nombreConector(entrada)));
+            } else {
+                //Posicion del conector de entrada dentro de la pieza
+                int indiceEntrada = entrada.getPieza().getConectores().stream()
+                                           .filter(con -> con.getTipoConector()
+                                                             .equals(TipoConector.ENTRADA)).toList()
+                                           .indexOf(entrada) + 1;
+                sj.add(String.format("connect(%s,%s[%d])", nombreConector(salida),
+                        nombreConector(entrada), indiceEntrada));
+            }
         }
         sj.add("\n");
         return sj.toString();
