@@ -83,14 +83,9 @@ public class ModelicaGenerator {
     }
 
     private static String nombrePieza(Pieza p) {
-        String nombre;
         String clase = p.getTipoPieza().getClaseModelica().split("\\.")[1];
-        if (p.getIdPieza() == null) {
-            nombre = "p_" + clase + "_" + p.hashCode();
-        } else {
-            nombre = "p_" + clase + "_" + p.getIdPieza();
-        }
-        return nombre;
+        int posicion = p.getCircuito().getComponentes().indexOf(p) + 1;
+        return "p_" + clase + "_" + posicion;
     }
 
     private static String connect(Circuito circuito) {
