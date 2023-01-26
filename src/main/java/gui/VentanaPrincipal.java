@@ -6,6 +6,7 @@ import lombok.Getter;
 import utils.ImageUtils;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -45,6 +46,8 @@ public class VentanaPrincipal {
     private void setupLayout(int width, int height) {
         //Frame
         frame = new JFrame();
+        frame.setIconImage(
+                new ImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png").getImage());
         frame.setSize(width, height);
         frame.setTitle("LizardClips - Circuito sin nombre");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
