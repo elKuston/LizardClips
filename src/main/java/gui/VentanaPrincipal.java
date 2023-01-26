@@ -11,6 +11,7 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToggleButton;
 import javax.swing.WindowConstants;
@@ -29,6 +30,12 @@ public class VentanaPrincipal {
         controladorCircuito.setVentanaPrincipal(this);
         this.panelCircuito = panelCircuito;
         setupLayout(width, height);
+
+        Thread.setDefaultUncaughtExceptionHandler((Thread t, Throwable e) -> {
+            JOptionPane.showMessageDialog(panelCircuito, e.getMessage(), "Error",
+                    JOptionPane.WARNING_MESSAGE);
+            e.printStackTrace();
+        });
     }
 
     public void setNombreCircuito(String nombreCircuito) {
