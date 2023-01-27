@@ -16,10 +16,12 @@ public class ModelicaGenerator {
     public static final String LOGIC = "L";
     public static final String DIGITAL = "D";
     public static final String SOURCES = "S";
+    public static final String SI = "SI";
     private static final String DIGITAL_IMPORT = "Modelica.Electrical.Digital";
     private static final String BASIC_IMPORT = "Modelica.Electrical.Digital.Basic";
     private static final String LOGIC_IMPORT = "Modelica.Electrical.Digital.Interfaces.Logic";
     private static final String SOURCES_IMPORT = "Modelica.Electrical.Digital.Sources";
+    private static final String SI_IMPORT = "Modelica.Units.SI";
 
     public static String generarCodigoModelica(Circuito circuito) {
         StringBuilder codigoModelica = new StringBuilder();
@@ -38,6 +40,7 @@ public class ModelicaGenerator {
         sj.add("import " + BASIC + " = " + BASIC_IMPORT);
         sj.add("import " + LOGIC + " = " + LOGIC_IMPORT);
         sj.add("import " + SOURCES + " = " + SOURCES_IMPORT);
+        sj.add("import " + SI + " = " + SI_IMPORT);
         sj.add("\n");
         return sj.toString();
     }
@@ -71,6 +74,17 @@ public class ModelicaGenerator {
             case NOT -> {
                 declaracion.add(String.format("%s %s", p.getTipoPieza().getClaseModelica(),
                         nombrePieza(p)));
+            }
+            case DIGITAL_CLOCK -> {
+                declaracion.add(
+                        String.format("parameter %s.Time %s_startTime = 0", SI, nombrePieza(p)));
+                declaracion.add(
+                        String.format("parameter %s.Time %s_period = 1", SI, nombrePieza(p)));
+                declaracion.add(String.format("parameter Real %s_width = 50", nombrePieza(p)));
+                declaracion.add(String.format(
+                        "%s %s (startTime=%s_startTime, period=%s_period,width=%s_width)",
+                        p.getTipoPieza().getClaseModelica(), nombrePieza(p), nombrePieza(p),
+                        nombrePieza(p), nombrePieza(p)));
             }
         }
         return declaracion;

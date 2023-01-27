@@ -1,8 +1,8 @@
 package caponera.uned.tfm.lizardclips.constant;
 
-import lombok.Getter;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
+import lombok.Getter;
 
 @Getter
 public enum TipoPieza {
@@ -11,7 +11,9 @@ public enum TipoPieza {
             ModelicaGenerator.BASIC + ".And"),
     OR("OR", ImageUtils.MEDIA_BASE_FOLDER + "/or.png", 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".Or"),
-    SET("SET", ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set");
+    SET("SET", ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set"),
+    DIGITAL_CLOCK("DIGITAL_CLOCK", ImageUtils.MEDIA_BASE_FOLDER + "/clock.png", 0, 0,
+            ModelicaGenerator.SOURCES + ".DigitalClock");
     final String nombre;
     final String pathImagen;
     final String claseModelica;
