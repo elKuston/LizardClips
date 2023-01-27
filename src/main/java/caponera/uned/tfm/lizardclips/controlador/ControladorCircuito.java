@@ -5,13 +5,13 @@ import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.db.CircuitoRepository;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
 import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
-import lombok.Setter;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.utils.Punto;
+import lombok.Setter;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
@@ -226,6 +226,7 @@ public class ControladorCircuito {
         panelCircuito.cambiarCircuito();
         ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
         System.out.println("cargado circuito" + circuito);
+        Punto.resetReferencia();
     }
 
     public void nuevoCircuito() {

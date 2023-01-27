@@ -2,12 +2,12 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.constant.ModoPanel;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
-import lombok.Getter;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.utils.LineUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
+import lombok.Getter;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
@@ -40,6 +40,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     private Dimension grabPoint;
     private Pieza piezaSeleccionada;
     private Conector conectorSeleccionado;
+    private Point grabPointDesplazamiento;
     @Getter
     private ControladorCircuito controladorCircuito;
 
@@ -109,38 +110,45 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mousePressed(MouseEvent e) {
-        Pieza piezaSeleccionado = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
-        if (piezaSeleccionado == null) {//No ha hecho click sobre una pieza ni conector
-            if (isModo(ModoPanel.MODO_BORRADO)) {
-                Conexion clicada = detectarClickLineas(e.getPoint());
-                if (clicada != null) { //Ha pulsado una conexion
-                    controladorCircuito.borrarConexion(clicada);
+        if (SwingUtilities.isMiddleMouseButton(e)) {
+            setModo(ModoPanel.MODO_DESPLAZANDO);
+            grabPointDesplazamiento = e.getPoint();
+        } else {
+            Pieza piezaSeleccionado =
+                    controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
+            if (piezaSeleccionado == null) {//No ha hecho click sobre una pieza ni conector
+                if (isModo(ModoPanel.MODO_BORRADO)) {
+                    Conexion clicada = detectarClickLineas(e.getPoint());
+                    if (clicada != null) { //Ha pulsado una conexion
+                        controladorCircuito.borrarConexion(clicada);
+                        repaint();
+                    }
+                } else if (isModo(ModoPanel.MODO_CONEXION)) {
+                    controladorCircuito.addPointConexion(new Punto(e.getPoint()));
                     repaint();
                 }
-            } else if (isModo(ModoPanel.MODO_CONEXION)) {
-                controladorCircuito.addPointConexion(new Punto(e.getPoint()));
-                repaint();
-            }
-        } else { //Ha pulsado una pieza o un conector
-            Conector conector = controladorCircuito.getConectorByPosicion(piezaSeleccionado,
-                    new Punto(e.getPoint()));
-            if (conector == null) { //Ha pulsado una pieza
-                if (SwingUtilities.isRightMouseButton(e)) {//Click derecho sobre la pieza
-                    JMenuItem anydir = new JMenuItem("+");
-                    anydir.addActionListener(
-                            click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
-                    JMenuItem eliminar = new JMenuItem("-");
-                    eliminar.addActionListener(click -> controladorCircuito.removeConectorFromPieza(
-                            piezaSeleccionado));
-                    JPopupMenu menuPieza = new JPopupMenu("Modificar conectores");
-                    menuPieza.add(anydir);
-                    menuPieza.add(eliminar);
-                    menuPieza.show(this, e.getX(), e.getY());
-                } else {//Click normal sobre la pieza
-                    piezaSeleccionada(piezaSeleccionado, e);
+            } else { //Ha pulsado una pieza o un conector
+                Conector conector = controladorCircuito.getConectorByPosicion(piezaSeleccionado,
+                        new Punto(e.getPoint()));
+                if (conector == null) { //Ha pulsado una pieza
+                    if (SwingUtilities.isRightMouseButton(e)) {//Click derecho sobre la pieza
+                        JMenuItem anydir = new JMenuItem("+");
+                        anydir.addActionListener(
+                                click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
+                        JMenuItem eliminar = new JMenuItem("-");
+                        eliminar.addActionListener(
+                                click -> controladorCircuito.removeConectorFromPieza(
+                                        piezaSeleccionado));
+                        JPopupMenu menuPieza = new JPopupMenu("Modificar conectores");
+                        menuPieza.add(anydir);
+                        menuPieza.add(eliminar);
+                        menuPieza.show(this, e.getX(), e.getY());
+                    } else {//Click normal sobre la pieza
+                        piezaSeleccionada(piezaSeleccionado, e);
+                    }
+                } else {//Ha pulsado un conector
+                    conectorSeleccionado(conector);
                 }
-            } else {//Ha pulsado un conector
-                conectorSeleccionado(conector);
             }
         }
     }
@@ -192,8 +200,8 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        if (isModo(ModoPanel.MODO_ARRASTRANDO)) {
-            modo = ModoPanel.MODO_NORMAL;
+        if (isModo(ModoPanel.MODO_ARRASTRANDO) || isModo(ModoPanel.MODO_DESPLAZANDO)) {
+            setModo(ModoPanel.MODO_NORMAL);
         }
     }
 
@@ -203,6 +211,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         if (isModo(ModoPanel.MODO_ARRASTRANDO)) {
             controladorCircuito.arrastrarPieza(piezaSeleccionada, new Punto(e.getPoint()),
                     grabPoint);
+            repaint();
+        } else if (isModo(ModoPanel.MODO_DESPLAZANDO)) {
+            Punto.desplazarReferencia((int) (e.getX() - grabPointDesplazamiento.getX()),
+                    (int) (e.getY() - grabPointDesplazamiento.getY()));
+            grabPointDesplazamiento = e.getPoint();
             repaint();
         }
     }
