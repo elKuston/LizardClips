@@ -1,17 +1,17 @@
-package controlador;
+package caponera.uned.tfm.lizardclips.controlador;
 
-import constant.TipoConector;
-import constant.TipoPieza;
-import db.CircuitoRepository;
-import gui.PanelCircuito;
-import gui.VentanaPrincipal;
+import caponera.uned.tfm.lizardclips.constant.TipoConector;
+import caponera.uned.tfm.lizardclips.constant.TipoPieza;
+import caponera.uned.tfm.lizardclips.db.CircuitoRepository;
+import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
+import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
 import lombok.Setter;
-import modelica.ModelicaGenerator;
-import modelo.Circuito;
-import modelo.Conector;
-import modelo.Conexion;
-import modelo.Pieza;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
+import caponera.uned.tfm.lizardclips.modelo.Circuito;
+import caponera.uned.tfm.lizardclips.modelo.Conector;
+import caponera.uned.tfm.lizardclips.modelo.Conexion;
+import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;

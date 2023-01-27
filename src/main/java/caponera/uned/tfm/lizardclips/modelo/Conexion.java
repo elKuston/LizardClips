@@ -1,4 +1,4 @@
-package modelo;
+package caponera.uned.tfm.lizardclips.modelo;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -13,8 +13,8 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.ToString;
-import utils.LineUtils;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.utils.LineUtils;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -65,6 +65,14 @@ public class Conexion implements Serializable {
     protected void preUpdatePersist() {
         this.puntosIntermediosX = puntosIntermedios.stream().map(Punto::getX).toList();
         this.puntosIntermediosY = puntosIntermedios.stream().map(Punto::getY).toList();
+    }
+
+    public List<Integer> getPuntosIntermediosX() {
+        return puntosIntermedios.stream().map(Punto::getX).toList();
+    }
+
+    public List<Integer> getPuntosIntermediosY() {
+        return puntosIntermedios.stream().map(Punto::getY).toList();
     }
 
     public void addPoint(Punto punto) {

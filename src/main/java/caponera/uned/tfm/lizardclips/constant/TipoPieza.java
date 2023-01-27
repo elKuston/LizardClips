@@ -1,8 +1,8 @@
-package constant;
+package caponera.uned.tfm.lizardclips.constant;
 
 import lombok.Getter;
-import modelica.ModelicaGenerator;
-import utils.ImageUtils;
+import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 
 @Getter
 public enum TipoPieza {

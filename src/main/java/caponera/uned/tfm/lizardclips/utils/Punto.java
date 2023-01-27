@@ -1,4 +1,4 @@
-package utils;
+package caponera.uned.tfm.lizardclips.utils;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;

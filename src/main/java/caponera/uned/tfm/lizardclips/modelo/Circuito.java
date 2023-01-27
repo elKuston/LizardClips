@@ -1,6 +1,6 @@
-package modelo;
+package caponera.uned.tfm.lizardclips.modelo;
 
-import controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -15,8 +15,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import utils.ImageUtils;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.io.Serializable;
 import java.util.ArrayList;

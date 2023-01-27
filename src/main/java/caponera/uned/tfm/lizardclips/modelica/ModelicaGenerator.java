@@ -1,10 +1,10 @@
-package modelica;
+package caponera.uned.tfm.lizardclips.modelica;
 
-import constant.TipoConector;
-import modelo.Circuito;
-import modelo.Conector;
-import modelo.Conexion;
-import modelo.Pieza;
+import caponera.uned.tfm.lizardclips.constant.TipoConector;
+import caponera.uned.tfm.lizardclips.modelo.Circuito;
+import caponera.uned.tfm.lizardclips.modelo.Conector;
+import caponera.uned.tfm.lizardclips.modelo.Conexion;
+import caponera.uned.tfm.lizardclips.modelo.Pieza;
 
 import java.util.ArrayList;
 import java.util.List;

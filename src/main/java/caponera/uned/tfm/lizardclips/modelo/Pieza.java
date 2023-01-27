@@ -1,8 +1,8 @@
-package modelo;
+package caponera.uned.tfm.lizardclips.modelo;
 
-import constant.TipoConector;
-import constant.TipoPieza;
-import gui.PanelCircuito;
+import caponera.uned.tfm.lizardclips.constant.TipoConector;
+import caponera.uned.tfm.lizardclips.constant.TipoPieza;
+import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -18,8 +18,8 @@ import jakarta.persistence.Transient;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import utils.ImageUtils;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;

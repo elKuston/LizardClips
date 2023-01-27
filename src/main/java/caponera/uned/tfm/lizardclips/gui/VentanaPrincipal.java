@@ -1,9 +1,9 @@
-package gui;
+package caponera.uned.tfm.lizardclips.gui;
 
-import constant.TipoPieza;
-import controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.constant.TipoPieza;
+import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
-import utils.ImageUtils;
 
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
@@ -46,8 +46,7 @@ public class VentanaPrincipal {
     private void setupLayout(int width, int height) {
         //Frame
         frame = new JFrame();
-        frame.setIconImage(
-                new ImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png").getImage());
+        frame.setIconImage(new ImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/and.png").getImage());
         frame.setSize(width, height);
         frame.setTitle("LizardClips - Circuito sin nombre");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -71,7 +70,7 @@ public class VentanaPrincipal {
         menuCircuito.add(menuItemCircuitoGuardar);
 
         barraSuperior.add(menuCircuito);
-        //   Menu modelica
+        //   Menu caponera.uned.tfm.lizardclips.modelica
         JMenu menuModelica = new JMenu("Modelica");
         JMenuItem menuItemModelicaExportar = new JMenuItem("Exportar código Modelica");
         menuItemModelicaExportar.addActionListener(e -> controladorCircuito.exportarCodigo());

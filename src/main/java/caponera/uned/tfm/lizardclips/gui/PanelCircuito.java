@@ -1,13 +1,13 @@
-package gui;
+package caponera.uned.tfm.lizardclips.gui;
 
-import constant.ModoPanel;
-import controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.constant.ModoPanel;
+import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
 import lombok.Getter;
-import modelo.Conector;
-import modelo.Conexion;
-import modelo.Pieza;
-import utils.LineUtils;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.modelo.Conector;
+import caponera.uned.tfm.lizardclips.modelo.Conexion;
+import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.LineUtils;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;

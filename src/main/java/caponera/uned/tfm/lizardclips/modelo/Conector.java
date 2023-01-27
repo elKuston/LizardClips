@@ -1,6 +1,6 @@
-package modelo;
+package caponera.uned.tfm.lizardclips.modelo;
 
-import constant.TipoConector;
+import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import utils.Punto;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.io.Serializable;
 import java.util.Objects;

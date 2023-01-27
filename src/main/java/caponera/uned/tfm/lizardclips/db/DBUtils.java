@@ -1,4 +1,4 @@
-package db;
+package caponera.uned.tfm.lizardclips.db;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;

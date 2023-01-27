@@ -1,7 +1,9 @@
-import controlador.ControladorCircuito;
-import gui.PanelCircuito;
-import gui.VentanaPrincipal;
-import modelo.Circuito;
+package caponera.uned.tfm.lizardclips;
+
+import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
+import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
+import caponera.uned.tfm.lizardclips.modelo.Circuito;
 
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;

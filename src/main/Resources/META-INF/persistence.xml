@@ -4,10 +4,10 @@
              version="2.0" xmlns="http://java.sun.com/xml/ns/persistence">
     <persistence-unit name="lizardClipsPersistenceUnit" transaction-type="RESOURCE_LOCAL">
         <!--<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>-->
-        <class>modelo.Circuito</class>
-        <class>modelo.Conector</class>
-        <class>modelo.Conexion</class>
-        <class>modelo.Pieza</class>
+        <class>caponera.uned.tfm.lizardclips.modelo.Circuito</class>
+        <class>caponera.uned.tfm.lizardclips.modelo.Conector</class>
+        <class>caponera.uned.tfm.lizardclips.modelo.Conexion</class>
+        <class>caponera.uned.tfm.lizardclips.modelo.Pieza</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.apache.derby.jdbc.EmbeddedDriver"/>
             <property name="jakarta.persistence.jdbc.url"
