@@ -62,8 +62,8 @@ public class Pieza implements Serializable {
         this.tipoPieza = tipoPieza;
         this.conectores = generarConectores(tipoPieza, nConectoresEntrada);
         this.conectores.forEach(con -> con.setPieza(this));
-        imagen = ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), 100, 100);
-        tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
+        setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(),
+                ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
     }
 
     private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
@@ -83,8 +83,8 @@ public class Pieza implements Serializable {
 
     @PostLoad
     protected void cargarImagen() {
-        imagen = ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), tamano.width,
-                tamano.height);
+        setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), tamano.width,
+                tamano.height));
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector, Punto posicionPieza) {
@@ -129,7 +129,7 @@ public class Pieza implements Serializable {
             g.setColor(color);
             Punto pos = getPosicionConectorEnPanel(c, posicion);
             g.fillOval((int) (pos.getX() - Conector.RADIO), (int) (pos.getY() - Conector.RADIO),
-                    2 * Conector.RADIO, 2 * Conector.RADIO);
+                    (2 * Conector.RADIO), (2 * Conector.RADIO));
             g.setColor(Color.BLACK);
         }
 
@@ -176,6 +176,11 @@ public class Pieza implements Serializable {
 
     public Rectangle getBounds() {
         return new Rectangle(posicion.getPoint(), getTamano());
+    }
+
+    public void setImagen(ImageIcon imagen) {
+        this.imagen = imagen;
+        this.tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
     }
 
 
