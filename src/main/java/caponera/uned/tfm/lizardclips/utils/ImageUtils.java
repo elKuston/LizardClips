@@ -7,11 +7,14 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
 public class ImageUtils {
     public static final String MEDIA_BASE_FOLDER = "media";
     public static final int DEFAULT_IMAGE_WIDTH = 100;
     public static final int DEFAULT_IMAGE_HEIGHT = 100;
+    private static Map<DescriptorImagen, ImageIcon> imagenesCacheadas = new HashMap<>();
 
     public static ImageIcon cargarImageIcon(String pathImagen) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
@@ -22,7 +25,12 @@ public class ImageUtils {
     }
 
     public static ImageIcon cargarImagenEscalada(String pathImagen, int ancho, int alto, int modo) {
-        return rescalarImagen(cargarImageIcon(pathImagen), ancho, alto, modo);
+        DescriptorImagen desc = new DescriptorImagen(pathImagen, ancho, alto);
+        if (!imagenesCacheadas.containsKey(desc)) {
+            imagenesCacheadas.put(desc,
+                    rescalarImagen(cargarImageIcon(pathImagen), ancho, alto, modo));
+        }
+        return imagenesCacheadas.get(desc);
     }
 
     public static ImageIcon rescalarImagen(ImageIcon imagen, int ancho, int alto, int modo) {
