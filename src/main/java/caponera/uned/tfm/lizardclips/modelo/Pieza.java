@@ -13,12 +13,14 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.Transient;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.ToString;
 
 import javax.swing.ImageIcon;
@@ -31,7 +33,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @NoArgsConstructor
 public class Pieza implements Serializable {
@@ -50,7 +54,8 @@ public class Pieza implements Serializable {
 
     private Dimension tamano;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_circuito")
     @ToString.Exclude
     private Circuito circuito;
 
@@ -114,7 +119,9 @@ public class Pieza implements Serializable {
 
 
     public void dibujar(PanelCircuito panelCircuito, Graphics g, Punto posicion, boolean dibujarContorno, Map<Conector, Color> coloresConectores) {
-        getImagen().paintIcon(panelCircuito, g, (int) posicion.getX(), (int) posicion.getY());
+        if (getImagen() != null) {
+            getImagen().paintIcon(panelCircuito, g, (int) posicion.getX(), (int) posicion.getY());
+        }
         if (dibujarContorno) {
             g.drawRect((int) posicion.getX(), (int) posicion.getY(), getWidth(), getHeight());
         }

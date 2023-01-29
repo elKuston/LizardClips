@@ -1,31 +1,36 @@
 package caponera.uned.tfm.lizardclips.modelo;
 
+import caponera.uned.tfm.lizardclips.utils.LineUtils;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PostLoad;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Transient;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
-import caponera.uned.tfm.lizardclips.utils.LineUtils;
-import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @Entity
 public class Conexion implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_conector_origen")
     private Conector origen;
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_conector_destino")
     private Conector destino;
     @Transient
     @ToString.Exclude
@@ -37,7 +42,7 @@ public class Conexion implements Serializable {
     private List<Integer> puntosIntermediosY;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int idConexion;
+    private Integer idConexion;
 
 
     public Conexion(Conector origen) {
@@ -47,6 +52,8 @@ public class Conexion implements Serializable {
 
     public Conexion() {
         this.puntosIntermedios = new ArrayList<>();
+        puntosIntermediosX = new ArrayList<>();
+        puntosIntermediosY = new ArrayList<>();
     }
 
     @PostLoad
@@ -106,5 +113,42 @@ public class Conexion implements Serializable {
 
     public String toString() {
         return getPuntos().toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
+
+        Conexion conexion = (Conexion) o;
+
+        if (origen != null ? !origen.equals(conexion.origen) : conexion.origen != null)
+            return false;
+        if (destino != null ? !destino.equals(conexion.destino) : conexion.destino != null)
+            return false;
+        if (puntosIntermedios != null ? !puntosIntermedios.equals(conexion.puntosIntermedios) :
+                conexion.puntosIntermedios != null)
+            return false;
+        if (puntosIntermediosX != null ? !puntosIntermediosX.equals(conexion.puntosIntermediosX) :
+                conexion.puntosIntermediosX != null)
+            return false;
+        if (puntosIntermediosY != null ? !puntosIntermediosY.equals(conexion.puntosIntermediosY) :
+                conexion.puntosIntermediosY != null)
+            return false;
+        return idConexion != null ? idConexion.equals(conexion.idConexion) :
+                conexion.idConexion == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = origen != null ? origen.hashCode() : 0;
+        result = 31 * result + (destino != null ? destino.hashCode() : 0);
+        result = 31 * result + (puntosIntermedios != null ? puntosIntermedios.hashCode() : 0);
+        result = 31 * result + (puntosIntermediosX != null ? puntosIntermediosX.hashCode() : 0);
+        result = 31 * result + (puntosIntermediosY != null ? puntosIntermediosY.hashCode() : 0);
+        result = 31 * result + (idConexion != null ? idConexion.hashCode() : 0);
+        return result;
     }
 }

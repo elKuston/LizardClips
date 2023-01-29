@@ -1,6 +1,7 @@
 package caponera.uned.tfm.lizardclips.modelo;
 
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -9,13 +10,13 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
-import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.io.Serializable;
 import java.util.Objects;
@@ -42,6 +43,7 @@ public class Conector implements Serializable {
     private Integer idConector;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_pieza")
     @ToString.Exclude
     private Pieza pieza;
 

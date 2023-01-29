@@ -31,8 +31,6 @@ public abstract class AbstractRepository<T> {
         System.out.println("Transaction ended");
     }
 
-    protected abstract String getAllQuery();
-
     protected abstract Integer getIdElemento(T elemento);
 
     protected abstract Class<T> getObjectClass();
@@ -52,9 +50,9 @@ public abstract class AbstractRepository<T> {
         //return (List<T>) q.getResultList();
     }
 
-    public void guardar(T t) {
+    public T guardar(T t) {
         System.out.println("Guardando " + t.getClass().getSimpleName() + ": " + t);
-        startTransaction();
+        //startTransaction();
         try {
             if (getIdElemento(t) == null) {
                 em.persist(t);
@@ -62,12 +60,13 @@ public abstract class AbstractRepository<T> {
                 em.merge(t);
                 em.flush();
             }
-            endTransaction();
+            //endTransaction();
             System.out.println(t.getClass().getSimpleName() + " guardado");
         } catch (Exception e) {
             e.printStackTrace();
             currentTransaction.rollback();
         }
+        return t;
 
     }
 }

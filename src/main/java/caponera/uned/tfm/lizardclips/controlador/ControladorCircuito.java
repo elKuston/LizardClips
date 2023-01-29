@@ -2,7 +2,10 @@ package caponera.uned.tfm.lizardclips.controlador;
 
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
+import caponera.uned.tfm.lizardclips.db.AbstractRepository;
 import caponera.uned.tfm.lizardclips.db.CircuitoRepository;
+import caponera.uned.tfm.lizardclips.db.ConexionRepository;
+import caponera.uned.tfm.lizardclips.db.PiezaRepository;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
 import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
@@ -37,6 +40,8 @@ import java.util.stream.Stream;
 public class ControladorCircuito {
     private final PanelCircuito panelCircuito;
     private final CircuitoRepository circuitoRepository;
+    private final PiezaRepository piezaRepository;
+    private final ConexionRepository conexionRepository;
     private Circuito circuito;
 
     @Setter
@@ -47,6 +52,8 @@ public class ControladorCircuito {
         panelCircuito.setControladorCircuito(this);
         setCircuito(circuito);
         circuitoRepository = new CircuitoRepository();
+        piezaRepository = new PiezaRepository();
+        conexionRepository = new ConexionRepository();
     }
 
 
@@ -58,6 +65,8 @@ public class ControladorCircuito {
         }
         this.circuito = circuito;
         this.circuito.setControlador(this);
+
+        panelCircuito.cambiarCircuito();
 
     }
 
@@ -206,27 +215,30 @@ public class ControladorCircuito {
         }
         if (circuito.getNombre() != null &&
                 !circuito.getNombre().isBlank()) { //No guardar si se hace cancel
-
-            circuitoRepository.guardar(circuito);
+            AbstractRepository.startTransaction();
+            circuito.getComponentes().forEach(piezaRepository::guardar);
+            circuito.getConexiones().forEach(conexionRepository::guardar);
+            setCircuito(circuitoRepository.guardar(circuito));
+            AbstractRepository.endTransaction();
         }
     }
 
     public void cargar() {
-        System.out.println("Cargando circuito");
         List<Circuito> circuitos = circuitoRepository.getAll();
         String[] nombresCircuitos =
                 circuitos.stream().map(Circuito::getNombre).toList().toArray(new String[0]);
         String nombre = (String) JOptionPane.showInputDialog(ventanaPrincipal.getFrame(),
                 "Selecciona tu circuito", "Cargar circuito", JOptionPane.PLAIN_MESSAGE, null,
-                nombresCircuitos, // Array of choices
-                nombresCircuitos[0]); // Initial choice
-        Circuito seleccionado =
-                circuitos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().get();
-        setCircuito(seleccionado);
-        panelCircuito.cambiarCircuito();
-        ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
-        System.out.println("cargado circuito" + circuito);
-        Punto.resetReferencia();
+                nombresCircuitos, nombresCircuitos[0]);
+        if (nombre != null) {//Si no ha pulsado cancelar
+            Circuito seleccionado =
+                    circuitos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().get();
+            setCircuito(seleccionado);
+            ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
+            System.out.println("cargado circuito" + circuito);
+            Punto.resetReferencia();
+        }
+
     }
 
     public void nuevoCircuito() {
