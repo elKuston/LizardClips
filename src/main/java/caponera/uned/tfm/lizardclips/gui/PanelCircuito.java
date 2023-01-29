@@ -49,6 +49,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         addMouseMotionListener(this);
         setModo(ModoPanel.MODO_NORMAL);
         setupEscKey();
+        setBackground(Color.WHITE);
     }
 
     private void setupEscKey() {
