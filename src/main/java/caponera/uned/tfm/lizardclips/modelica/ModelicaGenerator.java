@@ -99,7 +99,7 @@ public class ModelicaGenerator {
                 .filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA)).count();
     }
 
-    private static String nombrePieza(Pieza p) {
+    public static String nombrePieza(Pieza p) {
         String clase = p.getTipoPieza().getClaseModelica().split("\\.")[1];
         int posicion = p.getCircuito().getComponentes().indexOf(p) + 1;
         return clase.toLowerCase(Locale.ROOT) + "_" + posicion;

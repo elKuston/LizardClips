@@ -3,6 +3,7 @@ package caponera.uned.tfm.lizardclips.modelo;
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
+import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.CascadeType;
@@ -39,6 +40,11 @@ import java.util.Map;
 @Entity
 @NoArgsConstructor
 public class Pieza implements Serializable {
+    @Transient
+    @Getter
+    @Setter
+    private static boolean renerNombresPiezas = true;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPieza;
@@ -139,8 +145,9 @@ public class Pieza implements Serializable {
                     (2 * Conector.RADIO), (2 * Conector.RADIO));
             g.setColor(Color.BLACK);
         }
-
-        g.drawString("ID: " + getIdPieza(), posicion.getX(), posicion.getY());
+        if (isRenerNombresPiezas()) {
+            g.drawString(ModelicaGenerator.nombrePieza(this), posicion.getX(), posicion.getY() - 2);
+        }
     }
 
     public void addConectorEntrada() {

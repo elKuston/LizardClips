@@ -316,4 +316,9 @@ public class ControladorCircuito {
     public void cancelarConexion() {
         circuito.cancelarConexion();
     }
+
+    public void toggleNombresPiezas() {
+        Pieza.setRenerNombresPiezas(!Pieza.isRenerNombresPiezas());
+        panelCircuito.repaint();
+    }
 }

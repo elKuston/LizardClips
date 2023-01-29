@@ -71,13 +71,23 @@ public class VentanaPrincipal {
         menuCircuito.add(menuItemCircuitoGuardar);
 
         barraSuperior.add(menuCircuito);
-        //   Menu caponera.uned.tfm.lizardclips.modelica
+        //   Menu modelica
         JMenu menuModelica = new JMenu("Modelica");
         JMenuItem menuItemModelicaExportar = new JMenuItem("Exportar código Modelica");
         menuItemModelicaExportar.addActionListener(e -> controladorCircuito.exportarCodigo());
         menuModelica.add(menuItemModelicaExportar);
 
         barraSuperior.add(menuModelica);
+
+        //   Menu vista
+        JMenu menuVista = new JMenu("Vista");
+        JMenuItem menuItemVistaToggleNombres = new JMenuItem("Mostrar/ocultar nombres de piezas");
+        menuItemVistaToggleNombres.addActionListener(
+                e -> controladorCircuito.toggleNombresPiezas());
+        menuVista.add(menuItemVistaToggleNombres);
+
+        barraSuperior.add(menuVista);
+
         frame.setJMenuBar(barraSuperior);
 
 
