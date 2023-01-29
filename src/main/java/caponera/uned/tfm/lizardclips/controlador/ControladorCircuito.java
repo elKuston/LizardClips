@@ -7,12 +7,14 @@ import caponera.uned.tfm.lizardclips.db.CircuitoRepository;
 import caponera.uned.tfm.lizardclips.db.ConexionRepository;
 import caponera.uned.tfm.lizardclips.db.PiezaRepository;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
+import caponera.uned.tfm.lizardclips.gui.SelectorCircuito;
 import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Setter;
 
@@ -215,6 +217,7 @@ public class ControladorCircuito {
         }
         if (circuito.getNombre() != null &&
                 !circuito.getNombre().isBlank()) { //No guardar si se hace cancel
+            circuito.setThumbnail(ImageUtils.bytesFromBufferedImage(generarThumbnail()));
             AbstractRepository.startTransaction();
             circuito.getComponentes().forEach(piezaRepository::guardar);
             circuito.getConexiones().forEach(conexionRepository::guardar);
@@ -225,14 +228,17 @@ public class ControladorCircuito {
 
     public void cargar() {
         List<Circuito> circuitos = circuitoRepository.getAll();
-        String[] nombresCircuitos =
-                circuitos.stream().map(Circuito::getNombre).toList().toArray(new String[0]);
-        String nombre = (String) JOptionPane.showInputDialog(ventanaPrincipal.getFrame(),
-                "Selecciona tu circuito", "Cargar circuito", JOptionPane.PLAIN_MESSAGE, null,
-                nombresCircuitos, nombresCircuitos[0]);
-        if (nombre != null) {//Si no ha pulsado cancelar
-            Circuito seleccionado =
-                    circuitos.stream().filter(c -> c.getNombre().equals(nombre)).findFirst().get();
+        SelectorCircuito sc = new SelectorCircuito(this, circuitos);
+        String[] opciones = {"Seleccionar", "Cancelar"};
+        int res = JOptionPane.showOptionDialog(null, sc, "Seleccionar circuito",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
+                opciones[0]);
+        if (res == 0) {
+            Circuito seleccionado = sc.getCircuitoSeleccionado();
+            if (seleccionado == null) {
+                throw new RuntimeException(
+                        "Debes seleccionar un circuito de la lista para cargarlo.");
+            }
             setCircuito(seleccionado);
             ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
             System.out.println("cargado circuito" + circuito);

@@ -41,6 +41,31 @@ public class ImageUtils {
         return rescalarImagen(imagen, ancho, alto, Image.SCALE_FAST);
     }
 
+    public static ImageIcon cargarImageneEscaladaPreserveRatio(String pathImagen, int ancho, int alto) {
+        ImageIcon raw = cargarImageIcon(pathImagen);
+        return rescalarImagenPreserveRatio(pathImagen, raw, ancho, alto);
+    }
+
+    public static ImageIcon rescalarImagenPreserveRatio(String pathImagen, ImageIcon raw, int ancho, int alto) {
+        double imageRatio = 1.0 * raw.getIconWidth() / raw.getIconHeight();
+        double containerRatio = 1.0 * ancho / alto;
+        if (imageRatio > containerRatio) {
+            alto = (int) (ancho / imageRatio);
+        } else {
+            ancho = (int) (imageRatio * alto);
+        }
+        DescriptorImagen desc = new DescriptorImagen(pathImagen, ancho, alto);
+        if (!imagenesCacheadas.containsKey(desc)) {
+            imagenesCacheadas.put(desc, rescalarImagen(raw, ancho, alto, Image.SCALE_SMOOTH));
+        }
+
+        return imagenesCacheadas.get(desc);
+    }
+
+    public static ImageIcon rescalarImagenPreserveRatio(ImageIcon raw, int ancho, int alto) {
+        return rescalarImagenPreserveRatio(String.valueOf(raw.hashCode()), raw, ancho, alto);
+    }
+
     public static ImageIcon cargarImagenEscalada(String pathImagen, int ancho, int alto) {
         return cargarImagenEscalada(pathImagen, ancho, alto, Image.SCALE_FAST);
     }

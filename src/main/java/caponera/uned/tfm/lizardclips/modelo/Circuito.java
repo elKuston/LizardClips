@@ -1,7 +1,6 @@
 package caponera.uned.tfm.lizardclips.modelo;
 
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
-import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.Basic;
 import jakarta.persistence.CascadeType;
@@ -59,7 +58,7 @@ public class Circuito implements Serializable {
     }
 
     public byte[] getThumbnail() {
-        return ImageUtils.bytesFromBufferedImage(controlador.generarThumbnail());
+        return thumbnail;
     }
 
     public void moverPieza(Pieza pieza, Punto posicion) {
