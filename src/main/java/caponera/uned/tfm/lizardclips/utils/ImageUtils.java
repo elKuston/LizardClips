@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class ImageUtils {
     public static final String MEDIA_BASE_FOLDER = "media";
-    public static final int DEFAULT_IMAGE_WIDTH = 100;
-    public static final int DEFAULT_IMAGE_HEIGHT = 100;
+    public static final int DEFAULT_IMAGE_WIDTH = 50;
+    public static final int DEFAULT_IMAGE_HEIGHT = 50;
     private static Map<DescriptorImagen, ImageIcon> imagenesCacheadas = new HashMap<>();
 
     public static ImageIcon cargarImageIcon(String pathImagen) {

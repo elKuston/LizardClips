@@ -92,7 +92,7 @@ public class VentanaPrincipal {
 
         for (TipoPieza tp : TipoPieza.values()) {
             JButton b =
-                    new JButton("", ImageUtils.cargarImagenEscalada(tp.getPathImagen(), 100, 100));
+                    new JButton("", ImageUtils.cargarImagenEscalada(tp.getPathImagen(), 50, 50));
             b.setToolTipText(tp.getNombre());
             b.addActionListener(
                     e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
