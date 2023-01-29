@@ -183,7 +183,6 @@ public class Pieza implements Serializable {
         this.tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
     }
 
-
     @Override
     public boolean equals(Object o) {
         if (this == o)
@@ -191,14 +190,32 @@ public class Pieza implements Serializable {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Pieza that = (Pieza) o;
+        Pieza pieza = (Pieza) o;
 
-        if (!imagen.equals(that.imagen))
+        if (idPieza != null ? !idPieza.equals(pieza.idPieza) : pieza.idPieza != null)
             return false;
-        if (!tamano.equals(that.tamano))
+        if (posicion != null ? !posicion.equals(pieza.posicion) : pieza.posicion != null)
             return false;
-        return circuito.equals(that.circuito);
+        if (imagen != null ? !imagen.equals(pieza.imagen) : pieza.imagen != null)
+            return false;
+        if (conectores != null ? !conectores.equals(pieza.conectores) : pieza.conectores != null)
+            return false;
+        if (tamano != null ? !tamano.equals(pieza.tamano) : pieza.tamano != null)
+            return false;
+        if (circuito != null ? !circuito.equals(pieza.circuito) : pieza.circuito != null)
+            return false;
+        return tipoPieza == pieza.tipoPieza;
     }
 
-
+    @Override
+    public int hashCode() {
+        int result = idPieza != null ? idPieza.hashCode() : 0;
+        result = 31 * result + (posicion != null ? posicion.hashCode() : 0);
+        result = 31 * result + (imagen != null ? imagen.hashCode() : 0);
+        result = 31 * result + (conectores != null ? conectores.hashCode() : 0);
+        result = 31 * result + (tamano != null ? tamano.hashCode() : 0);
+        result = 31 * result + (circuito != null ? circuito.hashCode() : 0);
+        result = 31 * result + (tipoPieza != null ? tipoPieza.hashCode() : 0);
+        return result;
+    }
 }
