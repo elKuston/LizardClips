@@ -18,7 +18,6 @@ import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Setter;
 
-import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileFilter;
@@ -259,11 +258,6 @@ public class ControladorCircuito {
         Graphics2D g = image.createGraphics();
         panelCircuito.printAll(g);
         g.dispose();
-        try {
-            ImageIO.write(image, "png", new File("thumbnail.png"));
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
         return image;
     }
 
