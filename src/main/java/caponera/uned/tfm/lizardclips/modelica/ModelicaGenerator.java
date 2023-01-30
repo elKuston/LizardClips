@@ -63,7 +63,7 @@ public class ModelicaGenerator {
     }
 
     private static String generarAnotacionesConexiones(Circuito circuito) {
-        StringJoiner sj = new StringJoiner(",\n");
+        StringJoiner sj = new StringJoiner(",\n\t\t");
         for (Conexion c : circuito.getConexiones()) {
             sj.add(generarAnotacion(c));
         }
