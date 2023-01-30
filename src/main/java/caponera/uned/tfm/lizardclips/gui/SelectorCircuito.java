@@ -7,8 +7,10 @@ import lombok.Getter;
 
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JScrollPane;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -34,7 +36,9 @@ public class SelectorCircuito extends JComponent implements ItemListener {
             listaCircuitos.add(c.getNombre());
         }
         listaCircuitos.addItemListener(this);
-        this.add(listaCircuitos);
+        JScrollPane scrollListaCircuitos = new JScrollPane(listaCircuitos);
+        scrollListaCircuitos.setPreferredSize(new Dimension(IMAGEVIEW_W / 2, IMAGEVIEW_H));
+        this.add(scrollListaCircuitos);
 
         imageView = new JLabel();
         imageView.setIcon(
