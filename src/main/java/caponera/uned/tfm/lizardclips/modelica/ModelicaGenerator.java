@@ -5,6 +5,7 @@ import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,15 @@ public class ModelicaGenerator {
     private static final String SOURCES_IMPORT = "Modelica.Electrical.Digital.Sources";
     private static final String SI_IMPORT = "Modelica.Units.SI";
 
+    private static final double ESCALA_ANNOTATION = 0.3;
+
     public static String generarCodigoModelica(Circuito circuito) {
         StringBuilder codigoModelica = new StringBuilder();
         codigoModelica.append("model ").append(modelName(circuito)).append("\n\t");
         codigoModelica.append(imports()).append("\n\t");
         codigoModelica.append(declaraciones(circuito));
-        codigoModelica.append("equation\n\t").append(connect(circuito));
+        codigoModelica.append("equation\n\t").append(connect(circuito)).append("\n\t");
+        codigoModelica.append(generarAnotacionesConexiones(circuito)).append(";\n");
         codigoModelica.append("end ").append(modelName(circuito)).append(";");
 
         return codigoModelica.toString();
@@ -58,22 +62,59 @@ public class ModelicaGenerator {
         return sj.toString();
     }
 
+    private static String generarAnotacionesConexiones(Circuito circuito) {
+        StringJoiner sj = new StringJoiner(",\n");
+        for (Conexion c : circuito.getConexiones()) {
+            sj.add(generarAnotacion(c));
+        }
+
+        return String.format("annotation (Diagram(graphics={%s}))", sj);
+    }
+
+    private static String generarAnotacion(Conexion c) {
+        StringJoiner sj = new StringJoiner(",");
+        c.getPuntosManhattan().stream().map(p -> escalarPunto(p, true))
+         .map(p -> String.format("{%d,%d}", p.getX(), p.getY())).forEachOrdered(sj::add);
+        return String.format("Line(points={%s}, color={0,0,0})", sj);
+    }
+
+    private static Punto escalarPunto(Punto punto, boolean invertirY) {
+        int multiplicadorY = invertirY ? -1 : 1;
+        return new Punto((int) (punto.getX() * ESCALA_ANNOTATION),
+                (int) (punto.getY() * ESCALA_ANNOTATION * multiplicadorY));
+    }
+
+    private static String generarAnotacion(Pieza p) {
+        Punto pos = p.getPosicion();
+        Punto bottom_left = new Punto(pos.getX(), pos.getY() + p.getHeight());
+        Punto top_right = new Punto(pos.getX() + p.getWidth(), pos.getY());
+        Punto bottom_left_scaled = escalarPunto(bottom_left, true);
+        Punto top_right_scaled = escalarPunto(top_right, true);
+        return String.format(
+                "annotation (Placement(transformation(extent={{%d,%d},{%d,%d}}, rotation=0)))",
+                bottom_left_scaled.getX(), bottom_left_scaled.getY(), top_right_scaled.getX(),
+                top_right_scaled.getY());
+    }
+
     private static List<String> generarDeclaracionPieza(Pieza p) {
         List<String> declaracion = new ArrayList<>();
         switch (p.getTipoPieza()) {
 
-            case AND, OR -> declaracion.add(
-                    String.format("%s %s (n=%d)", p.getTipoPieza().getClaseModelica(),
-                            nombrePieza(p), nConectoresEntrada(p)));
+            case AND, OR -> {
+                declaracion.add(
+                        String.format("%s %s (n=%d) %s", p.getTipoPieza().getClaseModelica(),
+                                nombrePieza(p), nConectoresEntrada(p), generarAnotacion(p)));
+            }
             case SET -> {
                 declaracion.add(
                         String.format("parameter %s %s = %s.'0'", LOGIC, nombreFuente(p), LOGIC));
-                declaracion.add(String.format("%s %s (x=%s)", p.getTipoPieza().getClaseModelica(),
-                        nombrePieza(p), nombreFuente(p)));
+                declaracion.add(
+                        String.format("%s %s (x=%s) %s", p.getTipoPieza().getClaseModelica(),
+                                nombrePieza(p), nombreFuente(p), generarAnotacion(p)));
             }
             case NOT -> {
-                declaracion.add(String.format("%s %s", p.getTipoPieza().getClaseModelica(),
-                        nombrePieza(p)));
+                declaracion.add(String.format("%s %s %s", p.getTipoPieza().getClaseModelica(),
+                        nombrePieza(p), generarAnotacion(p)));
             }
             case DIGITAL_CLOCK -> {
                 declaracion.add(
@@ -82,9 +123,9 @@ public class ModelicaGenerator {
                         String.format("parameter %s.Time %s_period = 1", SI, nombrePieza(p)));
                 declaracion.add(String.format("parameter Real %s_width = 50", nombrePieza(p)));
                 declaracion.add(String.format(
-                        "%s %s (startTime=%s_startTime, period=%s_period,width=%s_width)",
+                        "%s %s (startTime=%s_startTime, period=%s_period,width=%s_width) %s",
                         p.getTipoPieza().getClaseModelica(), nombrePieza(p), nombrePieza(p),
-                        nombrePieza(p), nombrePieza(p)));
+                        nombrePieza(p), nombrePieza(p), generarAnotacion(p)));
             }
         }
         return declaracion;

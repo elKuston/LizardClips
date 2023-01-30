@@ -73,7 +73,7 @@ public class Pieza implements Serializable {
         this.tipoPieza = tipoPieza;
         this.conectores = generarConectores(tipoPieza, nConectoresEntrada);
         this.conectores.forEach(con -> con.setPieza(this));
-        setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(),
+        setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
                 ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
     }
 

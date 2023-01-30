@@ -12,8 +12,8 @@ import java.util.Map;
 
 public class ImageUtils {
     public static final String MEDIA_BASE_FOLDER = "media";
-    public static final int DEFAULT_IMAGE_WIDTH = 50;
-    public static final int DEFAULT_IMAGE_HEIGHT = 50;
+    public static final int DEFAULT_IMAGE_WIDTH = 80;
+    public static final int DEFAULT_IMAGE_HEIGHT = 80;
     private static Map<DescriptorImagen, ImageIcon> imagenesCacheadas = new HashMap<>();
 
     public static ImageIcon cargarImageIcon(String pathImagen) {
@@ -38,7 +38,7 @@ public class ImageUtils {
     }
 
     public static ImageIcon rescalarImagen(ImageIcon imagen, int ancho, int alto) {
-        return rescalarImagen(imagen, ancho, alto, Image.SCALE_FAST);
+        return rescalarImagen(imagen, ancho, alto, Image.SCALE_SMOOTH);
     }
 
     public static ImageIcon cargarImageneEscaladaPreserveRatio(String pathImagen, int ancho, int alto) {
@@ -67,7 +67,7 @@ public class ImageUtils {
     }
 
     public static ImageIcon cargarImagenEscalada(String pathImagen, int ancho, int alto) {
-        return cargarImagenEscalada(pathImagen, ancho, alto, Image.SCALE_FAST);
+        return cargarImagenEscalada(pathImagen, ancho, alto, Image.SCALE_SMOOTH);
     }
 
     public static byte[] bytesFromBufferedImage(BufferedImage bi) {
