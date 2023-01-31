@@ -2,9 +2,11 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.constant.ModoPanel;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.LineUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Getter;
@@ -12,6 +14,7 @@ import lombok.Getter;
 import javax.swing.AbstractAction;
 import javax.swing.JComponent;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
@@ -231,6 +234,26 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
 
     @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
+            Pieza pieza = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
+            if (pieza != null) {
+                String nombreOriginal = pieza.getNombrePieza() != null ? pieza.getNombrePieza() :
+                        ModelicaGenerator.nombrePieza(pieza);
+                String nuevoNombre =
+                        JOptionPane.showInputDialog(I18NUtils.getString("rename_component_prompt"),
+                                nombreOriginal);
+                System.out.println(nuevoNombre);
+                if (nuevoNombre != null && !nuevoNombre.isEmpty() &&
+                        !nuevoNombre.equals(nombreOriginal)) {
+                    controladorCircuito.renombrarPieza(pieza, nuevoNombre);
+                }
+            }
+        }
+    }
+
+
+    @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Map<Conector, Color> coloresConectores = null;
@@ -284,10 +307,6 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     @Override
     public void mouseExited(MouseEvent e) {
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
     }
     //endregion
 }

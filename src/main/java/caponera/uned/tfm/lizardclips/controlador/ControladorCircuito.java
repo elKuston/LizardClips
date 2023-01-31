@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -40,6 +41,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ControladorCircuito {
+    private static final String CARACTERES_VALIDOS_NOMBRE =
+            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ_1234567890";
     private final PanelCircuito panelCircuito;
     private final CircuitoRepository circuitoRepository;
     private final PiezaRepository piezaRepository;
@@ -321,5 +324,27 @@ public class ControladorCircuito {
     public void toggleNombresPiezas() {
         Pieza.setRenerNombresPiezas(!Pieza.isRenerNombresPiezas());
         panelCircuito.repaint();
+    }
+
+    public void renombrarPieza(Pieza pieza, String nuevoNombre) {
+        sanitize(nuevoNombre);
+        if (circuito.getComponentes().stream()
+                    .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
+            throw new RuntimeException(I18NUtils.getString("duplicate_component_name"));
+        }
+        pieza.setNombrePieza(nuevoNombre);
+        panelCircuito.repaint();
+    }
+
+    private void sanitize(String nombre) {
+        char char0 = nombre.charAt(0);
+        if (!caracteresPermitidos(nombre) || Character.isUpperCase(char0) ||
+                !Character.isAlphabetic(char0)) {
+            throw new RuntimeException(I18NUtils.getString("invalid_component_name"));
+        }
+    }
+
+    private boolean caracteresPermitidos(String nombre) {
+        return Arrays.stream(nombre.split("")).allMatch(CARACTERES_VALIDOS_NOMBRE::contains);
     }
 }

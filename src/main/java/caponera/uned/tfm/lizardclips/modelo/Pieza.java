@@ -49,6 +49,8 @@ public class Pieza implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idPieza;
 
+    private String nombrePieza;
+
     private Punto posicion;
 
     @Transient

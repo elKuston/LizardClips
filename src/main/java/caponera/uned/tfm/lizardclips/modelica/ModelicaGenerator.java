@@ -142,6 +142,9 @@ public class ModelicaGenerator {
     }
 
     public static String nombrePieza(Pieza p) {
+        if (p.getNombrePieza() != null) {
+            return p.getNombrePieza();
+        }
         String clase = p.getTipoPieza().getClaseModelica().split("\\.")[1];
         int posicion = p.getCircuito().getComponentes().indexOf(p) + 1;
         return clase.toLowerCase(Locale.ROOT) + "_" + posicion;
