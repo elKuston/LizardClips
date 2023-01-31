@@ -100,7 +100,7 @@ public class ModelicaGenerator {
         List<String> declaracion = new ArrayList<>();
         switch (p.getTipoPieza()) {
 
-            case AND, NAND, OR, NOR -> {
+            case AND, NAND, OR, NOR, XOR, XNOR -> {
                 declaracion.add(
                         String.format("%s %s (n=%d) %s", p.getTipoPieza().getClaseModelica(),
                                 nombrePieza(p), nConectoresEntrada(p), generarAnotacion(p)));
@@ -127,6 +127,7 @@ public class ModelicaGenerator {
                         p.getTipoPieza().getClaseModelica(), nombrePieza(p), nombrePieza(p),
                         nombrePieza(p), nombrePieza(p), generarAnotacion(p)));
             }
+            default -> throw new RuntimeException("error_generating_component_code");
         }
         return declaracion;
     }

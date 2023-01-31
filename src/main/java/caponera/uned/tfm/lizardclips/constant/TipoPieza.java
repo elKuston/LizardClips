@@ -15,6 +15,10 @@ public enum TipoPieza {
             ModelicaGenerator.BASIC + ".Or"),
     NOR("NOR", ImageUtils.MEDIA_BASE_FOLDER + "/nor.png", 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".Nor"),
+    XOR("XOR", ImageUtils.MEDIA_BASE_FOLDER + "/xor.png", 2, Integer.MAX_VALUE,
+            ModelicaGenerator.BASIC + ".Xor"),
+    XNOR("XNOR", ImageUtils.MEDIA_BASE_FOLDER + "/xnor.png", 2, Integer.MAX_VALUE,
+            ModelicaGenerator.BASIC + ".Xnor"),
     SET("SET", ImageUtils.MEDIA_BASE_FOLDER + "/set.png", 0, 0, ModelicaGenerator.SOURCES + ".Set"),
     DIGITAL_CLOCK("DIGITAL_CLOCK", ImageUtils.MEDIA_BASE_FOLDER + "/clock.png", 0, 0,
             ModelicaGenerator.SOURCES + ".DigitalClock");
