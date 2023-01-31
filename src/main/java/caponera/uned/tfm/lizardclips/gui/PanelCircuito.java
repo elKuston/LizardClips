@@ -240,11 +240,12 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             coloresConectores = controladorCircuito.getAllConectores().stream().collect(
                     Collectors.toMap(con -> con,
                             con -> controladorCircuito.getConectoresValidos(conectorSeleccionado)
-                                                      .contains(con) ? Color.BLUE : Color.GRAY));
+                                                      .contains(con) ? Conector.colorConector :
+                                    Color.GRAY));
         }
         //for (Map.Entry<Pieza, Punto> entry : controladorCircuito.getPiezasPosicionEntrySet()) {
         for (Pieza p : controladorCircuito.getPiezas()) {
-            p.dibujar(this, g, p.getPosicion(), true, coloresConectores);
+            p.dibujar(this, g, p.getPosicion(), false, coloresConectores);
         }
 
         //Dibujar conexiones

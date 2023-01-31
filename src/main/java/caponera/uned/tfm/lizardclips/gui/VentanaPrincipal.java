@@ -20,6 +20,9 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 public class VentanaPrincipal {
+    private static final int ANCHO_BOTONES_LATERALES = 50;
+    private static final int ALTO_BOTONES_LATERALES = 50;
+
     @Getter
     private JFrame frame;
     private ControladorCircuito controladorCircuito;
@@ -101,15 +104,18 @@ public class VentanaPrincipal {
         lateral.setBorder(new MatteBorder(0, 0, 0, 2, Color.GRAY));
 
         for (TipoPieza tp : TipoPieza.values()) {
-            JButton b =
-                    new JButton("", ImageUtils.cargarImagenEscalada(tp.getPathImagen(), 50, 50));
+            JButton b = new JButton("",
+                    ImageUtils.cargarImageneEscaladaPreserveRatio(tp.getPathImagen(),
+                            ANCHO_BOTONES_LATERALES, ALTO_BOTONES_LATERALES));
             b.setToolTipText(tp.getNombre());
             b.addActionListener(
                     e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
             lateral.add(b);
         }
 
-        JToggleButton borrar = new JToggleButton("Borrar");
+        JToggleButton borrar = new JToggleButton("", ImageUtils.cargarImageneEscaladaPreserveRatio(
+                ImageUtils.MEDIA_BASE_FOLDER + "/trash.png", ANCHO_BOTONES_LATERALES,
+                ALTO_BOTONES_LATERALES));
         borrar.addActionListener(e -> panelCircuito.toggleDeleteMode());
         lateral.add(borrar);
 

@@ -18,6 +18,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.Hibernate;
 
+import java.awt.Color;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -27,7 +28,8 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 public class Conector implements Serializable {
-    public static final int RADIO = 5;
+    public static final int RADIO = 3;
+    public static final Color colorConector = Color.BLACK; //new Color(119, 0, 200);
 
     @ToString.Exclude
     private double posicionRelativaX;

@@ -100,7 +100,7 @@ public class ModelicaGenerator {
         List<String> declaracion = new ArrayList<>();
         switch (p.getTipoPieza()) {
 
-            case AND, OR -> {
+            case AND, NAND, OR, NOR -> {
                 declaracion.add(
                         String.format("%s %s (n=%d) %s", p.getTipoPieza().getClaseModelica(),
                                 nombrePieza(p), nConectoresEntrada(p), generarAnotacion(p)));

@@ -5,8 +5,10 @@ import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
 
+import javax.swing.BoxLayout;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.MatteBorder;
 import java.awt.Color;
@@ -31,6 +33,10 @@ public class SelectorCircuito extends JComponent implements ItemListener {
         this.circuitos = circuitos;
         setLayout(new FlowLayout());
         //Lista circuitos
+        JPanel contenedorListaCircuitos = new JPanel();
+        contenedorListaCircuitos.setLayout(
+                new BoxLayout(contenedorListaCircuitos, BoxLayout.Y_AXIS));
+        contenedorListaCircuitos.add(new JLabel("Selecciona un circuito para cargarlo."));
         listaCircuitos = new java.awt.List(circuitos.size(), false);
         for (Circuito c : circuitos) {
             listaCircuitos.add(c.getNombre());
@@ -38,14 +44,18 @@ public class SelectorCircuito extends JComponent implements ItemListener {
         listaCircuitos.addItemListener(this);
         JScrollPane scrollListaCircuitos = new JScrollPane(listaCircuitos);
         scrollListaCircuitos.setPreferredSize(new Dimension(IMAGEVIEW_W / 2, IMAGEVIEW_H));
-        this.add(scrollListaCircuitos);
-
+        contenedorListaCircuitos.add(scrollListaCircuitos);
+        this.add(contenedorListaCircuitos);
+        JPanel contenedorImageView = new JPanel();
+        contenedorImageView.setLayout(new BoxLayout(contenedorImageView, BoxLayout.Y_AXIS));
+        contenedorImageView.add(new JLabel("Previsualización del circuito"));
         imageView = new JLabel();
         imageView.setIcon(
                 ImageUtils.cargarImagenEscalada(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png",
                         IMAGEVIEW_W, IMAGEVIEW_H));
         imageView.setBorder(new MatteBorder(1, 1, 1, 1, Color.BLACK));
-        this.add(imageView);
+        contenedorImageView.add(imageView);
+        this.add(contenedorImageView);
     }
 
 

@@ -135,7 +135,8 @@ public class Pieza implements Serializable {
         for (Conector c : conectores) {
             Color color;
             if (coloresConectores == null) {
-                color = c.getTipoConector().equals(TipoConector.ENTRADA) ? Color.BLUE : Color.green;
+                //color = c.getTipoConector().equals(TipoConector.ENTRADA) ? Color.BLUE : Color.green;
+                color = Conector.colorConector;
             } else {
                 color = coloresConectores.get(c);
             }
