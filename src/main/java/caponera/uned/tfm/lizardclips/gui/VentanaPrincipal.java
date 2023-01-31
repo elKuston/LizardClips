@@ -2,6 +2,7 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
+import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
 
@@ -42,7 +43,7 @@ public class VentanaPrincipal {
     }
 
     public void setNombreCircuito(String nombreCircuito) {
-        frame.setTitle("LizardClips - " + nombreCircuito);
+        frame.setTitle(I18NUtils.getString("app_name") + " - " + nombreCircuito);
     }
 
     private void setupLayout(int width, int height) {
@@ -52,39 +53,44 @@ public class VentanaPrincipal {
                 ImageUtils.cargarImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png")
                           .getImage());
         frame.setSize(width, height);
-        frame.setTitle("LizardClips - Circuito sin nombre");
+        setNombreCircuito(I18NUtils.getString("untitled_circuit"));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
 
         //Menu superior
         JMenuBar barraSuperior = new JMenuBar();
         //   Menu circuito
-        JMenu menuCircuito = new JMenu("Circuito");
+        JMenu menuCircuito = new JMenu(I18NUtils.getString("menu_circuito_title"));
 
-        JMenuItem menuItemCircuitoNuevo = new JMenuItem("Nuevo circuito");
+        JMenuItem menuItemCircuitoNuevo =
+                new JMenuItem(I18NUtils.getString("menuitem_new_circuit"));
         menuItemCircuitoNuevo.addActionListener(e -> controladorCircuito.nuevoCircuito());
         menuCircuito.add(menuItemCircuitoNuevo);
 
-        JMenuItem menuItemCircuitoCargar = new JMenuItem("Cargar circuito");
+        JMenuItem menuItemCircuitoCargar =
+                new JMenuItem(I18NUtils.getString("menuitem_load_circuit"));
         menuItemCircuitoCargar.addActionListener(e -> controladorCircuito.cargar());
         menuCircuito.add(menuItemCircuitoCargar);
 
-        JMenuItem menuItemCircuitoGuardar = new JMenuItem("Guardar circuito");
+        JMenuItem menuItemCircuitoGuardar =
+                new JMenuItem(I18NUtils.getString("menuitem_save_circuit"));
         menuItemCircuitoGuardar.addActionListener(e -> controladorCircuito.guardar());
         menuCircuito.add(menuItemCircuitoGuardar);
 
         barraSuperior.add(menuCircuito);
         //   Menu modelica
-        JMenu menuModelica = new JMenu("Modelica");
-        JMenuItem menuItemModelicaExportar = new JMenuItem("Exportar código Modelica");
+        JMenu menuModelica = new JMenu(I18NUtils.getString("menu_modelica_title"));
+        JMenuItem menuItemModelicaExportar =
+                new JMenuItem(I18NUtils.getString("menuitem_export_modelica"));
         menuItemModelicaExportar.addActionListener(e -> controladorCircuito.exportarCodigo());
         menuModelica.add(menuItemModelicaExportar);
 
         barraSuperior.add(menuModelica);
 
         //   Menu vista
-        JMenu menuVista = new JMenu("Vista");
-        JMenuItem menuItemVistaToggleNombres = new JMenuItem("Mostrar/ocultar nombres de piezas");
+        JMenu menuVista = new JMenu(I18NUtils.getString("menu_view_title"));
+        JMenuItem menuItemVistaToggleNombres =
+                new JMenuItem(I18NUtils.getString("menuitem_show_hide_piece_names"));
         menuItemVistaToggleNombres.addActionListener(
                 e -> controladorCircuito.toggleNombresPiezas());
         menuVista.add(menuItemVistaToggleNombres);

@@ -14,6 +14,7 @@ import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Setter;
@@ -174,7 +175,7 @@ public class ControladorCircuito {
     private Conexion getConexionEnCurso() {
         Optional<Conexion> enCurso = getConexionEnCursoOptional();
         if (!enCurso.isPresent()) {
-            throw new RuntimeException("No hay ninguna conexion en curso");
+            throw new RuntimeException(I18NUtils.getString("no_current_connection"));
         }
         return enCurso.get();
     }
@@ -211,7 +212,7 @@ public class ControladorCircuito {
     public void guardar() {
         String nombre;
         if (circuito.getNombre() == null || circuito.getNombre().isBlank()) {
-            nombre = JOptionPane.showInputDialog("Guardar circuito como: ");
+            nombre = JOptionPane.showInputDialog(I18NUtils.getString("save_circuit_as"));
             circuito.setNombre(nombre);
         }
         if (circuito.getNombre() != null &&
@@ -228,15 +229,14 @@ public class ControladorCircuito {
     public void cargar() {
         List<Circuito> circuitos = circuitoRepository.getAll();
         SelectorCircuito sc = new SelectorCircuito(this, circuitos);
-        String[] opciones = {"Seleccionar", "Cancelar"};
-        int res = JOptionPane.showOptionDialog(null, sc, "Seleccionar circuito",
+        String[] opciones = {I18NUtils.getString("select"), I18NUtils.getString("cancel")};
+        int res = JOptionPane.showOptionDialog(null, sc, I18NUtils.getString("select_circuit"),
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, opciones,
                 opciones[0]);
         if (res == 0) {
             Circuito seleccionado = sc.getCircuitoSeleccionado();
             if (seleccionado == null) {
-                throw new RuntimeException(
-                        "Debes seleccionar un circuito de la lista para cargarlo.");
+                throw new RuntimeException(I18NUtils.getString("must_select_circuit"));
             }
             setCircuito(seleccionado);
             ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
@@ -249,7 +249,7 @@ public class ControladorCircuito {
     public void nuevoCircuito() {
         setCircuito(new Circuito());
         panelCircuito.cambiarCircuito();
-        ventanaPrincipal.setNombreCircuito("Circuito sin nombre");
+        ventanaPrincipal.setNombreCircuito(I18NUtils.getString("untitled_circuit"));
     }
 
     public BufferedImage generarThumbnail() {
@@ -266,7 +266,7 @@ public class ControladorCircuito {
         System.out.println(codigoModelica);
 
         JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Exportar código Modelica como");
+        fileChooser.setDialogTitle(I18NUtils.getString("export_modelica_as"));
         fileChooser.setAcceptAllFileFilterUsed(false);
         fileChooser.setFileFilter(new FileFilter() {
             @Override
@@ -292,8 +292,9 @@ public class ControladorCircuito {
                 fw.write(codigoModelica);
                 fw.close();
                 int result = JOptionPane.showConfirmDialog(ventanaPrincipal.getFrame(),
-                        "¿Quieres abrir ahora el fichero generado?", "Abrir fichero",
-                        JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        I18NUtils.getString("open_file_now_prompt"),
+                        I18NUtils.getString("open_file"), JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE);
                 if (result == JOptionPane.YES_OPTION) {
                     Desktop.getDesktop().open(fileToSave);
                 }

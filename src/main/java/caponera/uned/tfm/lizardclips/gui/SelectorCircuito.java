@@ -2,6 +2,7 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
 import caponera.uned.tfm.lizardclips.modelo.Circuito;
+import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
 
@@ -36,7 +37,7 @@ public class SelectorCircuito extends JComponent implements ItemListener {
         JPanel contenedorListaCircuitos = new JPanel();
         contenedorListaCircuitos.setLayout(
                 new BoxLayout(contenedorListaCircuitos, BoxLayout.Y_AXIS));
-        contenedorListaCircuitos.add(new JLabel("Selecciona un circuito para cargarlo."));
+        contenedorListaCircuitos.add(new JLabel(I18NUtils.getString("select_circuit_to_load_it")));
         listaCircuitos = new java.awt.List(circuitos.size(), false);
         for (Circuito c : circuitos) {
             listaCircuitos.add(c.getNombre());
@@ -48,7 +49,7 @@ public class SelectorCircuito extends JComponent implements ItemListener {
         this.add(contenedorListaCircuitos);
         JPanel contenedorImageView = new JPanel();
         contenedorImageView.setLayout(new BoxLayout(contenedorImageView, BoxLayout.Y_AXIS));
-        contenedorImageView.add(new JLabel("Previsualización del circuito"));
+        contenedorImageView.add(new JLabel(I18NUtils.getString("circuit_preview")));
         imageView = new JLabel();
         imageView.setIcon(
                 ImageUtils.cargarImagenEscalada(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png",
