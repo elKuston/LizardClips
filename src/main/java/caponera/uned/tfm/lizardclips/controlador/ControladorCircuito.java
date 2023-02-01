@@ -347,4 +347,9 @@ public class ControladorCircuito {
     private boolean caracteresPermitidos(String nombre) {
         return Arrays.stream(nombre.split("")).allMatch(CARACTERES_VALIDOS_NOMBRE::contains);
     }
+
+    public void rotarPieza(Pieza pieza, boolean derecha) {
+        pieza.rotar(derecha);
+        panelCircuito.repaint();
+    }
 }

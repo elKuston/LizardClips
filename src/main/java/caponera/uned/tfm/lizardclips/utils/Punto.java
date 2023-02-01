@@ -20,6 +20,11 @@ public class Punto {
         this(p.x, p.y);
     }
 
+    public Punto(Punto otro) {
+        this.x = otro.x;
+        this.y = otro.y;
+    }
+
     public Punto(int x, int y) {
         setXPanel(x);
         setYPanel(y);

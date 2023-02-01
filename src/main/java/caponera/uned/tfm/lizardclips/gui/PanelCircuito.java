@@ -136,17 +136,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                         new Punto(e.getPoint()));
                 if (conector == null) { //Ha pulsado una pieza
                     if (SwingUtilities.isRightMouseButton(e)) {//Click derecho sobre la pieza
-                        JMenuItem anydir = new JMenuItem("+");
-                        anydir.addActionListener(
-                                click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
-                        JMenuItem eliminar = new JMenuItem("-");
-                        eliminar.addActionListener(
-                                click -> controladorCircuito.removeConectorFromPieza(
-                                        piezaSeleccionado));
-                        JPopupMenu menuPieza = new JPopupMenu("Modificar conectores");
-                        menuPieza.add(anydir);
-                        menuPieza.add(eliminar);
-                        menuPieza.show(this, e.getX(), e.getY());
+                        clickDerechoPieza(piezaSeleccionado, e);
                     } else {//Click normal sobre la pieza
                         piezaSeleccionada(piezaSeleccionado, e);
                     }
@@ -155,6 +145,30 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                 }
             }
         }
+    }
+
+    private void clickDerechoPieza(Pieza piezaSeleccionado, MouseEvent e) {
+        JPopupMenu menuPieza = new JPopupMenu("Modificar pieza");
+        JMenuItem anydir = new JMenuItem(I18NUtils.getString("add_input"));
+        anydir.addActionListener(
+                click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
+        menuPieza.add(anydir);
+
+        JMenuItem eliminar = new JMenuItem(I18NUtils.getString("remove_input"));
+        eliminar.addActionListener(
+                click -> controladorCircuito.removeConectorFromPieza(piezaSeleccionado));
+        menuPieza.add(eliminar);
+
+        JMenuItem rotarDerecha = new JMenuItem(I18NUtils.getString("rotate_right"));
+        rotarDerecha.addActionListener(
+                click -> controladorCircuito.rotarPieza(piezaSeleccionado, true));
+        menuPieza.add(rotarDerecha);
+
+        JMenuItem rotarIzquierda = new JMenuItem(I18NUtils.getString("rotate_left"));
+        rotarIzquierda.addActionListener(
+                click -> controladorCircuito.rotarPieza(piezaSeleccionado, false));
+        menuPieza.add(rotarIzquierda);
+        menuPieza.show(this, e.getX(), e.getY());
     }
 
     private Conexion detectarClickLineas(Point point) {

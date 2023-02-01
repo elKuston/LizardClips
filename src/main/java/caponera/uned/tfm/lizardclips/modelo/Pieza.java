@@ -4,6 +4,8 @@ import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
+import caponera.uned.tfm.lizardclips.utils.AnguloRotacion;
+import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.CascadeType;
@@ -53,6 +55,8 @@ public class Pieza implements Serializable {
 
     private Punto posicion;
 
+    private AnguloRotacion rotacion = AnguloRotacion.ROT_0;
+
     @Transient
     @ToString.Exclude
     private ImageIcon imagen;
@@ -101,10 +105,19 @@ public class Pieza implements Serializable {
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector, Punto posicionPieza) {
+        double posicionRelativaX = conector.getPosicionRelativaX();
+        double posicionRelativaY = conector.getPosicionRelativaY();
+        for (int i = 0; i < getRotacion().ordinal(); i++) {
+            double temp = posicionRelativaX;
+            posicionRelativaX = 1 - posicionRelativaY;
+            posicionRelativaY = temp;
 
-        Punto posicionConector = new Punto(
-                (int) (posicionPieza.getX() + conector.getPosicionRelativaX() * getWidth()),
-                (int) (posicionPieza.getY() + conector.getPosicionRelativaY() * getHeight()));
+        }
+
+        Punto posicionConector =
+                new Punto((int) (posicionPieza.getX() + posicionRelativaX * getWidth()),
+                        (int) (posicionPieza.getY() + posicionRelativaY * getHeight()));
+
         //Mantener posición dentro de los limites de la pieza
         if (posicionConector.getX() - Conector.RADIO < posicionPieza.getX()) {
             posicionConector.translate(Conector.RADIO, 0);
@@ -119,6 +132,14 @@ public class Pieza implements Serializable {
             posicionConector.translate(0, -Conector.RADIO);
         }
         return posicionConector;
+    }
+
+    public void rotar(boolean derecha) {
+        int incr = derecha ? 1 : -1;
+        rotacion = AnguloRotacion.values()[
+                (rotacion.ordinal() + incr + AnguloRotacion.values().length) %
+                        AnguloRotacion.values().length];
+        setImagen(ImageUtils.rotar(imagen, 90 * incr));
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector) {
@@ -155,7 +176,7 @@ public class Pieza implements Serializable {
 
     public void addConectorEntrada() {
         if (conectores.size() > tipoPieza.getConectoresEntradaMax()) {
-            throw new RuntimeException("El número máximo de entradas para este tipo de pieza es " +
+            throw new RuntimeException(I18NUtils.getString("max_input_connectors") +
                     tipoPieza.getConectoresEntradaMax());
         }
         Conector c = new Conector(0, 1, TipoConector.ENTRADA);
@@ -167,7 +188,7 @@ public class Pieza implements Serializable {
 
     public void removeConectorEntrada() {
         if (conectores.size() - 2 < tipoPieza.getConectoresEntradaMin()) {
-            throw new RuntimeException("El número mínimo de entradas para este tipo de pieza es " +
+            throw new RuntimeException(I18NUtils.getString("min_input_connectors") +
                     tipoPieza.getConectoresEntradaMin());
         }
         Conector c = conectores.get(conectores.size() - 2);
