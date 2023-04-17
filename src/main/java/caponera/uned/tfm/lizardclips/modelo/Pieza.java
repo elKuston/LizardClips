@@ -55,6 +55,7 @@ public class Pieza implements Serializable {
 
     private Punto posicion;
 
+    @Enumerated(EnumType.ORDINAL)
     private AnguloRotacion rotacion = AnguloRotacion.ROT_0;
 
     @Transient
@@ -99,9 +100,10 @@ public class Pieza implements Serializable {
     }
 
     @PostLoad
-    protected void cargarImagen() {
-        setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), tamano.width,
-                tamano.height));
+    protected void postLoad() {
+        setImagen(ImageUtils.rotar(
+                ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), tamano.width,
+                        tamano.height), -rotacion.getAngulo()));
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector, Punto posicionPieza) {
@@ -109,8 +111,8 @@ public class Pieza implements Serializable {
         double posicionRelativaY = conector.getPosicionRelativaY();
         for (int i = 0; i < getRotacion().ordinal(); i++) {
             double temp = posicionRelativaX;
-            posicionRelativaX = 1 - posicionRelativaY;
-            posicionRelativaY = temp;
+            posicionRelativaX = posicionRelativaY;
+            posicionRelativaY = 1 - temp;
 
         }
 
@@ -135,11 +137,11 @@ public class Pieza implements Serializable {
     }
 
     public void rotar(boolean derecha) {
-        int incr = derecha ? 1 : -1;
+        int incr = derecha ? -1 : 1;
         rotacion = AnguloRotacion.values()[
                 (rotacion.ordinal() + incr + AnguloRotacion.values().length) %
                         AnguloRotacion.values().length];
-        setImagen(ImageUtils.rotar(imagen, 90 * incr));
+        setImagen(ImageUtils.rotar(imagen, 90 * -incr));
     }
 
     public Punto getPosicionConectorEnPanel(Conector conector) {

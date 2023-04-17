@@ -90,10 +90,33 @@ public class ModelicaGenerator {
         Punto top_right = new Punto(pos.getX() + p.getWidth(), pos.getY());
         Punto bottom_left_scaled = escalarPunto(bottom_left, true);
         Punto top_right_scaled = escalarPunto(top_right, true);
+        double offset_x = 0, offset_y = 0;
+
+        switch (p.getRotacion()) {
+            case ROT_0 -> {
+
+            }
+            case ROT_90 -> {
+                offset_x = -p.getHeight() * ESCALA_ANNOTATION;
+                //offset_x = -p.getWidth() * ESCALA_ANNOTATION;
+            }
+            case ROT_180 -> {
+                offset_y = -p.getHeight() * ESCALA_ANNOTATION;
+                offset_x = -p.getWidth() * ESCALA_ANNOTATION;
+            }
+            case ROT_270 -> {
+                offset_y = -p.getHeight() * ESCALA_ANNOTATION;
+            }
+        }
         return String.format(
-                "annotation (Placement(transformation(extent={{%d,%d},{%d,%d}}, rotation=0)))",
-                bottom_left_scaled.getX(), bottom_left_scaled.getY(), top_right_scaled.getX(),
-                top_right_scaled.getY());
+                "annotation (Placement(transformation(extent={{%d,%d},{%d,%d}}, rotation=%d, origin={%d,%d})))",
+                (int) (0 + offset_x), //bottom left x
+                (int) (-p.getHeight() * ESCALA_ANNOTATION - offset_y), //bottom left y
+                (int) (p.getWidth() * ESCALA_ANNOTATION + offset_x), //top right x
+                (int) (0 - offset_y), //top right y
+                p.getRotacion().getAngulo(), //rotation
+                (int) (pos.getX() * ESCALA_ANNOTATION),//origin x
+                (int) (-pos.getY() * ESCALA_ANNOTATION));//origin y
     }
 
     private static List<String> generarDeclaracionPieza(Pieza p) {
