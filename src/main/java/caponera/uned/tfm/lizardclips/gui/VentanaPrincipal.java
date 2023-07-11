@@ -85,6 +85,11 @@ public class VentanaPrincipal {
         menuItemModelicaExportar.addActionListener(e -> controladorCircuito.exportarCodigo());
         menuModelica.add(menuItemModelicaExportar);
 
+        JMenuItem menuItemModelicaVisualizar =
+                new JMenuItem(I18NUtils.getString("menuitem_view_modelica"));
+        menuItemModelicaVisualizar.addActionListener(e -> controladorCircuito.verCodigo());
+        menuModelica.add(menuItemModelicaVisualizar);
+
         barraSuperior.add(menuModelica);
 
         //   Menu vista

@@ -9,6 +9,7 @@ import caponera.uned.tfm.lizardclips.db.PiezaRepository;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
 import caponera.uned.tfm.lizardclips.gui.SelectorCircuito;
 import caponera.uned.tfm.lizardclips.gui.VentanaPrincipal;
+import caponera.uned.tfm.lizardclips.gui.VentanaVisualizarCodigo;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
@@ -19,8 +20,7 @@ import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Setter;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
+import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -307,6 +307,11 @@ public class ControladorCircuito {
         }
     }
 
+    public void verCodigo() {
+        String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
+        SwingUtilities.invokeLater(() -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
+    }
+
     public void addConectorToPieza(Pieza p) {
         p.addConectorEntrada();
         panelCircuito.repaint();
@@ -352,4 +357,6 @@ public class ControladorCircuito {
         pieza.rotar(derecha);
         panelCircuito.repaint();
     }
+
+
 }
