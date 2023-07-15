@@ -262,10 +262,11 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                     controladorCircuito.renombrarPieza(pieza, nuevoNombre);
                 }*/
                 EditorPropiedadesPieza epp = new EditorPropiedadesPieza(pieza);
-                String[] opciones = {I18NUtils.getString("select"), I18NUtils.getString("cancel")};
+                String[] opciones =
+                        {I18NUtils.getString("apply_changes"), I18NUtils.getString("cancel")};
                 int res = JOptionPane.showOptionDialog(null, epp,
-                        I18NUtils.getString("select_circuit"), JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+                        I18NUtils.getString("edit_component"), JOptionPane.YES_NO_OPTION,
+                        JOptionPane.PLAIN_MESSAGE, null, opciones, opciones[0]);
                 if (res == 0) {//Aceptar cambios
                     epp.actualizarValorPropiedades();
                 }

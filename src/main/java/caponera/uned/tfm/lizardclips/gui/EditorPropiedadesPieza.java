@@ -1,5 +1,6 @@
 package caponera.uned.tfm.lizardclips.gui;
 
+import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.modelo.Propiedad;
 import caponera.uned.tfm.lizardclips.modelo.PropiedadSeleccionMultiple;
@@ -19,15 +20,21 @@ public class EditorPropiedadesPieza extends JComponent {
     private Pieza pieza;
     private Map<Propiedad, JComponent> mapaPropiedades;
 
+    private JTextField tfNombrePieza;
+
     public EditorPropiedadesPieza(Pieza pieza) {
         this.pieza = pieza;
         mapaPropiedades = new HashMap<>();
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        tfNombrePieza = new JTextField(ModelicaGenerator.nombrePieza(pieza));
+        addPropiedad("nombre", tfNombrePieza);
+
+
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
         for (int i = 0; i < propiedades.size(); i++) {
             Propiedad p = propiedades.get(i);
-            Label nameLabel = new Label(p.getDescripcion());
             JComponent rightSide;
             if (p instanceof PropiedadSeleccionMultiple) {
                 List<String> valoresPosibles =
@@ -44,17 +51,24 @@ public class EditorPropiedadesPieza extends JComponent {
 
             mapaPropiedades.put(p, rightSide);
 
-            JPanel row = new JPanel();
-            row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
-            row.add(nameLabel);
-            row.add(rightSide);
-            add(row);
+            addPropiedad(p.getDescripcion(), rightSide);
         }
 
     }
 
+    private void addPropiedad(String name, JComponent rightSide) {
+        JPanel row = new JPanel();
+        row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
+        row.add(new Label(name));
+        row.add(rightSide);
+        add(row);
+    }
+
     public void actualizarValorPropiedades() {
-        System.out.println("Actualizando valores");
+        String nuevoNombre = tfNombrePieza.getText();
+        if (nuevoNombre != null && !nuevoNombre.isEmpty()) {
+            pieza.getCircuito().getControlador().renombrarPieza(pieza, nuevoNombre);
+        }
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
         for (int i = 0; i < propiedades.size(); i++) {
             Propiedad p = propiedades.get(i);
