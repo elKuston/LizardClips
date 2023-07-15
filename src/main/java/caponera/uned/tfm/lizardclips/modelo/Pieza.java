@@ -75,6 +75,8 @@ public class Pieza implements Serializable {
     @Enumerated(EnumType.ORDINAL)
     private TipoPieza tipoPieza;
 
+    private String[] valoresPropiedades;
+
     public Pieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
         this.circuito = circuito;
         this.tipoPieza = tipoPieza;
@@ -82,6 +84,13 @@ public class Pieza implements Serializable {
         this.conectores.forEach(con -> con.setPieza(this));
         setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
                 ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
+        this.valoresPropiedades =
+                tipoPieza.getPropiedades().stream().map(prop -> prop.getValor().toString())
+                         .toArray(String[]::new);
+    }
+
+    public void setValorPropiedad(int nPropiedad, String valorPropiedad) {
+        valoresPropiedades[nPropiedad] = valorPropiedad;
     }
 
     private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
