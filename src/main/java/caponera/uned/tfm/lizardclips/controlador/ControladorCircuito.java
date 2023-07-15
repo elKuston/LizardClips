@@ -20,7 +20,9 @@ import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Setter;
 
-import javax.swing.*;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileFilter;
 import java.awt.Desktop;
 import java.awt.Dimension;
@@ -224,8 +226,9 @@ public class ControladorCircuito {
             AbstractRepository.startTransaction();
             circuito.getComponentes().forEach(piezaRepository::guardar);
             circuito.getConexiones().forEach(conexionRepository::guardar);
-            setCircuito(circuitoRepository.guardar(circuito));
+            Circuito guardado = circuitoRepository.guardar(circuito);
             AbstractRepository.endTransaction();
+            setCircuito(guardado);
         }
     }
 
@@ -309,7 +312,8 @@ public class ControladorCircuito {
 
     public void verCodigo() {
         String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
-        SwingUtilities.invokeLater(() -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
+        SwingUtilities.invokeLater(
+                () -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
     }
 
     public void addConectorToPieza(Pieza p) {
