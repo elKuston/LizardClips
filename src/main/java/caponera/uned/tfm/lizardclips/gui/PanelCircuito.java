@@ -2,7 +2,6 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.constant.ModoPanel;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
-import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
@@ -252,7 +251,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
             Pieza pieza = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
             if (pieza != null) {
-                String nombreOriginal = pieza.getNombrePieza() != null ? pieza.getNombrePieza() :
+                /*String nombreOriginal = pieza.getNombrePieza() != null ? pieza.getNombrePieza() :
                         ModelicaGenerator.nombrePieza(pieza);
                 String nuevoNombre =
                         JOptionPane.showInputDialog(I18NUtils.getString("rename_component_prompt"),
@@ -261,6 +260,14 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                 if (nuevoNombre != null && !nuevoNombre.isEmpty() &&
                         !nuevoNombre.equals(nombreOriginal)) {
                     controladorCircuito.renombrarPieza(pieza, nuevoNombre);
+                }*/
+                EditorPropiedadesPieza epp = new EditorPropiedadesPieza(pieza);
+                String[] opciones = {I18NUtils.getString("select"), I18NUtils.getString("cancel")};
+                int res = JOptionPane.showOptionDialog(null, epp,
+                        I18NUtils.getString("select_circuit"), JOptionPane.YES_NO_OPTION,
+                        JOptionPane.QUESTION_MESSAGE, null, opciones, opciones[0]);
+                if (res == 0) {//Aceptar cambios
+                    epp.actualizarValorPropiedades();
                 }
             }
         }
