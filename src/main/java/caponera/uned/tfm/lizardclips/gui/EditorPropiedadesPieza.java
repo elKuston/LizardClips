@@ -51,7 +51,7 @@ public class EditorPropiedadesPieza extends JComponent {
 
             mapaPropiedades.put(p, rightSide);
 
-            addPropiedad(p.getDescripcion(), rightSide);
+            addPropiedad(p.getNombre(), rightSide);
         }
 
     }
@@ -66,7 +66,8 @@ public class EditorPropiedadesPieza extends JComponent {
 
     public void actualizarValorPropiedades() {
         String nuevoNombre = tfNombrePieza.getText();
-        if (nuevoNombre != null && !nuevoNombre.isEmpty()) {
+        if (nuevoNombre != null && !nuevoNombre.isEmpty() &&
+                !nuevoNombre.equals(ModelicaGenerator.nombrePieza(pieza))) {
             pieza.getCircuito().getControlador().renombrarPieza(pieza, nuevoNombre);
         }
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
