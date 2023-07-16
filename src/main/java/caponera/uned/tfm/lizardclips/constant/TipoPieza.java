@@ -25,15 +25,19 @@ public enum TipoPieza {
     XNOR("XNOR", ImageUtils.pathImagenMedia("xnor.png"), 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".Xnor", List.of()),
     SET("SET", ImageUtils.pathImagenMedia("set.png"), 0, 0, ModelicaGenerator.SOURCES + ".Set",
-            List.of(new PropiedadLogic("x"))),
+            List.of(new PropiedadLogic("x", ""))),
     STEP("STEP", ImageUtils.pathImagenMedia("step.png"), 0, 0, ModelicaGenerator.SOURCES + ".Step",
-            List.of(new PropiedadLogic("before"), new PropiedadLogic("after", "'1'"),
-                    new PropiedadSimple("0", "stepTime", Propiedad.UNIDAD_REAL))),
+            List.of(new PropiedadLogic("before", "Logic value before step"),
+                    new PropiedadLogic("after", "'1'", "Logic value after step"),
+                    new PropiedadSimple("0", "stepTime", Propiedad.UNIDAD_REAL, "step time"))),
     DIGITAL_CLOCK("DIGITAL_CLOCK", ImageUtils.pathImagenMedia("clock.png"), 0, 0,
             ModelicaGenerator.SOURCES + ".DigitalClock",
-            List.of(new PropiedadSimple("0", "startTime", Propiedad.UNIDAD_TIME),
-                    new PropiedadSimple("1", "period", Propiedad.UNIDAD_TIME),
-                    new PropiedadSimple("50", "width", Propiedad.UNIDAD_REAL)));
+            List.of(new PropiedadSimple("0", "startTime", Propiedad.UNIDAD_TIME,
+                            "Output = offset for time < startTime [s]"),
+                    new PropiedadSimple("1", "period", Propiedad.UNIDAD_TIME,
+                            "Time for one period [s]"),
+                    new PropiedadSimple("50", "width", Propiedad.UNIDAD_REAL,
+                            "Width of pulses in % of period")));
     final String nombre;
     final String pathImagen;
     final String claseModelica;

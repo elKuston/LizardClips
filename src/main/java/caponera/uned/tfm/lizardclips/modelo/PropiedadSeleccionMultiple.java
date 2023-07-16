@@ -16,13 +16,13 @@ public class PropiedadSeleccionMultiple extends Propiedad<String> {
     @Getter
     private String prefix;
 
-    public PropiedadSeleccionMultiple(String valor, String nombre, List<String> valoresPosibles, String unidad) {
-        super(valor, nombre, unidad);
+    public PropiedadSeleccionMultiple(String valor, String nombre, List<String> valoresPosibles, String unidad, String tooltipDescription) {
+        super(valor, nombre, unidad, tooltipDescription);
         this.valoresPosibles = valoresPosibles;
     }
 
-    public PropiedadSeleccionMultiple(String valor, String nombre, List<String> valoresPosibles, String prefix, String unidad) {
+    public PropiedadSeleccionMultiple(String valor, String nombre, List<String> valoresPosibles, String prefix, String unidad, String tooltipDescription) {
         this(prefix + valor, nombre, valoresPosibles.stream().map(vp -> prefix + vp).toList(),
-                unidad);
+                unidad, tooltipDescription);
     }
 }

@@ -9,9 +9,9 @@ import caponera.uned.tfm.lizardclips.modelo.PropiedadSimple;
 import javax.swing.BoxLayout;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.Label;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +29,7 @@ public class EditorPropiedadesPieza extends JComponent {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         tfNombrePieza = new JTextField(ModelicaGenerator.nombrePieza(pieza));
-        addPropiedad("nombre", tfNombrePieza);
+        addPropiedad("nombre", null, tfNombrePieza);
 
 
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
@@ -51,15 +51,19 @@ public class EditorPropiedadesPieza extends JComponent {
 
             mapaPropiedades.put(p, rightSide);
 
-            addPropiedad(p.getNombre(), rightSide);
+            addPropiedad(p.getNombre(), p.getTooltipDescription(), rightSide);
         }
 
     }
 
-    private void addPropiedad(String name, JComponent rightSide) {
+    private void addPropiedad(String name, String tooltipDescription, JComponent rightSide) {
         JPanel row = new JPanel();
         row.setLayout(new BoxLayout(row, BoxLayout.X_AXIS));
-        row.add(new Label(name));
+        JLabel nameLabel = new JLabel(name);
+        if (tooltipDescription != null) {
+            nameLabel.setToolTipText(tooltipDescription);
+        }
+        row.add(nameLabel);
         row.add(rightSide);
         add(row);
     }

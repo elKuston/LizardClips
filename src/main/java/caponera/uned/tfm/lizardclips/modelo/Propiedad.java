@@ -20,5 +20,9 @@ public abstract class Propiedad<T> {
     @Setter
     private String unidad;
 
+    @Getter
+    @Setter
+    private String tooltipDescription;
+
 
 }
