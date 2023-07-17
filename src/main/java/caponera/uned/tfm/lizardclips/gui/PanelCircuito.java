@@ -186,6 +186,8 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             if (controladorCircuito.getConectoresValidos(conectorSeleccionado).contains(conector)) {
                 controladorCircuito.finalizarConexion(conector);
                 setModo(ModoPanel.MODO_NORMAL);
+            } else {
+                throw new RuntimeException(I18NUtils.getString("invalid-connection"));
             }
         } else {
             this.conectorSeleccionado = conector;
@@ -298,7 +300,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         Graphics2D g2 = (Graphics2D) g;
         for (Conexion c : controladorCircuito.getConexiones()) {
             List<Punto> puntos = new ArrayList<>(c.getPuntos());
-            if (isModo(ModoPanel.MODO_CONEXION) && c.enCurso()) {
+            if (isModo(ModoPanel.MODO_CONEXION) && c.enCurso() && getMousePosition() != null) {
                 puntos.add(new Punto(getMousePosition()));
             }
             List<Punto> puntosManhattan = LineUtils.getPuntosManhattan(puntos);
