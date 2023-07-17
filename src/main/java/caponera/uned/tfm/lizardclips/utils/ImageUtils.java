@@ -19,6 +19,10 @@ public class ImageUtils {
     public static final int DEFAULT_IMAGE_HEIGHT = 65;
     private static Map<DescriptorImagen, ImageIcon> imagenesCacheadas = new HashMap<>();
 
+    public static final String pathImagenMedia(String nombreImagen) {
+        return ImageUtils.MEDIA_BASE_FOLDER + "/" + nombreImagen;
+    }
+
     public static ImageIcon cargarImageIcon(String pathImagen) {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
         //ClassLoader classLoader = ImageUtils.class.getClassLoader();

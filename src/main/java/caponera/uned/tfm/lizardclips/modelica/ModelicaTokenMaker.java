@@ -1,25 +1,31 @@
 package caponera.uned.tfm.lizardclips.modelica;
 
-import org.fife.ui.rsyntaxtextarea.*;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
+import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
+import org.fife.ui.rsyntaxtextarea.Token;
+import org.fife.ui.rsyntaxtextarea.TokenMap;
+import org.fife.ui.rsyntaxtextarea.TokenTypes;
 
 import javax.swing.text.Segment;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ModelicaTokenMaker extends AbstractTokenMaker {
     public static final List<String> reserved_words =
-            List.of("equation", "annotation", "extends", "encapsulated", "flow", "for", "if", "import", "input",
-                    "output", "partial", "stream", "time", "when", "while", "block", "class", "connector", "function",
-                    "model", "package", "record", "type", "end", "else");
+            List.of("equation", "annotation", "extends", "encapsulated", "flow", "for", "if",
+                    "import", "input", "output", "partial", "stream", "time", "when", "while",
+                    "block", "class", "connector", "function", "model", "package", "record", "type",
+                    "end", "else", "parameter");
     public static final List<String> operators =
-            List.of("abs", "acos", "actualStream", "array", "asin", "assert", "atan", "atan2", "cardinality", "cat",
-                    "ceil", "change", "connect", "Connections.root", "Connections.branch", "Connections.potentialRoot",
-                    "Connections.isRoot", "Connections.rooted", "cos", "cosh", "cross", "delay", "der", "diagonal",
-                    "div", "edge", "exp", "fill", "floor", "homotopy", "identity", "initial", "inStream", "Integer",
-                    "integer", "linspace", "log", "log10", "matrix", "max", "min", "mod", "ndims", "noEvent", "ones",
-                    "outerProduct", "pre", "product", "reinit", "rem", "rooted", "sample", "scalar", "semiLinear",
-                    "sign", "sin", "sinh", "size", "skew", "smooth", "sqrt", "String", "sum", "symmetric", "tan",
-                    "tanh", "terminal", "terminate", "transpose", "vector", "zeros");
+            List.of("abs", "acos", "actualStream", "array", "asin", "assert", "atan", "atan2",
+                    "cardinality", "cat", "ceil", "change", "connect", "Connections.root",
+                    "Connections.branch", "Connections.potentialRoot", "Connections.isRoot",
+                    "Connections.rooted", "cos", "cosh", "cross", "delay", "der", "diagonal", "div",
+                    "edge", "exp", "fill", "floor", "homotopy", "identity", "initial", "inStream",
+                    "Integer", "integer", "linspace", "log", "log10", "matrix", "max", "min", "mod",
+                    "ndims", "noEvent", "ones", "outerProduct", "pre", "product", "reinit", "rem",
+                    "rooted", "sample", "scalar", "semiLinear", "sign", "sin", "sinh", "size",
+                    "skew", "smooth", "sqrt", "String", "sum", "symmetric", "tan", "tanh",
+                    "terminal", "terminate", "transpose", "vector", "zeros");
 
     @Override
     public TokenMap getWordsToHighlight() {
@@ -190,14 +196,16 @@ public class ModelicaTokenMaker extends AbstractTokenMaker {
 
                         case ' ':
                         case '\t':
-                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT,
+                            addToken(text, currentTokenStart, i - 1,
+                                    Token.LITERAL_NUMBER_DECIMAL_INT,
                                     newStartOffset + currentTokenStart);
                             currentTokenStart = i;
                             currentTokenType = Token.WHITESPACE;
                             break;
 
                         case '"':
-                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT,
+                            addToken(text, currentTokenStart, i - 1,
+                                    Token.LITERAL_NUMBER_DECIMAL_INT,
                                     newStartOffset + currentTokenStart);
                             currentTokenStart = i;
                             currentTokenType = Token.LITERAL_STRING_DOUBLE_QUOTE;
@@ -210,7 +218,8 @@ public class ModelicaTokenMaker extends AbstractTokenMaker {
                             }
 
                             // Otherwise, remember this was a number and start over.
-                            addToken(text, currentTokenStart, i - 1, Token.LITERAL_NUMBER_DECIMAL_INT,
+                            addToken(text, currentTokenStart, i - 1,
+                                    Token.LITERAL_NUMBER_DECIMAL_INT,
                                     newStartOffset + currentTokenStart);
                             i--;
                             currentTokenType = Token.NULL;
@@ -221,7 +230,8 @@ public class ModelicaTokenMaker extends AbstractTokenMaker {
 
                 case Token.COMMENT_EOL:
                     i = end - 1;
-                    addToken(text, currentTokenStart, i, currentTokenType, newStartOffset + currentTokenStart);
+                    addToken(text, currentTokenStart, i, currentTokenType,
+                            newStartOffset + currentTokenStart);
                     // We need to set token type to null so at the bottom we don't add one more token.
                     currentTokenType = Token.NULL;
                     break;
@@ -242,7 +252,8 @@ public class ModelicaTokenMaker extends AbstractTokenMaker {
 
             // Remember what token type to begin the next line with.
             case Token.LITERAL_STRING_DOUBLE_QUOTE:
-                addToken(text, currentTokenStart, end - 1, currentTokenType, newStartOffset + currentTokenStart);
+                addToken(text, currentTokenStart, end - 1, currentTokenType,
+                        newStartOffset + currentTokenStart);
                 break;
 
             // Do nothing if everything was okay.
@@ -252,7 +263,8 @@ public class ModelicaTokenMaker extends AbstractTokenMaker {
 
             // All other token types don't continue to the next line...
             default:
-                addToken(text, currentTokenStart, end - 1, currentTokenType, newStartOffset + currentTokenStart);
+                addToken(text, currentTokenStart, end - 1, currentTokenType,
+                        newStartOffset + currentTokenStart);
                 addNullToken();
 
         }
