@@ -53,6 +53,12 @@ public class ImageUtils {
         return rescalarImagenPreserveRatio(pathImagen, raw, ancho, alto);
     }
 
+    public static ImageIcon cargarImagenEscalada(String pathImagen, double ratio) {
+        ImageIcon raw = cargarImageIcon(pathImagen);
+        return rescalarImagenPreserveRatio(pathImagen, raw, (int) (raw.getIconWidth() * ratio),
+                (int) (raw.getIconHeight() * ratio));
+    }
+
     public static ImageIcon rescalarImagenPreserveRatio(String pathImagen, ImageIcon raw, int ancho, int alto) {
         double imageRatio = 1.0 * raw.getIconWidth() / raw.getIconHeight();
         double containerRatio = 1.0 * ancho / alto;

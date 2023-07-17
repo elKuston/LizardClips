@@ -87,7 +87,8 @@ public class ControladorCircuito {
 
     public void arrastrarPieza(Pieza pieza, Punto posicion, Dimension grabPoint) {
         Punto posicionReal = posicion;
-        posicionReal.translate((int) -grabPoint.getWidth(), (int) -grabPoint.getHeight());
+        posicionReal.translate((int) (-grabPoint.getWidth() / Punto.getEscala()),
+                (int) (-grabPoint.getHeight() / Punto.getEscala()));
         if (dentroDelPanel(posicionReal, pieza.getTamano())) {
             circuito.moverPieza(pieza, posicionReal);
         }
