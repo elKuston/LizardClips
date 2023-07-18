@@ -17,7 +17,7 @@ public class Punto {
     @Getter
     private static float escala = 1f;
     @Transient
-    private static final float escala_min = 0.1f, escala_max = 10f;
+    private static final float escala_min = 0.1f, escala_max = 2f;
 
     //Coordenadas virtuales en un hipotético plano infinito
     private int x, y;
