@@ -1,21 +1,13 @@
 package caponera.uned.tfm.lizardclips.gui;
 
+import caponera.uned.tfm.lizardclips.constant.TabPaleta;
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
 import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
 
-import javax.swing.BoxLayout;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToggleButton;
-import javax.swing.WindowConstants;
+import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -51,7 +43,7 @@ public class VentanaPrincipal {
         frame = new JFrame();
         frame.setIconImage(
                 ImageUtils.cargarImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png")
-                          .getImage());
+                        .getImage());
         frame.setSize(width, height);
         setNombreCircuito(I18NUtils.getString("untitled_circuit"));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -114,15 +106,26 @@ public class VentanaPrincipal {
         lateral.setLayout(new BoxLayout(lateral, BoxLayout.Y_AXIS));
         lateral.setBorder(new MatteBorder(0, 0, 0, 2, Color.GRAY));
 
-        for (TipoPieza tp : TipoPieza.values()) {
-            JButton b = new JButton("",
-                    ImageUtils.cargarImageneEscaladaPreserveRatio(tp.getPathImagen(),
-                            ANCHO_BOTONES_LATERALES, ALTO_BOTONES_LATERALES));
-            b.setToolTipText(tp.getNombre());
-            b.addActionListener(
-                    e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
-            lateral.add(b);
+        JTabbedPane tabs = new JTabbedPane(JTabbedPane.LEFT, JTabbedPane.SCROLL_TAB_LAYOUT);
+        for (TabPaleta tab : TabPaleta.values()) {
+            JPanel tabContent = new JPanel();
+            tabContent.setLayout(new BoxLayout(tabContent, BoxLayout.Y_AXIS));
+            for (TipoPieza tp : TipoPieza.values()) {
+                if (tp.getTabPaleta().equals(tab)) {
+                    JButton b = new JButton("",
+                            ImageUtils.cargarImageneEscaladaPreserveRatio(tp.getPathImagen(),
+                                    ANCHO_BOTONES_LATERALES, ALTO_BOTONES_LATERALES));
+                    b.setToolTipText(tp.getNombre());
+                    b.addActionListener(
+                            e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
+                    tabContent.add(b);
+                }
+            }
+
+            tabs.add(tab.getNombre(), tabContent);
         }
+
+        lateral.add(tabs);
 
         JToggleButton borrar = new JToggleButton("", ImageUtils.cargarImageneEscaladaPreserveRatio(
                 ImageUtils.MEDIA_BASE_FOLDER + "/trash.png", ANCHO_BOTONES_LATERALES,
