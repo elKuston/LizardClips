@@ -17,7 +17,7 @@ public class Punto {
     @Getter
     private static float escala = 1f;
     @Transient
-    private static final float escala_min = 0.1f, escala_max = 2f;
+    private static final float ESCALA_MIN = 0.1f, ESCALA_MAX = 2f;
 
     //Coordenadas virtuales en un hipotético plano infinito
     private int x, y;
@@ -37,8 +37,8 @@ public class Punto {
     }
 
     public static void reescalar(float dZ) {
-        escala = Math.min(escala_max,
-                Math.max(escala_min, escala + dZ)); //Asegurar que escala está entre min y max
+        escala = Math.min(ESCALA_MAX,
+                Math.max(ESCALA_MIN, escala + dZ)); //Asegurar que escala está entre min y max
         System.out.println("Nueva escala: " + escala);
     }
 
