@@ -15,12 +15,12 @@ public class Punto {
     private static int referenciaX = 0, referenciaY = 0;
     @Transient
     @Getter
-    private static float escala = 1f;
+    private static double escala = 1f;
     @Transient
     private static final float ESCALA_MIN = 0.1f, ESCALA_MAX = 2f;
 
     //Coordenadas virtuales en un hipotético plano infinito
-    private int x, y;
+    private double x, y;
 
     public Punto(Point p) {
         this(p.x, p.y);
@@ -57,7 +57,7 @@ public class Punto {
     }
 
     private void setXPanel(int xPanel) {
-        x = (int) ((xPanel - referenciaX) / escala);
+        x = (xPanel - referenciaX) / escala;
     }
 
     public int getY() {
@@ -65,15 +65,15 @@ public class Punto {
     }
 
     private void setYPanel(int yPanel) {
-        y = (int) ((yPanel - referenciaY) / escala);
+        y = (yPanel - referenciaY) / escala;
     }
 
     public int getXVirtual() {
-        return x;
+        return (int) x;
     }
 
     public int getYVirtual() {
-        return y;
+        return (int) y;
     }
 
     public Point getPoint() {
