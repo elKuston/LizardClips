@@ -82,11 +82,10 @@ public class Pieza implements Serializable {
         this.tipoPieza = tipoPieza;
         this.conectores = generarConectores(tipoPieza, nConectoresEntrada);
         this.conectores.forEach(con -> con.setPieza(this));
-        setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
-                ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
+        setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), Punto.getEscala()));
         this.valoresPropiedades =
                 tipoPieza.getPropiedades().stream().map(prop -> prop.getValor().toString())
-                         .toArray(String[]::new);
+                        .toArray(String[]::new);
     }
 
     public void setValorPropiedad(int nPropiedad, String valorPropiedad) {
@@ -130,17 +129,17 @@ public class Pieza implements Serializable {
                         (int) (posicionPieza.getY() + posicionRelativaY * getHeight()));
 
         //Mantener posición dentro de los limites de la pieza
-        if (posicionConector.getX() - Conector.RADIO < posicionPieza.getX()) {
-            posicionConector.translate(Conector.RADIO, 0);
+        if (posicionConector.getX() - Conector.getRadio() < posicionPieza.getX()) {
+            posicionConector.translate(Conector.getRadio(), 0);
         }
-        if (posicionConector.getX() + Conector.RADIO > posicionPieza.getX() + getWidth()) {
-            posicionConector.translate(-Conector.RADIO, 0);
+        if (posicionConector.getX() + Conector.getRadio() > posicionPieza.getX() + getWidth()) {
+            posicionConector.translate(-Conector.getRadio(), 0);
         }
-        if (posicionConector.getY() - Conector.RADIO < posicionPieza.getY()) {
-            posicionConector.translate(0, Conector.RADIO);
+        if (posicionConector.getY() - Conector.getRadio() < posicionPieza.getY()) {
+            posicionConector.translate(0, Conector.getRadio());
         }
-        if (posicionConector.getY() + Conector.RADIO > posicionPieza.getY() + getHeight()) {
-            posicionConector.translate(0, -Conector.RADIO);
+        if (posicionConector.getY() + Conector.getRadio() > posicionPieza.getY() + getHeight()) {
+            posicionConector.translate(0, -Conector.getRadio());
         }
         return posicionConector;
     }
@@ -176,8 +175,8 @@ public class Pieza implements Serializable {
             }
             g.setColor(color);
             Punto pos = getPosicionConectorEnPanel(c, posicion);
-            g.fillOval((int) (pos.getX() - Conector.RADIO), (int) (pos.getY() - Conector.RADIO),
-                    (2 * Conector.RADIO), (2 * Conector.RADIO));
+            g.fillOval((int) (pos.getX() - Conector.getRadio()), (int) (pos.getY() - Conector.getRadio()),
+                    (2 * Conector.getRadio()), (2 * Conector.getRadio()));
             g.setColor(Color.BLACK);
         }
         if (isRenerNombresPiezas()) {
