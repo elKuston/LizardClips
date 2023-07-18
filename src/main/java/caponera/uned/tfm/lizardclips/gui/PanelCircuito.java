@@ -6,6 +6,7 @@ import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.utils.I18NUtils;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.LineUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Getter;
@@ -31,13 +32,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener {
+public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
     private ModoPanel modo;
     private Dimension grabPoint;
     private Pieza piezaSeleccionada;
@@ -49,6 +52,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     public PanelCircuito() {
         addMouseListener(this);
         addMouseMotionListener(this);
+        addMouseWheelListener(this);
         setModo(ModoPanel.MODO_NORMAL);
         setupEscKey();
         setBackground(Color.WHITE);
@@ -276,6 +280,22 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         }
     }
 
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        System.out.println("Mouse wheel moved!");
+        reescalar(e.getWheelRotation() * .1f);
+    }
+
+    private void reescalar(float dZ) {
+        Punto.reescalar(dZ);
+        for (Pieza p : controladorCircuito.getPiezas()) {
+            p.setImagen(ImageUtils.rotar(
+                    ImageUtils.cargarImagenEscalada(p.getTipoPieza().getPathImagen(),
+                            Punto.getEscala()), -p.getRotacion().getAngulo()));
+        }
+        repaint();
+    }
+
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -292,7 +312,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         }
         //for (Map.Entry<Pieza, Punto> entry : controladorCircuito.getPiezasPosicionEntrySet()) {
         for (Pieza p : controladorCircuito.getPiezas()) {
-            p.dibujar(this, g, p.getPosicion(), false, coloresConectores);
+            p.dibujar(this, g, p.getPosicion(), true, coloresConectores);
         }
 
         //Dibujar conexiones

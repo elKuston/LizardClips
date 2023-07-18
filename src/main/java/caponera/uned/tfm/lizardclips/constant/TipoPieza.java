@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 public enum TipoPieza {
     NOT("NOT", ImageUtils.pathImagenMedia("not.png"), 1, 1, ModelicaGenerator.BASIC + ".Not",
-            List.of()), AND("AND", ImageUtils.pathImagenMedia("/and.png"), 2, Integer.MAX_VALUE,
+            List.of()), AND("AND", ImageUtils.pathImagenMedia("and.png"), 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".And", List.of()),
     NAND("NAND", ImageUtils.pathImagenMedia("nand.png"), 2, Integer.MAX_VALUE,
             ModelicaGenerator.BASIC + ".Nand", List.of()),

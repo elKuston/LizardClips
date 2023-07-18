@@ -87,7 +87,8 @@ public class ControladorCircuito {
 
     public void arrastrarPieza(Pieza pieza, Punto posicion, Dimension grabPoint) {
         Punto posicionReal = posicion;
-        posicionReal.translate((int) -grabPoint.getWidth(), (int) -grabPoint.getHeight());
+        posicionReal.translate((int) (-grabPoint.getWidth() / Punto.getEscala()),
+                (int) (-grabPoint.getHeight() / Punto.getEscala()));
         if (dentroDelPanel(posicionReal, pieza.getTamano())) {
             circuito.moverPieza(pieza, posicionReal);
         }
@@ -105,8 +106,8 @@ public class ControladorCircuito {
 
     public Pieza getPiezaByPosicion(Punto posicionRaton) {
         return circuito.getComponentes().stream()
-                       .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
-                       .orElse(null);
+                .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
+                .orElse(null);
     }
 
     public Conector getConectorByPosicion(Punto posicion) {
@@ -126,7 +127,7 @@ public class ControladorCircuito {
             double d = Math.sqrt(Math.pow(posicionConector.getX() - posicion.getX(), 2) +
                     Math.pow(posicionConector.getY() - posicion.getY(), 2));
             System.out.println(d);
-            if (d <= Conector.RADIO) {
+            if (d <= Conector.getRadio()) {
                 System.out.println("clicking on conector");
                 conector = c;
             }
@@ -338,7 +339,7 @@ public class ControladorCircuito {
     public void renombrarPieza(Pieza pieza, String nuevoNombre) {
         sanitize(nuevoNombre);
         if (circuito.getComponentes().stream()
-                    .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
+                .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
             throw new RuntimeException(I18NUtils.getString("duplicate_component_name"));
         }
         pieza.setNombrePieza(nuevoNombre);
