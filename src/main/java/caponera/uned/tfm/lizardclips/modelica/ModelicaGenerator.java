@@ -48,6 +48,7 @@ public class ModelicaGenerator {
         sj.add("import " + LOGIC + " = " + LOGIC_IMPORT);
         sj.add("import " + SOURCES + " = " + SOURCES_IMPORT);
         sj.add("import " + SI + " = " + SI_IMPORT);
+        sj.add("import " + GATES + " = " + GATES_IMPORT);
         sj.add("\n");
         return sj.toString();
     }
