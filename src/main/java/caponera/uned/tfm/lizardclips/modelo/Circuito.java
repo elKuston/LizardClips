@@ -57,6 +57,14 @@ public class Circuito implements Serializable {
         conexiones = new ArrayList<>();
     }
 
+    public Circuito(Circuito otro) {
+        componentes = new ArrayList<>(
+                otro.getComponentes().stream().map(comp -> new Pieza(this, comp)).toList());
+        conexiones = new ArrayList<>(
+                otro.getConexiones().stream().map(con -> new Conexion(con, componentes)).toList());
+        controlador = otro.getControlador();
+    }
+
     public byte[] getThumbnail() {
         return thumbnail;
     }

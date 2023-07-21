@@ -50,6 +50,26 @@ public class Conexion implements Serializable {
         this.puntosIntermedios = new ArrayList<>();
     }
 
+    public Conexion(Conexion otra, List<Pieza> componentes) {
+        this.puntosIntermedios =
+                new ArrayList<>(otra.puntosIntermedios.stream().map(Punto::new).toList());
+        this.puntosIntermediosX = new ArrayList<>();
+        this.puntosIntermediosY = new ArrayList<>();
+
+        List<Conector> conectoresPiezaOrigenOtra = otra.getOrigen().getPieza().getConectores();
+        List<Conector> conectoresPiezaDestinoOtra = otra.getOrigen().getPieza().getConectores();
+        int indexConectorOrigen = conectoresPiezaOrigenOtra.indexOf(otra.getOrigen());
+        int indexConectorDestino = conectoresPiezaDestinoOtra.indexOf(otra.getDestino());
+        Pieza piezaOrigen = componentes.get(
+                otra.getOrigen().getPieza().getCircuito().getComponentes()
+                    .indexOf(otra.getOrigen().getPieza()));
+        Pieza piezaDestino = componentes.get(
+                otra.getDestino().getPieza().getCircuito().getComponentes()
+                    .indexOf(otra.getDestino().getPieza()));
+        this.origen = piezaOrigen.getConectores().get(indexConectorOrigen);
+        this.destino = piezaDestino.getConectores().get(indexConectorDestino);
+    }
+
     public Conexion() {
         this.puntosIntermedios = new ArrayList<>();
         puntosIntermediosX = new ArrayList<>();

@@ -84,6 +84,20 @@ public class Pieza implements Serializable {
                 ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
     }
 
+    public Pieza(Circuito circ, Pieza otra) {
+        this.circuito = circ;
+        this.tipoPieza = otra.getTipoPieza();
+        this.conectores = generarConectores(tipoPieza, (int) otra.getConectores().stream()
+                                                                 .filter(con -> con.getTipoConector()
+                                                                                   .equals(TipoConector.ENTRADA))
+                                                                 .count());
+        this.nombrePieza = otra.getNombrePieza();
+        this.posicion = new Punto(otra.getPosicion());
+        this.rotacion = otra.getRotacion();
+        setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
+                ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
+    }
+
     private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
         if (nConectoresEntrada < tipoPieza.getConectoresEntradaMin() ||
                 (tipoPieza.getConectoresEntradaMax() > 0 &&
