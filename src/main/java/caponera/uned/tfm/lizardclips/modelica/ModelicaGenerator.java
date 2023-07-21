@@ -18,11 +18,13 @@ public class ModelicaGenerator {
     public static final String LOGIC = "L";
     public static final String DIGITAL = "D";
     public static final String SOURCES = "S";
+    public static final String GATES = "G";
     public static final String SI = "SI";
     private static final String DIGITAL_IMPORT = "Modelica.Electrical.Digital";
     private static final String BASIC_IMPORT = "Modelica.Electrical.Digital.Basic";
     private static final String LOGIC_IMPORT = "Modelica.Electrical.Digital.Interfaces.Logic";
     private static final String SOURCES_IMPORT = "Modelica.Electrical.Digital.Sources";
+    private static final String GATES_IMPORT = "Modelica.Electrical.Digital.Gates";
     private static final String SI_IMPORT = "Modelica.Units.SI";
 
     private static final double ESCALA_ANNOTATION = 0.3;
@@ -46,6 +48,7 @@ public class ModelicaGenerator {
         sj.add("import " + LOGIC + " = " + LOGIC_IMPORT);
         sj.add("import " + SOURCES + " = " + SOURCES_IMPORT);
         sj.add("import " + SI + " = " + SI_IMPORT);
+        sj.add("import " + GATES + " = " + GATES_IMPORT);
         sj.add("\n");
         return sj.toString();
     }
