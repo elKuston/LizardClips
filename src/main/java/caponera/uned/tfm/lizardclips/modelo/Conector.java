@@ -47,6 +47,7 @@ public class Conector implements Serializable {
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id_pieza")
     @ToString.Exclude
+    @Setter
     private Pieza pieza;
 
     public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector) {

@@ -91,6 +91,7 @@ public class Pieza implements Serializable {
                                                                  .filter(con -> con.getTipoConector()
                                                                                    .equals(TipoConector.ENTRADA))
                                                                  .count());
+        this.conectores.forEach(con -> con.setPieza(this));
         this.nombrePieza = otra.getNombrePieza();
         this.posicion = new Punto(otra.getPosicion());
         this.rotacion = otra.getRotacion();
