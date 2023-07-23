@@ -5,6 +5,7 @@ import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
+import caponera.uned.tfm.lizardclips.modelo.Propiedad;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 
 import java.util.ArrayList;
@@ -17,11 +18,13 @@ public class ModelicaGenerator {
     public static final String LOGIC = "L";
     public static final String DIGITAL = "D";
     public static final String SOURCES = "S";
+    public static final String GATES = "G";
     public static final String SI = "SI";
     private static final String DIGITAL_IMPORT = "Modelica.Electrical.Digital";
     private static final String BASIC_IMPORT = "Modelica.Electrical.Digital.Basic";
     private static final String LOGIC_IMPORT = "Modelica.Electrical.Digital.Interfaces.Logic";
     private static final String SOURCES_IMPORT = "Modelica.Electrical.Digital.Sources";
+    private static final String GATES_IMPORT = "Modelica.Electrical.Digital.Gates";
     private static final String SI_IMPORT = "Modelica.Units.SI";
 
     private static final double ESCALA_ANNOTATION = 0.3;
@@ -45,6 +48,7 @@ public class ModelicaGenerator {
         sj.add("import " + LOGIC + " = " + LOGIC_IMPORT);
         sj.add("import " + SOURCES + " = " + SOURCES_IMPORT);
         sj.add("import " + SI + " = " + SI_IMPORT);
+        sj.add("import " + GATES + " = " + GATES_IMPORT);
         sj.add("\n");
         return sj.toString();
     }
@@ -119,9 +123,47 @@ public class ModelicaGenerator {
                 (int) (-pos.getY() * ESCALA_ANNOTATION));//origin y
     }
 
+    private static String nombrePropiedad(Pieza p, Propiedad prop) {
+        return nombrePieza(p) + "_" + prop.getNombre();
+    }
+
+    private static String generarAsignacionParametrosPieza(Pieza p) {
+        boolean requiresN = p.getTipoPieza().getConectoresEntradaMin() !=
+                p.getTipoPieza().getConectoresEntradaMax();
+        List<Propiedad> propiedadesPieza = p.getTipoPieza().getPropiedades();
+        String res = "";
+        if (propiedadesPieza.size() > 0 || requiresN) {
+            StringJoiner sj = new StringJoiner(", ");
+            for (int i = 0; i < propiedadesPieza.size(); i++) {
+                Propiedad prop = propiedadesPieza.get(i);
+                sj.add(prop.getNombre() + " = " + nombrePropiedad(p, prop));
+            }
+
+            if (requiresN) {
+                sj.add("n=" + p.getConectores().stream()
+                               .filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA))
+                               .count());
+            }
+
+            res = "(" + sj + ")";
+        }
+        return res;
+    }
+
     private static List<String> generarDeclaracionPieza(Pieza p) {
         List<String> declaracion = new ArrayList<>();
-        switch (p.getTipoPieza()) {
+        List<Propiedad> propiedadesPieza = p.getTipoPieza().getPropiedades();
+        for (int i = 0; i < propiedadesPieza.size(); i++) {
+            Propiedad prop = propiedadesPieza.get(i);
+            declaracion.add(String.format("parameter %s %s = %s", prop.getUnidad(),
+                    nombrePropiedad(p, prop), p.getValoresPropiedades()[i]));
+        }
+
+        declaracion.add(
+                String.format("%s %s %s %s", p.getTipoPieza().getClaseModelica(), nombrePieza(p),
+                        generarAsignacionParametrosPieza(p), generarAnotacion(p)));
+
+        /*switch (p.getTipoPieza()) {
 
             case AND, NAND, OR, NOR, XOR, XNOR -> {
                 declaracion.add(
@@ -140,18 +182,13 @@ public class ModelicaGenerator {
                         nombrePieza(p), generarAnotacion(p)));
             }
             case DIGITAL_CLOCK -> {
-                declaracion.add(
-                        String.format("parameter %s.Time %s_startTime = 0", SI, nombrePieza(p)));
-                declaracion.add(
-                        String.format("parameter %s.Time %s_period = 1", SI, nombrePieza(p)));
-                declaracion.add(String.format("parameter Real %s_width = 50", nombrePieza(p)));
                 declaracion.add(String.format(
                         "%s %s (startTime=%s_startTime, period=%s_period,width=%s_width) %s",
                         p.getTipoPieza().getClaseModelica(), nombrePieza(p), nombrePieza(p),
                         nombrePieza(p), nombrePieza(p), generarAnotacion(p)));
             }
             default -> throw new RuntimeException("error_generating_component_code");
-        }
+        }*/
         return declaracion;
     }
 

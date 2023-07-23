@@ -2,11 +2,11 @@ package caponera.uned.tfm.lizardclips.gui;
 
 import caponera.uned.tfm.lizardclips.constant.ModoPanel;
 import caponera.uned.tfm.lizardclips.controlador.ControladorCircuito;
-import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Conexion;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.utils.I18NUtils;
+import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import caponera.uned.tfm.lizardclips.utils.LineUtils;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import lombok.Getter;
@@ -32,13 +32,15 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener {
+public class PanelCircuito extends JPanel implements MouseListener, MouseMotionListener, MouseWheelListener {
     private ModoPanel modo;
     private Dimension grabPoint;
     private Pieza piezaSeleccionada;
@@ -50,6 +52,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
     public PanelCircuito() {
         addMouseListener(this);
         addMouseMotionListener(this);
+        addMouseWheelListener(this);
         setModo(ModoPanel.MODO_NORMAL);
         setupEscKey();
         setBackground(Color.WHITE);
@@ -187,6 +190,8 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             if (controladorCircuito.getConectoresValidos(conectorSeleccionado).contains(conector)) {
                 controladorCircuito.finalizarConexion(conector);
                 setModo(ModoPanel.MODO_NORMAL);
+            } else {
+                throw new RuntimeException(I18NUtils.getString("invalid-connection"));
             }
         } else {
             this.conectorSeleccionado = conector;
@@ -252,7 +257,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         if (e.getClickCount() == 2 && SwingUtilities.isLeftMouseButton(e)) {
             Pieza pieza = controladorCircuito.getPiezaByPosicion(new Punto(e.getPoint()));
             if (pieza != null) {
-                String nombreOriginal = pieza.getNombrePieza() != null ? pieza.getNombrePieza() :
+                /*String nombreOriginal = pieza.getNombrePieza() != null ? pieza.getNombrePieza() :
                         ModelicaGenerator.nombrePieza(pieza);
                 String nuevoNombre =
                         JOptionPane.showInputDialog(I18NUtils.getString("rename_component_prompt"),
@@ -261,9 +266,34 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
                 if (nuevoNombre != null && !nuevoNombre.isEmpty() &&
                         !nuevoNombre.equals(nombreOriginal)) {
                     controladorCircuito.renombrarPieza(pieza, nuevoNombre);
+                }*/
+                EditorPropiedadesPieza epp = new EditorPropiedadesPieza(pieza);
+                String[] opciones =
+                        {I18NUtils.getString("apply_changes"), I18NUtils.getString("cancel")};
+                int res = JOptionPane.showOptionDialog(null, epp,
+                        I18NUtils.getString("edit_component"), JOptionPane.YES_NO_OPTION,
+                        JOptionPane.PLAIN_MESSAGE, null, opciones, opciones[0]);
+                if (res == 0) {//Aceptar cambios
+                    epp.actualizarValorPropiedades();
                 }
             }
         }
+    }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        System.out.println("Mouse wheel moved!");
+        reescalar(e.getWheelRotation() * .1f);
+    }
+
+    private void reescalar(float dZ) {
+        Punto.reescalar(dZ);
+        for (Pieza p : controladorCircuito.getPiezas()) {
+            p.setImagen(ImageUtils.rotar(
+                    ImageUtils.cargarImagenEscalada(p.getTipoPieza().getPathImagen(),
+                            Punto.getEscala()), -p.getRotacion().getAngulo()));
+        }
+        repaint();
     }
 
 
@@ -290,7 +320,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
         Graphics2D g2 = (Graphics2D) g;
         for (Conexion c : controladorCircuito.getConexiones()) {
             List<Punto> puntos = new ArrayList<>(c.getPuntos());
-            if (isModo(ModoPanel.MODO_CONEXION) && c.enCurso()) {
+            if (isModo(ModoPanel.MODO_CONEXION) && c.enCurso() && getMousePosition() != null) {
                 puntos.add(new Punto(getMousePosition()));
             }
             List<Punto> puntosManhattan = LineUtils.getPuntosManhattan(puntos);

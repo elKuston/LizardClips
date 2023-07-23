@@ -28,7 +28,7 @@ import java.util.Objects;
 @Entity
 @NoArgsConstructor
 public class Conector implements Serializable {
-    public static final int RADIO = 3;
+    private static final int RADIO = 3;
     public static final Color colorConector = Color.BLACK; //new Color(119, 0, 200);
 
     @ToString.Exclude
@@ -54,6 +54,10 @@ public class Conector implements Serializable {
         this.posicionRelativaX = posicionRelativaX;
         this.posicionRelativaY = posicionRelativaY;
         this.tipoConector = tipoConector;
+    }
+
+    public static int getRadio() {
+        return (int) (RADIO * (1 + Math.max((Punto.getEscala() - 1), 0)));//se agranda pero no se reduce
     }
 
     public Punto getPosicionEnPanel() {
