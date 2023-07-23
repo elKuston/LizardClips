@@ -69,6 +69,11 @@ public class VentanaPrincipal {
         menuItemCircuitoGuardar.addActionListener(e -> controladorCircuito.guardar());
         menuCircuito.add(menuItemCircuitoGuardar);
 
+        JMenuItem menuItemCircuitoGuardarComo =
+                new JMenuItem(I18NUtils.getString("menuitem_save_circuit_as"));
+        menuItemCircuitoGuardarComo.addActionListener(e -> controladorCircuito.guardar_como());
+        menuCircuito.add(menuItemCircuitoGuardarComo);
+
         barraSuperior.add(menuCircuito);
         //   Menu modelica
         JMenu menuModelica = new JMenu(I18NUtils.getString("menu_modelica_title"));

@@ -215,8 +215,18 @@ public class ControladorCircuito {
         circuito.borrarConexion(clicada);
     }
 
-    public void guardar() {
+    public void guardar(boolean duplicar) {
         String nombre;
+        if (duplicar) {
+            /*circuito.setIdCircuito(null);
+            circuito.setNombre("");
+            circuito.getComponentes().forEach(pieza -> pieza.setIdPieza(null));
+            circuito.getConexiones().forEach(conexion -> conexion.setIdConexion(null));
+            circuito.getConexiones().forEach(conexion -> conexion.getOrigen().setIdConector(null));
+            circuito.getConexiones().forEach(conexion -> conexion.getDestino().setIdConector(null));*/
+            setCircuito(new Circuito(circuito));
+        }
+
         if (circuito.getNombre() == null || circuito.getNombre().isBlank()) {
             nombre = JOptionPane.showInputDialog(I18NUtils.getString("save_circuit_as"));
             circuito.setNombre(nombre);
@@ -231,6 +241,14 @@ public class ControladorCircuito {
             AbstractRepository.endTransaction();
             setCircuito(guardado);
         }
+    }
+
+    public void guardar() {
+        guardar(false);
+    }
+
+    public void guardar_como() {
+        guardar(true);
     }
 
     public void cargar() {
