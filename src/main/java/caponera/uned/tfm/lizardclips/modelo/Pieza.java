@@ -85,7 +85,7 @@ public class Pieza implements Serializable {
         setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), Punto.getEscala()));
         this.valoresPropiedades =
                 tipoPieza.getPropiedades().stream().map(prop -> prop.getValor().toString())
-                        .toArray(String[]::new);
+                         .toArray(String[]::new);
     }
 
     public void setValorPropiedad(int nPropiedad, String valorPropiedad) {
@@ -105,6 +105,7 @@ public class Pieza implements Serializable {
         this.rotacion = otra.getRotacion();
         setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
                 ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
+        this.valoresPropiedades = otra.valoresPropiedades.clone();
     }
 
     private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
@@ -190,8 +191,9 @@ public class Pieza implements Serializable {
             }
             g.setColor(color);
             Punto pos = getPosicionConectorEnPanel(c, posicion);
-            g.fillOval((int) (pos.getX() - Conector.getRadio()), (int) (pos.getY() - Conector.getRadio()),
-                    (2 * Conector.getRadio()), (2 * Conector.getRadio()));
+            g.fillOval((int) (pos.getX() - Conector.getRadio()),
+                    (int) (pos.getY() - Conector.getRadio()), (2 * Conector.getRadio()),
+                    (2 * Conector.getRadio()));
             g.setColor(Color.BLACK);
         }
         if (isRenerNombresPiezas()) {
