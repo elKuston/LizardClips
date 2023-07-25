@@ -122,7 +122,7 @@ public class VentanaPrincipal {
                                     ANCHO_BOTONES_LATERALES, ALTO_BOTONES_LATERALES));
                     b.setToolTipText(tp.getNombre());
                     b.addActionListener(
-                            e -> controladorCircuito.generarPieza(tp, tp.getConectoresEntradaMin()));
+                            e -> controladorCircuito.generarPieza(tp));
                     tabContent.add(b);
                 }
             }

@@ -1,5 +1,6 @@
 package caponera.uned.tfm.lizardclips.modelo;
 
+import caponera.uned.tfm.lizardclips.constant.ConectorTemplate;
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.utils.Punto;
 import jakarta.persistence.CascadeType;
@@ -50,10 +51,18 @@ public class Conector implements Serializable {
     @Setter
     private Pieza pieza;
 
-    public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector) {
+    private String nombreConector;
+
+    public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector, String nombre) {
         this.posicionRelativaX = posicionRelativaX;
         this.posicionRelativaY = posicionRelativaY;
         this.tipoConector = tipoConector;
+        this.nombreConector = nombre;
+    }
+
+    public Conector(ConectorTemplate template, int index) {
+        this(template.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1, 0, template.getTipo(),
+                template.getNombre() + "[" + index + "]");
     }
 
     public static int getRadio() {

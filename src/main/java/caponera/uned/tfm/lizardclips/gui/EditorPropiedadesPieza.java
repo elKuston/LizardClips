@@ -1,17 +1,14 @@
 package caponera.uned.tfm.lizardclips.gui;
 
+import caponera.uned.tfm.lizardclips.constant.ConectorTemplate;
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
 import caponera.uned.tfm.lizardclips.modelo.Pieza;
 import caponera.uned.tfm.lizardclips.modelo.Propiedad;
 import caponera.uned.tfm.lizardclips.modelo.PropiedadSeleccionMultiple;
 import caponera.uned.tfm.lizardclips.modelo.PropiedadSimple;
 
-import javax.swing.BoxLayout;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +18,7 @@ public class EditorPropiedadesPieza extends JComponent {
     private Map<Propiedad, JComponent> mapaPropiedades;
 
     private JTextField tfNombrePieza;
+    private List<JSpinner> tfNumeroPinesConectoresMultiples;
 
     public EditorPropiedadesPieza(Pieza pieza) {
         this.pieza = pieza;
@@ -30,6 +28,18 @@ public class EditorPropiedadesPieza extends JComponent {
 
         tfNombrePieza = new JTextField(ModelicaGenerator.nombrePieza(pieza));
         addPropiedad("nombre", null, tfNombrePieza);
+
+        tfNumeroPinesConectoresMultiples = new ArrayList<>();
+        List<ConectorTemplate> conectoresMultiples =
+                pieza.getTipoPieza().getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple).toList();
+        for (int i = 0; i < conectoresMultiples.size(); i++) {
+            ConectorTemplate ct = conectoresMultiples.get(i);
+            JSpinner selector =
+                    new JSpinner(new SpinnerNumberModel(pieza.getNPinesConectorMultiple(i), ct.getMinConectores(),
+                            ct.getMaxConectores(), 1));
+            addPropiedad("n_" + ct.getNombre(), "número de pines para el conector " + ct.getNombre(), selector);
+            tfNumeroPinesConectoresMultiples.add(selector);
+        }
 
 
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
@@ -74,14 +84,19 @@ public class EditorPropiedadesPieza extends JComponent {
                 !nuevoNombre.equals(ModelicaGenerator.nombrePieza(pieza))) {
             pieza.getCircuito().getControlador().renombrarPieza(pieza, nuevoNombre);
         }
+
+        int[] newNPinesConectoresMultiples = tfNumeroPinesConectoresMultiples.stream()
+                .mapToInt(sp -> ((SpinnerNumberModel) sp.getModel()).getNumber().intValue()).toArray();
+        pieza.getCircuito().getControlador().actualizarConectoresPieza(pieza, newNPinesConectoresMultiples);
+
         List<Propiedad> propiedades = pieza.getTipoPieza().getPropiedades();
         for (int i = 0; i < propiedades.size(); i++) {
             Propiedad p = propiedades.get(i);
             String nuevoValor;
             if (p instanceof PropiedadSeleccionMultiple) {
                 nuevoValor = ((PropiedadSeleccionMultiple) p).getValoresPosibles()
-                                                             .get(((JComboBox) mapaPropiedades.get(
-                                                                     p)).getSelectedIndex());
+                        .get(((JComboBox) mapaPropiedades.get(
+                                p)).getSelectedIndex());
             } else if (p instanceof PropiedadSimple) {
                 nuevoValor = ((JTextField) mapaPropiedades.get(p)).getText();
             } else {

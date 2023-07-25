@@ -170,8 +170,8 @@ public class ControladorCircuito {
         return bounds.contains(punto.getPoint());
     }
 
-    public void generarPieza(TipoPieza tipoPieza, int nConectoresEntrada) {
-        panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza, nConectoresEntrada));
+    public void generarPieza(TipoPieza tipoPieza) {
+        panelCircuito.addPiezaByDragging(new Pieza(circuito, tipoPieza));
     }
 
     private Optional<Conexion> getConexionEnCursoOptional() {
@@ -335,7 +335,7 @@ public class ControladorCircuito {
                 () -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
     }
 
-    public void addConectorToPieza(Pieza p) {
+    /*public void addConectorToPieza(Pieza p) {
         p.addConectorEntrada();
         panelCircuito.repaint();
     }
@@ -343,7 +343,7 @@ public class ControladorCircuito {
     public void removeConectorFromPieza(Pieza p) {
         p.removeConectorEntrada();
         panelCircuito.repaint();
-    }
+    }*/
 
     public void cancelarConexion() {
         circuito.cancelarConexion();
@@ -382,4 +382,8 @@ public class ControladorCircuito {
     }
 
 
+    public void actualizarConectoresPieza(Pieza p, int[] newNPinesConectoresMultiples) {
+        p.actualizarConectores(newNPinesConectoresMultiples);
+        panelCircuito.repaint();
+    }
 }

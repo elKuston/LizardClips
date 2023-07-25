@@ -152,15 +152,6 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     private void clickDerechoPieza(Pieza piezaSeleccionado, MouseEvent e) {
         JPopupMenu menuPieza = new JPopupMenu("Modificar pieza");
-        JMenuItem anydir = new JMenuItem(I18NUtils.getString("add_input"));
-        anydir.addActionListener(
-                click -> controladorCircuito.addConectorToPieza(piezaSeleccionado));
-        menuPieza.add(anydir);
-
-        JMenuItem eliminar = new JMenuItem(I18NUtils.getString("remove_input"));
-        eliminar.addActionListener(
-                click -> controladorCircuito.removeConectorFromPieza(piezaSeleccionado));
-        menuPieza.add(eliminar);
 
         JMenuItem rotarDerecha = new JMenuItem(I18NUtils.getString("rotate_right"));
         rotarDerecha.addActionListener(
@@ -176,13 +167,13 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
 
     private Conexion detectarClickLineas(Point point) {
         return controladorCircuito.getConexiones().stream()
-                                  .filter(con -> LineUtils.getParejas(con.getPuntosManhattan())
-                                                          .stream().anyMatch(
-                                                  pareja -> new Line2D.Double(pareja[0].getPoint(),
-                                                          pareja[1].getPoint()).intersects(
-                                                          new Rectangle(point,
-                                                                  new Dimension(10, 10)))))
-                                  .findFirst().orElse(null);
+                .filter(con -> LineUtils.getParejas(con.getPuntosManhattan())
+                        .stream().anyMatch(
+                                pareja -> new Line2D.Double(pareja[0].getPoint(),
+                                        pareja[1].getPoint()).intersects(
+                                        new Rectangle(point,
+                                                new Dimension(10, 10)))))
+                .findFirst().orElse(null);
     }
 
     private void conectorSeleccionado(Conector conector) {
@@ -307,7 +298,7 @@ public class PanelCircuito extends JPanel implements MouseListener, MouseMotionL
             coloresConectores = controladorCircuito.getAllConectores().stream().collect(
                     Collectors.toMap(con -> con,
                             con -> controladorCircuito.getConectoresValidos(conectorSeleccionado)
-                                                      .contains(con) ? Conector.colorConector :
+                                    .contains(con) ? Conector.colorConector :
                                     Color.GRAY));
         }
         //for (Map.Entry<Pieza, Punto> entry : controladorCircuito.getPiezasPosicionEntrySet()) {

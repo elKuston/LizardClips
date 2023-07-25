@@ -1,5 +1,6 @@
 package caponera.uned.tfm.lizardclips.modelo;
 
+import caponera.uned.tfm.lizardclips.constant.ConectorTemplate;
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.constant.TipoPieza;
 import caponera.uned.tfm.lizardclips.gui.PanelCircuito;
@@ -27,12 +28,10 @@ import lombok.Setter;
 import lombok.ToString;
 
 import javax.swing.ImageIcon;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Rectangle;
+import java.awt.*;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,49 +76,71 @@ public class Pieza implements Serializable {
 
     private String[] valoresPropiedades;
 
-    public Pieza(Circuito circuito, TipoPieza tipoPieza, int nConectoresEntrada) {
+    private int[] nPinesConectoresMultiples;
+
+    public Pieza(Circuito circuito, TipoPieza tipoPieza) {
         this.circuito = circuito;
         this.tipoPieza = tipoPieza;
-        this.conectores = generarConectores(tipoPieza, nConectoresEntrada);
-        this.conectores.forEach(con -> con.setPieza(this));
+        setupConectores();
         setImagen(ImageUtils.cargarImagenEscalada(tipoPieza.getPathImagen(), Punto.getEscala()));
         this.valoresPropiedades =
                 tipoPieza.getPropiedades().stream().map(prop -> prop.getValor().toString())
-                         .toArray(String[]::new);
+                        .toArray(String[]::new);
+
+    }
+
+    private void setupConectores() {
+        this.nPinesConectoresMultiples =
+                tipoPieza.getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple)
+                        .mapToInt(ConectorTemplate::getMinConectores).toArray();
+        this.conectores = generarConectores(tipoPieza);
+        this.conectores.forEach(con -> con.setPieza(this));
+        reposicionarConectores();
+    }
+
+    public Pieza(Circuito circ, Pieza otra) {
+        this(circ, otra.getTipoPieza());
+        this.setNombrePieza(otra.getNombrePieza());
+        this.setPosicion(new Punto(otra.getPosicion()));
+        this.setRotacion(otra.getRotacion());
+        this.setValoresPropiedades(otra.valoresPropiedades.clone());
+
     }
 
     public void setValorPropiedad(int nPropiedad, String valorPropiedad) {
         valoresPropiedades[nPropiedad] = valorPropiedad;
     }
 
-    public Pieza(Circuito circ, Pieza otra) {
-        this.circuito = circ;
-        this.tipoPieza = otra.getTipoPieza();
-        this.conectores = generarConectores(tipoPieza, (int) otra.getConectores().stream()
-                                                                 .filter(con -> con.getTipoConector()
-                                                                                   .equals(TipoConector.ENTRADA))
-                                                                 .count());
-        this.conectores.forEach(con -> con.setPieza(this));
-        this.nombrePieza = otra.getNombrePieza();
-        this.posicion = new Punto(otra.getPosicion());
-        this.rotacion = otra.getRotacion();
-        setImagen(ImageUtils.cargarImageneEscaladaPreserveRatio(tipoPieza.getPathImagen(),
-                ImageUtils.DEFAULT_IMAGE_WIDTH, ImageUtils.DEFAULT_IMAGE_HEIGHT));
-        this.valoresPropiedades = otra.valoresPropiedades.clone();
+    public int getNPinesConectorMultiple(int indiceConectorMultiple) {
+        return nPinesConectoresMultiples[indiceConectorMultiple];
     }
 
-    private List<Conector> generarConectores(TipoPieza tipoPieza, int nConectoresEntrada) {
-        if (nConectoresEntrada < tipoPieza.getConectoresEntradaMin() ||
-                (tipoPieza.getConectoresEntradaMax() > 0 &&
-                        nConectoresEntrada > tipoPieza.getConectoresEntradaMax())) {
-            throw new RuntimeException("No se puede crear una pieza de este tipo");
-        }
+    public void setNPinesConectorMultiple(int indiceConectorMultiple, int nPines) {
+        nPinesConectoresMultiples[indiceConectorMultiple] = nPines;
+    }
+
+    private List<Conector> generarConectores(TipoPieza tipoPieza) {
         List<Conector> lista = new ArrayList<>();
-        for (int i = 0; i < nConectoresEntrada; i++) {
-            float pos_y = (i + 1) / (nConectoresEntrada * 1f + 1);
-            lista.add(new Conector(0, pos_y, TipoConector.ENTRADA));
+
+        //Conectores con nombre
+
+        List<ConectorTemplate> conectoresMultiples =
+                tipoPieza.getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple).toList();
+        List<ConectorTemplate> conectoresIndividuales =
+                tipoPieza.getConectoresConNombre().stream().filter(con -> !con.isMultiple()).toList();
+
+        for (int i = 0; i < conectoresMultiples.size(); i++) {
+            ConectorTemplate cm = conectoresMultiples.get(i);
+            double posRelX = cm.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1;
+            for (int c = 0; c < nPinesConectoresMultiples[i]; c++) {
+                lista.add(new Conector(cm, c + 1));
+            }
         }
-        lista.add(new Conector(1, 0.5, TipoConector.SALIDA));
+
+        for (ConectorTemplate ci : conectoresIndividuales) {
+            double posRelX = ci.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1;
+            lista.add(new Conector(posRelX, 0.5, ci.getTipo(), ci.getNombre()));
+        }
         return lista;
     }
 
@@ -173,7 +194,8 @@ public class Pieza implements Serializable {
     }
 
 
-    public void dibujar(PanelCircuito panelCircuito, Graphics g, Punto posicion, boolean dibujarContorno, Map<Conector, Color> coloresConectores) {
+    public void dibujar(PanelCircuito panelCircuito, Graphics g, Punto posicion, boolean dibujarContorno,
+                        Map<Conector, Color> coloresConectores) {
         if (getImagen() != null) {
             getImagen().paintIcon(panelCircuito, g, (int) posicion.getX(), (int) posicion.getY());
         }
@@ -195,40 +217,59 @@ public class Pieza implements Serializable {
                     (int) (pos.getY() - Conector.getRadio()), (2 * Conector.getRadio()),
                     (2 * Conector.getRadio()));
             g.setColor(Color.BLACK);
+
+            g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 3 * Conector.getRadio()));
+            g.drawString(c.getNombreConector(), pos.getX() - 2 * Conector.getRadio(),
+                    pos.getY() - 2 * Conector.getRadio());
         }
         if (isRenerNombresPiezas()) {
             g.drawString(ModelicaGenerator.nombrePieza(this), posicion.getX(), posicion.getY() - 2);
         }
     }
 
-    public void addConectorEntrada() {
-        if (conectores.size() > tipoPieza.getConectoresEntradaMax()) {
-            throw new RuntimeException(I18NUtils.getString("max_input_connectors") +
-                    tipoPieza.getConectoresEntradaMax());
-        }
-        Conector c = new Conector(0, 1, TipoConector.ENTRADA);
-        c.setPieza(this);
-        //Size-2 porque siempre queremos que el conector de salida sea el último
-        conectores.add(conectores.size() - 1, c);
-        reposicionarConectores();
-    }
-
-    public void removeConectorEntrada() {
-        if (conectores.size() - 2 < tipoPieza.getConectoresEntradaMin()) {
-            throw new RuntimeException(I18NUtils.getString("min_input_connectors") +
-                    tipoPieza.getConectoresEntradaMin());
-        }
-        Conector c = conectores.get(conectores.size() - 2);
-        circuito.borrarConexionesConector(c);
-        conectores.remove(c);
-        reposicionarConectores();
-    }
-
     public void reposicionarConectores() {
-        for (int i = 0; i < conectores.size() - 1; i++) {
-            float pos_y = (i + 1) / (conectores.size() * 1f);
-            conectores.get(i).setPosicionRelativaY(pos_y);
+        List<Conector> entradas =
+                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA)).toList();
+        List<Conector> salidas =
+                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.SALIDA)).toList();
+
+        for (int i = 0; i < entradas.size(); i++) {
+            float pos_y = (i + 1) / ((entradas.size() + 1) * 1f);
+            entradas.get(i).setPosicionRelativaY(pos_y);
         }
+
+        for (int i = 0; i < salidas.size(); i++) {
+            float pos_y = (i + 1) / ((salidas.size() + 1) * 1f);
+            salidas.get(i).setPosicionRelativaY(pos_y);
+        }
+    }
+
+
+    public void actualizarConectores(int[] newNPinesConectoresMultiples) {
+        int counter = 0;
+        for (int i = 0; i < nPinesConectoresMultiples.length; i++) {
+            ConectorTemplate ct = tipoPieza.getConectoresConNombre().get(i);
+            int n = nPinesConectoresMultiples[i];
+            int newN = newNPinesConectoresMultiples[i];
+            counter += n;
+            int diff = newN - n;
+            for (int d = 0; d < Math.abs(diff); d++) {
+                if (diff > 0) {
+                    Conector c = new Conector(ct, n + d + 1);
+                    c.setPieza(this);
+                    conectores.add(counter, c);
+                    counter++;
+                } else {
+                    Conector c = conectores.get(counter - 1);
+                    circuito.borrarConexionesConector(c);
+                    conectores.remove(c);
+                }
+            }
+
+        }
+        this.nPinesConectoresMultiples = newNPinesConectoresMultiples.clone();
+
+        reposicionarConectores();
     }
 
     public int getWidth() {
@@ -283,4 +324,5 @@ public class Pieza implements Serializable {
         result = 31 * result + (tipoPieza != null ? tipoPieza.hashCode() : 0);
         return result;
     }
+
 }
