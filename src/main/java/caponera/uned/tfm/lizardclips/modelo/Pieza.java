@@ -219,8 +219,26 @@ public class Pieza implements Serializable {
             g.setColor(Color.BLACK);
 
             g.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 3 * Conector.getRadio()));
-            g.drawString(c.getNombreConector(), pos.getX() - 2 * Conector.getRadio(),
-                    pos.getY() - 2 * Conector.getRadio());
+            int desplazamientoX, desplazamientoY;
+            if (getRotacion().equals(AnguloRotacion.ROT_0) || getRotacion().equals(AnguloRotacion.ROT_180)) {
+                desplazamientoY = -2 * Conector.getRadio();
+                desplazamientoX = (c.getNombreConector().length() + 2) * Conector.getRadio();
+                double centro = getPosicion().getX() + getWidth() / 2;
+                if (pos.getX() < centro) {
+                    desplazamientoX *= -1;
+                    desplazamientoX -= c.getNombreConector().length() * Conector.getRadio();
+                }
+            } else {
+                desplazamientoX = 0;
+                desplazamientoY = 3 * Conector.getRadio();
+                double centro = getPosicion().getY() + getHeight() / 2;
+                if (pos.getY() < centro) {
+                    desplazamientoY *= -1;
+                    desplazamientoY += Conector.getRadio();
+                }
+            }
+            g.drawString(c.getNombreConector(), pos.getX() + desplazamientoX,
+                    pos.getY() + desplazamientoY);
         }
         if (isRenerNombresPiezas()) {
             g.drawString(ModelicaGenerator.nombrePieza(this), posicion.getX(), posicion.getY() - 2);
