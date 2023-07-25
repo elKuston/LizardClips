@@ -1,5 +1,6 @@
 package caponera.uned.tfm.lizardclips.modelica;
 
+import caponera.uned.tfm.lizardclips.constant.ConectorTemplate;
 import caponera.uned.tfm.lizardclips.constant.TipoConector;
 import caponera.uned.tfm.lizardclips.modelo.Circuito;
 import caponera.uned.tfm.lizardclips.modelo.Conector;
@@ -78,7 +79,7 @@ public class ModelicaGenerator {
     private static String generarAnotacion(Conexion c) {
         StringJoiner sj = new StringJoiner(",");
         c.getPuntosManhattan().stream().map(p -> escalarPunto(p, true))
-         .map(p -> String.format("{%d,%d}", p.getX(), p.getY())).forEachOrdered(sj::add);
+                .map(p -> String.format("{%d,%d}", p.getX(), p.getY())).forEachOrdered(sj::add);
         return String.format("Line(points={%s}, color={0,0,0})", sj);
     }
 
@@ -128,21 +129,22 @@ public class ModelicaGenerator {
     }
 
     private static String generarAsignacionParametrosPieza(Pieza p) {
-        boolean requiresN = p.getTipoPieza().getConectoresEntradaMin() !=
-                p.getTipoPieza().getConectoresEntradaMax();
+        List<ConectorTemplate> conectoresMultiples =
+                p.getTipoPieza().getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple).toList();
+
         List<Propiedad> propiedadesPieza = p.getTipoPieza().getPropiedades();
         String res = "";
-        if (propiedadesPieza.size() > 0 || requiresN) {
+        if (propiedadesPieza.size() > 0 || conectoresMultiples.size() > 0) {
             StringJoiner sj = new StringJoiner(", ");
             for (int i = 0; i < propiedadesPieza.size(); i++) {
                 Propiedad prop = propiedadesPieza.get(i);
                 sj.add(prop.getNombre() + " = " + nombrePropiedad(p, prop));
             }
 
-            if (requiresN) {
-                sj.add("n=" + p.getConectores().stream()
-                               .filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA))
-                               .count());
+            for (int i = 0; i < conectoresMultiples.size(); i++) {
+                String nombreAtributoNumPines = conectoresMultiples.get(i).getNombreNumPines();
+                int numPines = p.getNPinesConectorMultiple(i);
+                sj.add(nombreAtributoNumPines + " = " + numPines);
             }
 
             res = "(" + sj + ")";
@@ -162,33 +164,6 @@ public class ModelicaGenerator {
         declaracion.add(
                 String.format("%s %s %s %s", p.getTipoPieza().getClaseModelica(), nombrePieza(p),
                         generarAsignacionParametrosPieza(p), generarAnotacion(p)));
-
-        /*switch (p.getTipoPieza()) {
-
-            case AND, NAND, OR, NOR, XOR, XNOR -> {
-                declaracion.add(
-                        String.format("%s %s (n=%d) %s", p.getTipoPieza().getClaseModelica(),
-                                nombrePieza(p), nConectoresEntrada(p), generarAnotacion(p)));
-            }
-            case SET -> {
-                declaracion.add(
-                        String.format("parameter %s %s = %s.'0'", LOGIC, nombreFuente(p), LOGIC));
-                declaracion.add(
-                        String.format("%s %s (x=%s) %s", p.getTipoPieza().getClaseModelica(),
-                                nombrePieza(p), nombreFuente(p), generarAnotacion(p)));
-            }
-            case NOT -> {
-                declaracion.add(String.format("%s %s %s", p.getTipoPieza().getClaseModelica(),
-                        nombrePieza(p), generarAnotacion(p)));
-            }
-            case DIGITAL_CLOCK -> {
-                declaracion.add(String.format(
-                        "%s %s (startTime=%s_startTime, period=%s_period,width=%s_width) %s",
-                        p.getTipoPieza().getClaseModelica(), nombrePieza(p), nombrePieza(p),
-                        nombrePieza(p), nombrePieza(p), generarAnotacion(p)));
-            }
-            default -> throw new RuntimeException("error_generating_component_code");
-        }*/
         return declaracion;
     }
 
@@ -220,27 +195,14 @@ public class ModelicaGenerator {
                     c.getOrigen().getTipoConector().equals(TipoConector.ENTRADA) ? c.getOrigen() :
                             c.getDestino();
 
-            if (entrada.getPieza().getTipoPieza().getConectoresEntradaMin() == 1 &&
-                    entrada.getPieza().getTipoPieza().getConectoresEntradaMax() == 1) {
-                sj.add(String.format("connect(%s,%s)", nombreConector(salida),
-                        nombreConector(entrada)));
-            } else {
-                //Posicion del conector de entrada dentro de la pieza
-                int indiceEntrada = entrada.getPieza().getConectores().stream()
-                                           .filter(con -> con.getTipoConector()
-                                                             .equals(TipoConector.ENTRADA)).toList()
-                                           .indexOf(entrada) + 1;
-                sj.add(String.format("connect(%s,%s[%d])", nombreConector(salida),
-                        nombreConector(entrada), indiceEntrada));
-            }
+            sj.add(String.format("connect(%s,%s)", nombreConector(salida), nombreConector(entrada)));
         }
         sj.add("\n");
         return sj.toString();
     }
 
     private static String nombreConector(Conector conector) {
-        return nombrePieza(conector.getPieza()) + "." +
-                (conector.getTipoConector().equals(TipoConector.ENTRADA) ? "x" : "y");
+        return nombrePieza(conector.getPieza()) + "." + conector.getNombreConector();
     }
 
     private static String modelName(Circuito circuito) {
