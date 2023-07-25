@@ -1,0 +1,11 @@
+
+*.class
+/out/
+out/production/LizardClips/gui/PanelCircuito.class
+out/production/LizardClips/gui/VentanaPrincipal.class
+.idea/*
+/.idea/
+target/*
+/lizardClipsEmbeddedDatabase/
+/target/
+derby.log
