@@ -57,7 +57,7 @@ public class Conexion implements Serializable {
         this.puntosIntermediosY = new ArrayList<>();
 
         List<Conector> conectoresPiezaOrigenOtra = otra.getOrigen().getPieza().getConectores();
-        List<Conector> conectoresPiezaDestinoOtra = otra.getOrigen().getPieza().getConectores();
+        List<Conector> conectoresPiezaDestinoOtra = otra.getDestino().getPieza().getConectores();
         int indexConectorOrigen = conectoresPiezaOrigenOtra.indexOf(otra.getOrigen());
         int indexConectorDestino = conectoresPiezaDestinoOtra.indexOf(otra.getDestino());
         Pieza piezaOrigen = componentes.get(
