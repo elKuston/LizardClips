@@ -74,6 +74,10 @@ public class ControladorCircuito {
         this.circuito.setControlador(this);
 
         panelCircuito.cambiarCircuito();
+        if (ventanaPrincipal != null && circuito.getNombre() != null &&
+                !circuito.getNombre().isBlank()) {
+            ventanaPrincipal.setNombreCircuito(circuito.getNombre());
+        }
 
     }
 
@@ -106,8 +110,8 @@ public class ControladorCircuito {
 
     public Pieza getPiezaByPosicion(Punto posicionRaton) {
         return circuito.getComponentes().stream()
-                .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
-                .orElse(null);
+                       .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
+                       .orElse(null);
     }
 
     public Conector getConectorByPosicion(Punto posicion) {
@@ -264,9 +268,8 @@ public class ControladorCircuito {
                 throw new RuntimeException(I18NUtils.getString("must_select_circuit"));
             }
             setCircuito(seleccionado);
-            ventanaPrincipal.setNombreCircuito(seleccionado.getNombre());
             System.out.println("cargado circuito" + circuito);
-            Punto.resetReferencia();
+            //Punto.resetReferencia();
         }
 
     }
@@ -354,10 +357,15 @@ public class ControladorCircuito {
         panelCircuito.repaint();
     }
 
+    public void toggleNombresPines() {
+        Pieza.setRenderNombresPines(!Pieza.isRenderNombresPines());
+        panelCircuito.repaint();
+    }
+
     public void renombrarPieza(Pieza pieza, String nuevoNombre) {
         sanitize(nuevoNombre);
         if (circuito.getComponentes().stream()
-                .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
+                    .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
             throw new RuntimeException(I18NUtils.getString("duplicate_component_name"));
         }
         pieza.setNombrePieza(nuevoNombre);

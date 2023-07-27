@@ -81,8 +81,8 @@ public class Conexion implements Serializable {
         //Cargar los puntos intermedios
         if (puntosIntermediosX != null && puntosIntermediosY != null) {
             for (int i = 0; i < puntosIntermediosX.size(); i++) {
-                puntosIntermedios.add(
-                        new Punto(puntosIntermediosX.get(i), puntosIntermediosY.get(i)));
+                puntosIntermedios.add(Punto.puntoCoordenadasVirtuales(puntosIntermediosX.get(i),
+                        puntosIntermediosY.get(i)));
             }
         }
     }
@@ -90,8 +90,8 @@ public class Conexion implements Serializable {
     @PreUpdate
     @PrePersist
     protected void preUpdatePersist() {
-        this.puntosIntermediosX = puntosIntermedios.stream().map(Punto::getX).toList();
-        this.puntosIntermediosY = puntosIntermedios.stream().map(Punto::getY).toList();
+        this.puntosIntermediosX = puntosIntermedios.stream().map(Punto::getXVirtual).toList();
+        this.puntosIntermediosY = puntosIntermedios.stream().map(Punto::getYVirtual).toList();
     }
 
     public List<Integer> getPuntosIntermediosX() {

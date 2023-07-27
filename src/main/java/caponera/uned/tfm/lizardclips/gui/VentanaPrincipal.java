@@ -7,7 +7,17 @@ import caponera.uned.tfm.lizardclips.utils.I18NUtils;
 import caponera.uned.tfm.lizardclips.utils.ImageUtils;
 import lombok.Getter;
 
-import javax.swing.*;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JToggleButton;
+import javax.swing.WindowConstants;
 import javax.swing.border.MatteBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -43,7 +53,7 @@ public class VentanaPrincipal {
         frame = new JFrame();
         frame.setIconImage(
                 ImageUtils.cargarImageIcon(ImageUtils.MEDIA_BASE_FOLDER + "/lizardclips.png")
-                        .getImage());
+                          .getImage());
         frame.setSize(width, height);
         setNombreCircuito(I18NUtils.getString("untitled_circuit"));
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -97,6 +107,12 @@ public class VentanaPrincipal {
                 e -> controladorCircuito.toggleNombresPiezas());
         menuVista.add(menuItemVistaToggleNombres);
 
+        JMenuItem menuItemVistaToggleNombresPines =
+                new JMenuItem(I18NUtils.getString("menuitem_show_hide_pin_names"));
+        menuItemVistaToggleNombresPines.addActionListener(
+                e -> controladorCircuito.toggleNombresPines());
+        menuVista.add(menuItemVistaToggleNombresPines);
+
         barraSuperior.add(menuVista);
 
         frame.setJMenuBar(barraSuperior);
@@ -121,8 +137,7 @@ public class VentanaPrincipal {
                             ImageUtils.cargarImageneEscaladaPreserveRatio(tp.getPathImagen(),
                                     ANCHO_BOTONES_LATERALES, ALTO_BOTONES_LATERALES));
                     b.setToolTipText(tp.getNombre());
-                    b.addActionListener(
-                            e -> controladorCircuito.generarPieza(tp));
+                    b.addActionListener(e -> controladorCircuito.generarPieza(tp));
                     tabContent.add(b);
                 }
             }

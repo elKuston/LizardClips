@@ -36,6 +36,13 @@ public class Punto {
         setYPanel(y);
     }
 
+    public static Punto puntoCoordenadasVirtuales(double x, double y) {
+        Punto p = new Punto(0, 0);
+        p.setXVirtual(x);
+        p.setYVirtual(y);
+        return p;
+    }
+
     public static void reescalar(float dZ) {
         escala = Math.min(ESCALA_MAX,
                 Math.max(ESCALA_MIN, escala + dZ)); //Asegurar que escala está entre min y max
@@ -74,6 +81,14 @@ public class Punto {
 
     public int getYVirtual() {
         return (int) y;
+    }
+
+    public void setXVirtual(double x) {
+        this.x = x;
+    }
+
+    public void setYVirtual(double y) {
+        this.y = y;
     }
 
     public Point getPoint() {
