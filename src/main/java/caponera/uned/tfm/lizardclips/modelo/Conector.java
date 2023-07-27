@@ -73,18 +73,16 @@ public class Conector implements Serializable {
         return pieza.getPosicionConectorEnPanel(this);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o))
-            return false;
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Conector conector = (Conector) o;
-        return idConector != null && Objects.equals(idConector, conector.idConector);
+        return getTipoConector() == conector.getTipoConector() &&
+                Objects.equals(getPieza(), conector.getPieza()) &&
+                Objects.equals(getNombreConector(), conector.getNombreConector());
     }
 
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
+    @Override public int hashCode() {
+        return Objects.hash(getTipoConector(), getPieza(), getNombreConector());
     }
 }

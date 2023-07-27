@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.awt.Point;
+import java.util.Objects;
 
 @Embeddable
 @NoArgsConstructor
@@ -100,4 +101,14 @@ public class Punto {
         y += dy;
     }
 
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Punto punto = (Punto) o;
+        return Double.compare(punto.getX(), getX()) == 0 && Double.compare(punto.getY(), getY()) == 0;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(getX(), getY());
+    }
 }

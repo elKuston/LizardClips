@@ -33,9 +33,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Getter
 @Setter
@@ -90,7 +88,7 @@ public class Pieza implements Serializable {
         setupConectores();
         this.valoresPropiedades =
                 tipoPieza.getPropiedades().stream().map(prop -> prop.getValor().toString())
-                         .toArray(String[]::new);
+                        .toArray(String[]::new);
 
     }
 
@@ -103,7 +101,7 @@ public class Pieza implements Serializable {
     private void setupConectores() {
         setupConectores(
                 tipoPieza.getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple)
-                         .mapToInt(ConectorTemplate::getMinConectores).toArray());
+                        .mapToInt(ConectorTemplate::getMinConectores).toArray());
 
     }
 
@@ -144,10 +142,10 @@ public class Pieza implements Serializable {
 
         List<ConectorTemplate> conectoresMultiples =
                 tipoPieza.getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple)
-                         .toList();
+                        .toList();
         List<ConectorTemplate> conectoresIndividuales =
                 tipoPieza.getConectoresConNombre().stream().filter(con -> !con.isMultiple())
-                         .toList();
+                        .toList();
 
         for (int i = 0; i < conectoresMultiples.size(); i++) {
             ConectorTemplate cm = conectoresMultiples.get(i);
@@ -214,7 +212,8 @@ public class Pieza implements Serializable {
     }
 
 
-    public void dibujar(PanelCircuito panelCircuito, Graphics g, Punto posicion, boolean dibujarContorno, Map<Conector, Color> coloresConectores) {
+    public void dibujar(PanelCircuito panelCircuito, Graphics g, Punto posicion, boolean dibujarContorno,
+                        Map<Conector, Color> coloresConectores) {
         if (getImagen() != null) {
             getImagen().paintIcon(panelCircuito, g, (int) posicion.getX(), (int) posicion.getY());
         }
@@ -272,10 +271,10 @@ public class Pieza implements Serializable {
     public void reposicionarConectores() {
         List<Conector> entradas =
                 conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA))
-                          .toList();
+                        .toList();
         List<Conector> salidas =
                 conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.SALIDA))
-                          .toList();
+                        .toList();
 
         for (int i = 0; i < entradas.size(); i++) {
             float pos_y = (i + 1) / ((entradas.size() + 1) * 1f);
@@ -333,40 +332,21 @@ public class Pieza implements Serializable {
         this.tamano = new Dimension(imagen.getIconWidth(), imagen.getIconHeight());
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (o == null || getClass() != o.getClass())
-            return false;
-
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         Pieza pieza = (Pieza) o;
-
-        if (idPieza != null ? !idPieza.equals(pieza.idPieza) : pieza.idPieza != null)
-            return false;
-        if (posicion != null ? !posicion.equals(pieza.posicion) : pieza.posicion != null)
-            return false;
-        if (imagen != null ? !imagen.equals(pieza.imagen) : pieza.imagen != null)
-            return false;
-        if (conectores != null ? !conectores.equals(pieza.conectores) : pieza.conectores != null)
-            return false;
-        if (tamano != null ? !tamano.equals(pieza.tamano) : pieza.tamano != null)
-            return false;
-        if (circuito != null ? !circuito.equals(pieza.circuito) : pieza.circuito != null)
-            return false;
-        return tipoPieza == pieza.tipoPieza;
+        return Objects.equals(getNombrePieza(), pieza.getNombrePieza()) &&
+                Objects.equals(getPosicion(), pieza.getPosicion()) && getRotacion() == pieza.getRotacion() &&
+                getTipoPieza().equals(pieza.getTipoPieza()) &&
+                Arrays.equals(getValoresPropiedades(), pieza.getValoresPropiedades()) &&
+                Arrays.equals(nPinesConectoresMultiples, pieza.nPinesConectoresMultiples);
     }
 
-    @Override
-    public int hashCode() {
-        int result = idPieza != null ? idPieza.hashCode() : 0;
-        result = 31 * result + (posicion != null ? posicion.hashCode() : 0);
-        result = 31 * result + (imagen != null ? imagen.hashCode() : 0);
-        result = 31 * result + (conectores != null ? conectores.hashCode() : 0);
-        result = 31 * result + (tamano != null ? tamano.hashCode() : 0);
-        result = 31 * result + (circuito != null ? circuito.hashCode() : 0);
-        result = 31 * result + (tipoPieza != null ? tipoPieza.hashCode() : 0);
+    @Override public int hashCode() {
+        int result = Objects.hash(getNombrePieza(), getPosicion(), getRotacion(), getTipoPieza());
+        result = 31 * result + Arrays.hashCode(getValoresPropiedades());
+        result = 31 * result + Arrays.hashCode(nPinesConectoresMultiples);
         return result;
     }
-
 }
