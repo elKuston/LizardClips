@@ -110,8 +110,8 @@ public class ControladorCircuito {
 
     public Pieza getPiezaByPosicion(Punto posicionRaton) {
         return circuito.getComponentes().stream()
-                       .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
-                       .orElse(null);
+                .filter(p -> p.getBounds().contains(posicionRaton.getPoint())).findFirst()
+                .orElse(null);
     }
 
     public Conector getConectorByPosicion(Punto posicion) {
@@ -289,53 +289,77 @@ public class ControladorCircuito {
         return image;
     }
 
+    private boolean continuarSiHayInputsDesconectados() {
+        boolean continuar = true;
+        List<Conexion> conexiones = circuito.getConexiones();
+        List<Conector> conectoresInput =
+                circuito.getComponentes().stream().flatMap(p -> p.getConectores().stream())
+                        .filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA)).toList();
+        //Si, para un determinado conector, no existe ninguna conexión que lo contenga
+        if (conectoresInput.stream().anyMatch(conector -> conexiones.stream().noneMatch(
+                conexion -> conexion.getOrigen().equals(conector) || conexion.getDestino().equals(conector)))) {
+            String[] opciones = {I18NUtils.getString("continue"), I18NUtils.getString("cancel")};
+            int confirmacion =
+                    JOptionPane.showOptionDialog(ventanaPrincipal.getFrame(), I18NUtils.getString("empty_inputs"),
+                            I18NUtils.getString("errors_in_the_circuit"), JOptionPane.YES_NO_OPTION,
+                            JOptionPane.WARNING_MESSAGE, null, opciones, opciones[1]);
+            continuar = confirmacion == 0;
+        }
+
+        return continuar;
+    }
+
     public void exportarCodigo() {
-        String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
-        System.out.println(codigoModelica);
+        if (continuarSiHayInputsDesconectados()) {
+            String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
+            System.out.println(codigoModelica);
 
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle(I18NUtils.getString("export_modelica_as"));
-        fileChooser.setAcceptAllFileFilterUsed(false);
-        fileChooser.setFileFilter(new FileFilter() {
-            @Override
-            public boolean accept(File f) {
-                return f.getName().endsWith(".mo");
-            }
-
-            @Override
-            public String getDescription() {
-                return "Modelica files";
-            }
-        });
-
-        int userSelection = fileChooser.showSaveDialog(ventanaPrincipal.getFrame());
-
-        if (userSelection == JFileChooser.APPROVE_OPTION) {
-            File fileToSave = fileChooser.getSelectedFile();
-            if (!fileToSave.getName().toLowerCase(Locale.ROOT).endsWith(".mo")) {
-                fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".mo");
-            }
-            try {
-                FileWriter fw = new FileWriter(fileToSave);
-                fw.write(codigoModelica);
-                fw.close();
-                int result = JOptionPane.showConfirmDialog(ventanaPrincipal.getFrame(),
-                        I18NUtils.getString("open_file_now_prompt"),
-                        I18NUtils.getString("open_file"), JOptionPane.YES_NO_OPTION,
-                        JOptionPane.QUESTION_MESSAGE);
-                if (result == JOptionPane.YES_OPTION) {
-                    Desktop.getDesktop().open(fileToSave);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle(I18NUtils.getString("export_modelica_as"));
+            fileChooser.setAcceptAllFileFilterUsed(false);
+            fileChooser.setFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    return f.getName().endsWith(".mo");
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+
+                @Override
+                public String getDescription() {
+                    return "Modelica files";
+                }
+            });
+
+            int userSelection = fileChooser.showSaveDialog(ventanaPrincipal.getFrame());
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+                if (!fileToSave.getName().toLowerCase(Locale.ROOT).endsWith(".mo")) {
+                    fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".mo");
+                }
+                try {
+                    FileWriter fw = new FileWriter(fileToSave);
+                    fw.write(codigoModelica);
+                    fw.close();
+                    int result = JOptionPane.showConfirmDialog(ventanaPrincipal.getFrame(),
+                            I18NUtils.getString("open_file_now_prompt"),
+                            I18NUtils.getString("open_file"), JOptionPane.YES_NO_OPTION,
+                            JOptionPane.QUESTION_MESSAGE);
+                    if (result == JOptionPane.YES_OPTION) {
+                        Desktop.getDesktop().open(fileToSave);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     public void verCodigo() {
-        String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
-        SwingUtilities.invokeLater(
-                () -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
+        if (continuarSiHayInputsDesconectados()) {
+            String codigoModelica = ModelicaGenerator.generarCodigoModelica(circuito);
+            SwingUtilities.invokeLater(
+                    () -> new VentanaVisualizarCodigo(codigoModelica, 500, 500).setVisible(true));
+        }
     }
 
     /*public void addConectorToPieza(Pieza p) {
@@ -365,7 +389,7 @@ public class ControladorCircuito {
     public void renombrarPieza(Pieza pieza, String nuevoNombre) {
         sanitize(nuevoNombre);
         if (circuito.getComponentes().stream()
-                    .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
+                .anyMatch(p -> ModelicaGenerator.nombrePieza(p).equals(nuevoNombre))) {
             throw new RuntimeException(I18NUtils.getString("duplicate_component_name"));
         }
         pieza.setNombrePieza(nuevoNombre);
