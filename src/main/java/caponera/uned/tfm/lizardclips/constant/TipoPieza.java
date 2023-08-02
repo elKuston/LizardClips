@@ -1,7 +1,6 @@
 package caponera.uned.tfm.lizardclips.constant;
 
 import caponera.uned.tfm.lizardclips.modelica.ModelicaGenerator;
-import caponera.uned.tfm.lizardclips.modelo.Conector;
 import caponera.uned.tfm.lizardclips.modelo.Propiedad;
 import caponera.uned.tfm.lizardclips.modelo.PropiedadLogic;
 import caponera.uned.tfm.lizardclips.modelo.PropiedadSimple;
@@ -133,7 +132,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.SALIDA, "y"))),
     //endregion
     //region Tristates
-    NXFERGATE("NXFERGATE", ImageUtils.pathImagenMedia("invgate.png"),
+    NXFERGATE("NXFERGATE", ImageUtils.pathImagenMedia("NXFERGATE.png"),
             ModelicaGenerator.TRISTATES + ".NXFERGATE", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -142,7 +141,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    NRXFERGATE("NRXFERGATE", ImageUtils.pathImagenMedia("invgate.png"),
+    NRXFERGATE("NRXFERGATE", ImageUtils.pathImagenMedia("NRXFERGATE.png"),
             ModelicaGenerator.TRISTATES + ".NRXFERGATE", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -151,7 +150,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    PXFERGATE("PXFERGATE", ImageUtils.pathImagenMedia("invgate.png"),
+    PXFERGATE("PXFERGATE", ImageUtils.pathImagenMedia("PXFERGATE.png"),
             ModelicaGenerator.TRISTATES + ".PXFERGATE", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -160,7 +159,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    PRXFERGATE("PRXFERGATE", ImageUtils.pathImagenMedia("invgate.png"),
+    PRXFERGATE("PRXFERGATE", ImageUtils.pathImagenMedia("PRXFERGATE.png"),
             ModelicaGenerator.TRISTATES + ".PRXFERGATE", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -169,7 +168,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    BUF3S("BUF3S", ImageUtils.pathImagenMedia("invgate.png"),
+    BUF3S("BUF3S", ImageUtils.pathImagenMedia("BUF3S.png"),
             ModelicaGenerator.TRISTATES + ".BUF3S", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -179,7 +178,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    BUF3SL("BUF3SL", ImageUtils.pathImagenMedia("invgate.png"),
+    BUF3SL("BUF3SL", ImageUtils.pathImagenMedia("BUF3S.png"),//las imagenes son iguales
             ModelicaGenerator.TRISTATES + ".BUF3SL", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -189,7 +188,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    INV3S("INV3S", ImageUtils.pathImagenMedia("invgate.png"),
+    INV3S("INV3S", ImageUtils.pathImagenMedia("INV3S.png"),
             ModelicaGenerator.TRISTATES + ".INV3S", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -199,7 +198,7 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    INV3SL("INV3SL", ImageUtils.pathImagenMedia("invgate.png"),
+    INV3SL("INV3SL", ImageUtils.pathImagenMedia("INV3SL.png"),
             ModelicaGenerator.TRISTATES + ".INV3SL", TabPaleta.TRISTATES,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
@@ -209,14 +208,14 @@ public enum TipoPieza {
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "enable"),
                     new ConectorTemplate(TipoConector.ENTRADA, "x"),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
-    WiredX("WiredX", ImageUtils.pathImagenMedia("invgate.png"),
+    WIRED_X("WIRED_X", ImageUtils.pathImagenMedia("WiredX.png"),
             ModelicaGenerator.TRISTATES + ".WiredX", TabPaleta.TRISTATES,
             List.of(),
             List.of(new ConectorTemplate(TipoConector.ENTRADA, "x", 1),
                     new ConectorTemplate(TipoConector.SALIDA, "y"))),
     //endregion
     //region Multiplexers
-    MUX2x1("MUX2x1", ImageUtils.pathImagenMedia("invgate.png"),
+    MUX2x1("MUX2x1", ImageUtils.pathImagenMedia("MUX2x1.png"),
             ModelicaGenerator.MULTIPLEXERS + ".MUX2x1", TabPaleta.MULTIPLEXERS,
             List.of(new PropiedadSimple("0", "tLH", Propiedad.UNIDAD_TIME,
                             "Low->High delay [s]"),
