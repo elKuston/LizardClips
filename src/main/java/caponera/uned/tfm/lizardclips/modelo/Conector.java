@@ -53,6 +53,8 @@ public class Conector implements Serializable {
 
     private String nombreConector;
 
+    private boolean reposicionar = true;
+
     public Conector(double posicionRelativaX, double posicionRelativaY, TipoConector tipoConector, String nombre) {
         this.posicionRelativaX = posicionRelativaX;
         this.posicionRelativaY = posicionRelativaY;
@@ -61,8 +63,16 @@ public class Conector implements Serializable {
     }
 
     public Conector(ConectorTemplate template, int index) {
-        this(template.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1, 0, template.getTipo(),
+        this(template.getRelativeX(), template.getRelativeY(), template.getTipo(),
                 template.getNombre() + "[" + index + "]");
+        this.reposicionar = template.isReposicionar();
+    }
+
+    public Conector(ConectorTemplate template) {
+        this(template.getRelativeX(), template.getRelativeY(), template.getTipo(),
+                template.getNombre());
+        this.reposicionar = template.isReposicionar();
+
     }
 
     public static int getRadio() {

@@ -12,9 +12,11 @@ public class ConectorTemplate {
     private boolean multiple;
     private int minConectores, maxConectores;
     private String nombreNumPines;
+    private double relativeX, relativeY;
+    private boolean reposicionar = true;
 
     public ConectorTemplate(TipoConector tipo, String nombre, boolean multiple) {
-        this(tipo, nombre, multiple, 1, Integer.MAX_VALUE, "n");
+        this(tipo, nombre, multiple, 1, Integer.MAX_VALUE, "n", tipo.equals(TipoConector.ENTRADA) ? 0 : 1, 0, true);
     }
 
     public ConectorTemplate(TipoConector tipo, String nombre) {
@@ -22,6 +24,14 @@ public class ConectorTemplate {
     }
 
     public ConectorTemplate(TipoConector tipo, String nombre, int minConectores) {
-        this(tipo, nombre, true, minConectores, Integer.MAX_VALUE, "n");
+        this(tipo, nombre, true, minConectores, Integer.MAX_VALUE, "n", tipo.equals(TipoConector.ENTRADA) ? 0 : 1, 0,
+                true);
+    }
+
+    public ConectorTemplate(TipoConector tipo, String nombre, double relativeX, double relativeY) {
+        this(tipo, nombre, false);
+        this.relativeX = relativeX;
+        this.relativeY = relativeY;
+        this.reposicionar = false;
     }
 }

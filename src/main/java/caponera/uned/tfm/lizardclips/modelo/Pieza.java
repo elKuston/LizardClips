@@ -149,15 +149,13 @@ public class Pieza implements Serializable {
 
         for (int i = 0; i < conectoresMultiples.size(); i++) {
             ConectorTemplate cm = conectoresMultiples.get(i);
-            double posRelX = cm.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1;
             for (int c = 0; c < nPinesConectoresMultiples[i]; c++) {
                 lista.add(new Conector(cm, c + 1));
             }
         }
 
         for (ConectorTemplate ci : conectoresIndividuales) {
-            double posRelX = ci.getTipo().equals(TipoConector.ENTRADA) ? 0 : 1;
-            lista.add(new Conector(posRelX, 0.5, ci.getTipo(), ci.getNombre()));
+            lista.add(new Conector(ci));
         }
         return lista;
     }
@@ -270,10 +268,10 @@ public class Pieza implements Serializable {
 
     public void reposicionarConectores() {
         List<Conector> entradas =
-                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA))
+                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.ENTRADA) && c.isReposicionar())
                         .toList();
         List<Conector> salidas =
-                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.SALIDA))
+                conectores.stream().filter(c -> c.getTipoConector().equals(TipoConector.SALIDA) && c.isReposicionar())
                         .toList();
 
         for (int i = 0; i < entradas.size(); i++) {
