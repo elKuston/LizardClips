@@ -86,7 +86,7 @@ public class ModelicaGenerator {
     private static String generarAnotacion(Conexion c) {
         StringJoiner sj = new StringJoiner(",");
         c.getPuntosManhattan().stream().map(p -> escalarPunto(p, true))
-                .map(p -> String.format("{%d,%d}", p.getX(), p.getY())).forEachOrdered(sj::add);
+         .map(p -> String.format("{%d,%d}", p.getX(), p.getY())).forEachOrdered(sj::add);
         return String.format("Line(points={%s}, color={0,0,0})", sj);
     }
 
@@ -137,7 +137,8 @@ public class ModelicaGenerator {
 
     private static String generarAsignacionParametrosPieza(Pieza p) {
         List<ConectorTemplate> conectoresMultiples =
-                p.getTipoPieza().getConectoresConNombre().stream().filter(ConectorTemplate::isMultiple).toList();
+                p.getTipoPieza().getConectoresConNombre().stream()
+                 .filter(ConectorTemplate::isMultiple).toList();
 
         List<Propiedad> propiedadesPieza = p.getTipoPieza().getPropiedades();
         String res = "";
@@ -145,7 +146,13 @@ public class ModelicaGenerator {
             StringJoiner sj = new StringJoiner(", ");
             for (int i = 0; i < propiedadesPieza.size(); i++) {
                 Propiedad prop = propiedadesPieza.get(i);
-                sj.add(prop.getNombre() + " = " + nombrePropiedad(p, prop));
+                String nombreProp = prop.getNombre();
+                String nombrePropiedad = nombrePropiedad(p, prop);
+                if (nombreProp.endsWith("[:]")) {
+                    nombreProp = nombreProp.substring(0, nombreProp.length() - 3);
+                    nombrePropiedad = nombrePropiedad.substring(0, nombrePropiedad.length() - 3);
+                }
+                sj.add(nombreProp + " = " + nombrePropiedad);
             }
 
             for (int i = 0; i < conectoresMultiples.size(); i++) {
@@ -202,7 +209,8 @@ public class ModelicaGenerator {
                     c.getOrigen().getTipoConector().equals(TipoConector.ENTRADA) ? c.getOrigen() :
                             c.getDestino();
 
-            sj.add(String.format("connect(%s,%s)", nombreConector(salida), nombreConector(entrada)));
+            sj.add(String.format("connect(%s,%s)", nombreConector(salida),
+                    nombreConector(entrada)));
         }
         sj.add("\n");
         return sj.toString();
