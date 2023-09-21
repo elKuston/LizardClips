@@ -178,9 +178,8 @@ public class ModelicaGenerator {
                     nombrePropiedad(p, prop), p.getValoresPropiedades()[i]));
         }
 
-        declaracion.add(
-                String.format("%s %s %s %s", p.getTipoPieza().getClaseModelica(), nombrePieza(p),
-                        generarAsignacionParametrosPieza(p), generarAnotacion(p)));
+        declaracion.add(String.format("%s %s %s \n\t\t%s", p.getTipoPieza().getClaseModelica(),
+                nombrePieza(p), generarAsignacionParametrosPieza(p), generarAnotacion(p)));
         return declaracion;
     }
 
