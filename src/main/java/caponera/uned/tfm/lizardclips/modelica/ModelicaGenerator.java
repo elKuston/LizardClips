@@ -22,6 +22,7 @@ public class ModelicaGenerator {
     public static final String GATES = "G";
     public static final String TRISTATES = "TS";
     public static final String MULTIPLEXERS = "MP";
+    public static final String UTILITIES = "U";
     public static final String SI = "SI";
     private static final String DIGITAL_IMPORT = "Modelica.Electrical.Digital";
     private static final String BASIC_IMPORT = "Modelica.Electrical.Digital.Basic";
@@ -30,6 +31,7 @@ public class ModelicaGenerator {
     private static final String GATES_IMPORT = "Modelica.Electrical.Digital.Gates";
     private static final String TRISTATES_IMPORT = "Modelica.Electrical.Digital.Tristates";
     private static final String MULTIPLEXERS_IMPORT = "Modelica.Electrical.Digital.Multiplexers";
+    private static final String UTILITIES_IMPORT = "Modelica.Electrical.Digital.Examples.Utilities";
     private static final String SI_IMPORT = "Modelica.Units.SI";
 
     private static final double ESCALA_ANNOTATION = 0.3;
@@ -55,6 +57,7 @@ public class ModelicaGenerator {
         sj.add("import " + GATES + " = " + GATES_IMPORT);
         sj.add("import " + TRISTATES + " = " + TRISTATES_IMPORT);
         sj.add("import " + MULTIPLEXERS + " = " + MULTIPLEXERS_IMPORT);
+        sj.add("import " + UTILITIES + " = " + UTILITIES_IMPORT);
 
         sj.add("import " + SI + " = " + SI_IMPORT);
         sj.add("\n");
